@@ -37,7 +37,9 @@ def run(conversation_path: str, speed: float, dry_run: bool = False) -> None:
             "group_name": convo["group_name"],
             "sender_id": m["sender_id"],
             "sender_name": m["sender_name"],
-            "child_id": convo["child_id"],
+            # child_id must equal the child's own sender_id so the analyzer flags the
+            # child as aggressor when they send. Mirrors the bridge (child_id = own wid).
+            "child_id": convo.get("child_sender_id", convo["child_id"]),
             "text": m["text"],
             "media_url": m.get("media_url"),
             "timestamp": datetime.now().isoformat(),
