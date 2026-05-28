@@ -27,6 +27,9 @@ _TOXIC_KEYWORDS = [
     "idiot", "stupid", "loser", "ugly", "dumb", "moron", "retard", "freak",
     "shut up", "kill yourself", "kys", "nobody likes you", "worthless",
     "hate you", "pathetic", "you suck", "go die",
+    # Profanity (he + en)
+    "חרא", "זבל", "מפגר", "מניאק", "שרמוטה", "בן זונה",
+    "shit", "fuck", "asshole", "bitch", "bastard", "dick", "slut", "stfu",
 ]
 
 _EXCLUSION_PHRASES = [
@@ -48,6 +51,16 @@ _THREAT_PHRASES = [
     # English
     "i'll be waiting", "after school", "you're dead", "you are dead",
     "watch your back", "i'll get you", "i will find you", "i'll hurt you",
+]
+
+# Self-harm / suicidal ideation — a distress signal, NOT toxicity, so a profanity/
+# toxicity model misses it; explicit phrasing is the right detector. Always severe.
+_SELF_HARM_PHRASES = [
+    "בא לי למות", "רוצה למות", "לא רוצה לחיות", "אין לי כוח לחיות",
+    "נמאס לי לחיות", "אין טעם לחיות", "לשים סוף", "לפגוע בעצמי",
+    "להרוג את עצמי", "אני אתאבד", "אתאבד", "אין לי סיבה לחיות",
+    "want to die", "kill myself", "end it all", "no reason to live",
+    "i want to die", "hurt myself", "cut myself", "suicidal",
 ]
 
 _SAFE_CONTEXT_PHRASES = [
@@ -138,6 +151,7 @@ class TextToxicityAnalyzer:
         hits = sum(1 for phrase in _TOXIC_KEYWORDS if phrase in low)
         exclusion_hits = sum(1 for phrase in _EXCLUSION_PHRASES if phrase in low)
         threat_hits = sum(1 for phrase in _THREAT_PHRASES if phrase in low)
+        self_harm_hits = sum(1 for phrase in _SELF_HARM_PHRASES if phrase in low)
         safe_context_hits = sum(1 for phrase in _SAFE_CONTEXT_PHRASES if phrase in low)
 
         # Example: "don't come to the library, we meet in class" is logistical,
@@ -157,6 +171,8 @@ class TextToxicityAnalyzer:
             scores.append(min(0.55 + 0.08 * exclusion_hits, 0.92))
         if threat_hits:
             scores.append(min(0.7 + 0.1 * threat_hits, 0.97))
+        if self_harm_hits:
+            scores.append(0.95)  # self-harm / suicidal ideation -> always severe
 
         return max(scores)
 

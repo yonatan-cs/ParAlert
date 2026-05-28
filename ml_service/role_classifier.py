@@ -18,14 +18,26 @@ from contracts.schemas import IncomingMessage, Role, Category  # noqa: E402
 
 # TODO ML Dev 2: replace these heuristics with a real classifier
 # (DictaBERT head, few-shot LLM, or rules tuned on the conversation datasets).
-_THREAT = ["מחכה לך", "תמות", "אני אחכה", "תיזהר"]
-_EXCLUSION = ["לא מזמינים", "כולם נגדך", "אל תבוא", "אף אחד לא רוצה"]
+_SELF_HARM = [
+    "בא לי למות", "רוצה למות", "לא רוצה לחיות", "אין לי כוח לחיות",
+    "נמאס לי לחיות", "אין טעם לחיות", "לשים סוף", "לפגוע בעצמי",
+    "להרוג את עצמי", "אני אתאבד", "אתאבד", "אין לי סיבה לחיות",
+    "want to die", "kill myself", "end it all", "no reason to live",
+    "i want to die", "hurt myself", "cut myself", "suicidal",
+]
+_THREAT = ["מחכה לך", "תמות", "אני אחכה", "תיזהר",
+           "i'll be waiting", "you're dead", "watch your back", "i'll get you"]
+_EXCLUSION = ["לא מזמינים", "כולם נגדך", "אל תבוא", "אף אחד לא רוצה",
+              "nobody wants you", "not invited", "go away", "no one likes you"]
 
 
 def classify_category(text: str) -> Category:
-    if any(w in text for w in _THREAT):
+    low = text.lower()  # case-insensitive (English); Hebrew unaffected
+    if any(w in low for w in _SELF_HARM):
+        return "self_harm"
+    if any(w in low for w in _THREAT):
         return "threat"
-    if any(w in text for w in _EXCLUSION):
+    if any(w in low for w in _EXCLUSION):
         return "exclusion"
     return "harassment"
 
@@ -38,4 +50,6 @@ def classify_role(message: IncomingMessage, is_toxic: bool) -> Role:
     """
     if not is_toxic:
         return "none"
+    if any(w in message.text.lower() for w in _SELF_HARM):
+        return "victim"  # a child in distress is a victim, never the "aggressor"
     return "aggressor" if message.sender_id == message.child_id else "victim"
