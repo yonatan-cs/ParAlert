@@ -82,6 +82,7 @@ export const STRINGS = {
     },
     chat: {
       play: "▶ הפעל",
+      chatsTitle: "צ'אטים",
       placeholder: "בחר קבוצה ולחץ ▶ כדי להריץ שיחת דמו",
       sensitive: "תמונה רגישה",
       reveal: "הצג",
@@ -210,6 +211,7 @@ export const STRINGS = {
     },
     chat: {
       play: "▶ Play",
+      chatsTitle: "Chats",
       placeholder: "Pick a group and press ▶ to run a demo conversation",
       sensitive: "Sensitive image",
       reveal: "Show",

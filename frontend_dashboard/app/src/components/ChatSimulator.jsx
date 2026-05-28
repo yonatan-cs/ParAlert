@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { DEMO_SCENARIOS } from "../data/demoChat.js";
 import { useI18n } from "../i18n/I18nContext.jsx";
 
-// WhatsApp-style chat opener with a group switcher. Plays the selected group's
-// scripted conversation; flagged messages flash a typed SafeNet banner and media
-// renders as image/video (censored for sensitive content). Pure frontend.
+// WhatsApp-Web-style scripted demo: a vertical group list (sidebar) + the selected
+// group's conversation. Plays a scripted conversation; flagged messages flash a typed
+// SafeNet banner and media renders censored for sensitive content. Pure frontend.
 const FLASH_CLS = { severe: "bg-sev-high", disinfo: "bg-amber-600", toxic: "bg-sev-high" };
 
 function flagType(m) {
@@ -110,9 +110,34 @@ export default function ChatSimulator() {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-edge">
-      {/* group switcher */}
-      <div className="flex gap-1 overflow-x-auto bg-surface p-2">
+    <div className="flex h-[72vh] flex-col overflow-hidden rounded-2xl border border-edge lg:h-[calc(100vh-3rem)] lg:flex-row">
+      {/* WhatsApp-Web sidebar: vertical group list (desktop) */}
+      <div className="hidden w-[210px] shrink-0 flex-col border-e border-edge bg-surface lg:flex">
+        <div className="border-b border-edge px-3 py-3 text-sm font-semibold">{t.chat.chatsTitle}</div>
+        <div className="flex-1 overflow-y-auto">
+          {scenarios.map((sc, i) => (
+            <button
+              key={sc.group}
+              type="button"
+              onClick={() => selectGroup(i)}
+              className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-start transition-colors ${
+                i === idx ? "bg-surface-2" : "hover:bg-surface-2/60"
+              }`}
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#075E54]/30 text-base">
+                👥
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-medium text-content">{sc.group}</span>
+                <span className="block truncate text-[11px] text-faint">{sc.members}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* group chips (mobile only) */}
+      <div className="flex gap-1 overflow-x-auto bg-surface p-2 lg:hidden">
         {scenarios.map((sc, i) => (
           <button
             key={sc.group}
@@ -127,63 +152,66 @@ export default function ChatSimulator() {
         ))}
       </div>
 
-      {/* WhatsApp-style header */}
-      <div className="flex items-center justify-between bg-[#075E54] px-4 py-3 text-white">
-        <div>
-          <div className="font-semibold">{scenario.group}</div>
-          <div className="text-xs text-emerald-100/80">{scenario.members}</div>
-        </div>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={play}
-            disabled={playing}
-            className="rounded-full bg-white/15 px-3 py-1 text-sm hover:bg-white/25 disabled:opacity-50"
-          >
-            {t.chat.play}
-          </button>
-          <button
-            type="button"
-            onClick={reset}
-            className="rounded-full bg-white/15 px-3 py-1 text-sm hover:bg-white/25"
-          >
-            ↺
-          </button>
-        </div>
-      </div>
-
-      {/* chat body */}
-      <div className="relative h-[420px] space-y-2 overflow-y-auto bg-[#ECE5DD] p-3">
-        {flash && (
-          <div
-            className={`animate-enter sticky top-0 z-10 mx-auto w-fit rounded-full px-4 py-1.5 text-sm font-medium text-white shadow-lg ${FLASH_CLS[flash]}`}
-          >
-            {t.chat.flash[flash]}
+      {/* conversation pane */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* WhatsApp-style header */}
+        <div className="flex items-center justify-between bg-[#075E54] px-4 py-3 text-white">
+          <div className="min-w-0">
+            <div className="truncate font-semibold">{scenario.group}</div>
+            <div className="text-xs text-emerald-100/80">{scenario.members}</div>
           </div>
-        )}
-
-        {shown === 0 ? (
-          <div className="flex h-full items-center justify-center text-center text-slate-500">
-            {t.chat.placeholder}
+          <div className="flex shrink-0 gap-2">
+            <button
+              type="button"
+              onClick={play}
+              disabled={playing}
+              className="rounded-full bg-white/15 px-3 py-1 text-sm hover:bg-white/25 disabled:opacity-50"
+            >
+              {t.chat.play}
+            </button>
+            <button
+              type="button"
+              onClick={reset}
+              className="rounded-full bg-white/15 px-3 py-1 text-sm hover:bg-white/25"
+            >
+              ↺
+            </button>
           </div>
-        ) : (
-          scenario.messages.slice(0, shown).map((m, i) => (
-            <div key={i} className={`animate-msg flex ${m.fromChild ? "justify-end" : "justify-start"}`}>
-              <div
-                className={`max-w-[80%] rounded-lg px-3 py-1.5 text-sm shadow-sm ${
-                  m.fromChild ? "bg-[#DCF8C6] text-slate-800" : "bg-white text-slate-800"
-                }`}
-              >
-                {!m.fromChild && (
-                  <div className="text-[11px] font-semibold text-emerald-700">{m.sender}</div>
-                )}
-                {m.text}
-                <Media m={m} />
-              </div>
+        </div>
+
+        {/* chat body */}
+        <div className="relative flex-1 space-y-2 overflow-y-auto bg-[#ECE5DD] p-3">
+          {flash && (
+            <div
+              className={`animate-enter sticky top-0 z-10 mx-auto w-fit rounded-full px-4 py-1.5 text-sm font-medium text-white shadow-lg ${FLASH_CLS[flash]}`}
+            >
+              {t.chat.flash[flash]}
             </div>
-          ))
-        )}
-        <div ref={bottomRef} />
+          )}
+
+          {shown === 0 ? (
+            <div className="flex h-full items-center justify-center text-center text-slate-500">
+              {t.chat.placeholder}
+            </div>
+          ) : (
+            scenario.messages.slice(0, shown).map((m, i) => (
+              <div key={i} className={`animate-msg flex ${m.fromChild ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`max-w-[80%] rounded-lg px-3 py-1.5 text-sm shadow-sm ${
+                    m.fromChild ? "bg-[#DCF8C6] text-slate-800" : "bg-white text-slate-800"
+                  }`}
+                >
+                  {!m.fromChild && (
+                    <div className="text-[11px] font-semibold text-emerald-700">{m.sender}</div>
+                  )}
+                  {m.text}
+                  <Media m={m} />
+                </div>
+              </div>
+            ))
+          )}
+          <div ref={bottomRef} />
+        </div>
       </div>
     </div>
   );
