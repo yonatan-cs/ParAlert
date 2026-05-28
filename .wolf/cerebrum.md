@@ -31,3 +31,20 @@
 ## Decision Log
 
 <!-- Significant technical decisions with rationale. Why X was chosen over Y. -->
+
+### [2026-05-28] Platform integration: whatsapp-web.js (over Telegram / Facebook / Baileys)
+**Context:** A judge required a demo that actually works on at least one real platform, not only a simulator.
+**Decision:** Build `whatsapp_bridge/` (Node) using `whatsapp-web.js` — parent scans a QR, our app becomes a WhatsApp linked device, real group messages stream to the backend.
+**Why over alternatives:**
+- **Telegram Bot API** — technically simplest + zero ban risk, but OFF the product narrative (product is WhatsApp-first). Rejected.
+- **Facebook / Messenger (Graph API)** — requires Meta app review + business verification; not feasible in a hackathon. Rejected.
+- **Discord** — trivial bot API but wrong audience. Rejected.
+- **Baileys** — lighter (websocket, no browser) but higher ban risk + less stable than whatsapp-web.js. Rejected.
+- **WhatsApp Business API (official BSP)** — the only ToS-safe path, but too heavy/slow to set up for a demo. Deferred to "real production" note.
+**Trade-off accepted:** whatsapp-web.js is unofficial (ToS violation), ban possible within weeks → use a burner/demo number only. Fine for a one-shot demo.
+**Architectural consequence:** the bridge emits the exact same **contract A** (`IncomingMessage`) as `simulator_and_logic/simulator.py`. Two interchangeable producers, backend is source-agnostic → ZERO backend change, and the simulator stays as a stage fallback.
+
+### [2026-05-28] Contract-first design + 2-pair team split
+**Decision:** Lock the 3 JSON contracts in `contracts/schemas.py` (A: incoming msg, B: analysis, C: alert) before writing feature code; everything communicates only through them. Team works as 2 pairs on separate branches: `ml` (`ml_service/`: analyzer.py + role_classifier.py) and `fullstack` (`backend_api/` + `frontend_dashboard/` + `whatsapp_bridge/`).
+**Why:** Hackathon-grade zero-friction parallelism — no two people touch the same file. Refactors are expensive under time pressure, so contracts are nailed down first. Pydantic models double as runtime validation + FastAPI Swagger docs.
+**Reliability stance:** every external call (ML model, LLM, WhatsApp) is wrapped with a try/except + fallback (keyword heuristic / template recommendation / stub) so the demo never crashes on stage.
