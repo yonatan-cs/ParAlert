@@ -184,87 +184,73 @@ export default function App() {
   };
 
   return (
-    <div
-      className={`mx-auto min-h-screen px-4 py-6 md:px-6 ${
-        view === "dashboard" ? "max-w-2xl lg:max-w-6xl" : "max-w-2xl"
-      }`}
-    >
-      <div className="mx-auto max-w-2xl">
-        <header className="mb-5 flex items-center gap-3">
-          <h1 className="text-xl font-bold tracking-tight">🛡️ {t.appName}</h1>
-          {view === "dashboard" && (
-            <span className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs text-muted">
-              <span
-                className={`inline-block h-1.5 w-1.5 rounded-full ${live ? "bg-sev-low animate-pulse-live" : "bg-sev-medium"}`}
-              />
-              {source}
-            </span>
-          )}
-          <div className="ms-auto">
-            <LanguageToggle />
-          </div>
-        </header>
+    <div className="mx-auto min-h-screen max-w-2xl px-4 py-6 md:px-6">
+      <header className="mb-5 flex items-center gap-3">
+        <h1 className="text-xl font-bold tracking-tight">🛡️ {t.appName}</h1>
+        {view === "dashboard" && (
+          <span className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs text-muted">
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${live ? "bg-sev-low animate-pulse-live" : "bg-sev-medium"}`}
+            />
+            {source}
+          </span>
+        )}
+        <div className="ms-auto">
+          <LanguageToggle />
+        </div>
+      </header>
 
-        <nav className="mb-5 grid grid-cols-3 gap-1 rounded-xl bg-surface p-1">
-          {TAB_KEYS.map((key) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setView(key)}
-              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 ${
-                view === key ? "bg-content text-ink" : "text-muted hover:text-content"
-              }`}
-            >
-              {t.tabs[key]}
-            </button>
-          ))}
-        </nav>
-      </div>
+      <nav className="mb-5 grid grid-cols-3 gap-1 rounded-xl bg-surface p-1">
+        {TAB_KEYS.map((key) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setView(key)}
+            className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 ${
+              view === key ? "bg-content text-ink" : "text-muted hover:text-content"
+            }`}
+          >
+            {t.tabs[key]}
+          </button>
+        ))}
+      </nav>
 
       <div key={view} className="animate-fade">
         {view === "chat" && (
-          <div className="mx-auto max-w-2xl">
+          <div className="space-y-6">
+            <GroupChat />
             <ChatSimulator />
           </div>
         )}
-        {view === "settings" && (
-          <div className="mx-auto max-w-2xl">
-            <Settings />
-          </div>
-        )}
+        {view === "settings" && <Settings />}
         {view === "dashboard" && (
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-            <div className="min-w-0">
-              <SummaryBar alerts={alerts} />
-              <FilterBar value={filter} onChange={setFilter} alerts={alerts} />
-              {visible.length === 0 ? (
-                <div className="py-16 text-center text-faint">
-                  {alerts.length === 0 ? t.empty.none : t.empty.noneInFilter}
-                </div>
-              ) : (
-                SECTIONS.map((s) => {
-                  const items = visible.filter(s.match);
-                  if (!items.length) return null;
-                  return (
-                    <section key={s.key} className="mb-6">
-                      <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold text-muted">
-                        {t.sections[s.key]}
-                        <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] text-faint">
-                          {items.length}
-                        </span>
-                      </h2>
-                      {items.map((a) => (
-                        <AlertCard key={a.alert_id} alert={a} isNew={isNew(a.alert_id)} />
-                      ))}
-                    </section>
-                  );
-                })
-              )}
-            </div>
-            <aside className="lg:sticky lg:top-6 lg:self-start">
-              <GroupChat />
-            </aside>
-          </div>
+          <>
+            <SummaryBar alerts={alerts} />
+            <FilterBar value={filter} onChange={setFilter} alerts={alerts} />
+            {visible.length === 0 ? (
+              <div className="py-16 text-center text-faint">
+                {alerts.length === 0 ? t.empty.none : t.empty.noneInFilter}
+              </div>
+            ) : (
+              SECTIONS.map((s) => {
+                const items = visible.filter(s.match);
+                if (!items.length) return null;
+                return (
+                  <section key={s.key} className="mb-6">
+                    <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold text-muted">
+                      {t.sections[s.key]}
+                      <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] text-faint">
+                        {items.length}
+                      </span>
+                    </h2>
+                    {items.map((a) => (
+                      <AlertCard key={a.alert_id} alert={a} isNew={isNew(a.alert_id)} />
+                    ))}
+                  </section>
+                );
+              })
+            )}
+          </>
         )}
       </div>
     </div>
