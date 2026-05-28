@@ -1,28 +1,5 @@
-import { useEffect, useState } from "react";
 import { useI18n } from "../i18n/I18nContext.jsx";
-
-const STORAGE_KEY = "safenet.settings";
-
-function defaultsFor(t) {
-  return {
-    childName: t.settings.defaultChild,
-    childAge: 12,
-    sensitivity: "medium",
-    notify: { push: true, email: false, quietHours: true },
-    groups: t.settings.defaultGroups.map((name, i) => ({ id: `g${i + 1}`, name, on: i !== 2 })),
-    _touched: false,
-  };
-}
-
-function loadSettings(t) {
-  try {
-    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-    if (stored && stored._touched) return { ...defaultsFor(t), ...stored };
-  } catch {
-    /* ignore */
-  }
-  return defaultsFor(t);
-}
+import { useSettings } from "../settings/SettingsContext.jsx";
 
 const SENS = [
   { key: "low", label: "sensLow", hint: "sensLowHint" },
@@ -30,30 +7,19 @@ const SENS = [
   { key: "high", label: "sensHigh", hint: "sensHighHint" },
 ];
 
+function requestPush() {
+  try {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  } catch {
+    /* notifications unavailable */
+  }
+}
+
 export default function Settings() {
-  const { t, lang } = useI18n();
-  const [s, setS] = useState(() => loadSettings(t));
-
-  // Untouched settings follow the active language (clean fresh demo); once the
-  // parent edits anything, their data is kept and persisted across reloads.
-  useEffect(() => {
-    setS((prev) => (prev._touched ? prev : defaultsFor(t)));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lang]);
-
-  useEffect(() => {
-    if (s._touched) localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
-  }, [s]);
-
-  const set = (patch) => setS((prev) => ({ ...prev, ...patch, _touched: true }));
-  const setNotify = (k, v) =>
-    setS((prev) => ({ ...prev, notify: { ...prev.notify, [k]: v }, _touched: true }));
-  const toggleGroup = (id) =>
-    setS((prev) => ({
-      ...prev,
-      _touched: true,
-      groups: prev.groups.map((g) => (g.id === id ? { ...g, on: !g.on } : g)),
-    }));
+  const { t } = useI18n();
+  const { settings: s, update, setNotify, toggleGroup, availableGroups } = useSettings();
 
   return (
     <div className="animate-fade">
@@ -66,7 +32,7 @@ export default function Settings() {
             <Field label={t.settings.name}>
               <input
                 value={s.childName}
-                onChange={(e) => set({ childName: e.target.value })}
+                onChange={(e) => update({ childName: e.target.value })}
                 className="w-full rounded-lg border border-edge bg-ink px-3 py-1.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
               />
             </Field>
@@ -76,7 +42,7 @@ export default function Settings() {
                 min="5"
                 max="18"
                 value={s.childAge}
-                onChange={(e) => set({ childAge: Number(e.target.value) })}
+                onChange={(e) => update({ childAge: Number(e.target.value) })}
                 className="w-20 rounded-lg border border-edge bg-ink px-3 py-1.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
               />
             </Field>
@@ -93,7 +59,7 @@ export default function Settings() {
                 <button
                   key={opt.key}
                   type="button"
-                  onClick={() => set({ sensitivity: opt.key })}
+                  onClick={() => update({ sensitivity: opt.key })}
                   className={`rounded-lg px-2 py-2 text-center transition-colors duration-150 ${
                     active ? "bg-surface-2 text-content" : "text-muted hover:text-content"
                   }`}
@@ -109,7 +75,13 @@ export default function Settings() {
 
       <Section title={t.settings.notifications}>
         <Row label={t.settings.push} hint={t.settings.pushHint}>
-          <Toggle checked={s.notify.push} onChange={(v) => setNotify("push", v)} />
+          <Toggle
+            checked={s.notify.push}
+            onChange={(v) => {
+              setNotify("push", v);
+              if (v) requestPush();
+            }}
+          />
         </Row>
         <Row label={t.settings.email} hint={t.settings.emailHint}>
           <Toggle checked={s.notify.email} onChange={(v) => setNotify("email", v)} />
@@ -120,11 +92,15 @@ export default function Settings() {
       </Section>
 
       <Section title={t.settings.groups} desc={t.settings.groupsDesc}>
-        {s.groups.map((g) => (
-          <Row key={g.id} label={g.name}>
-            <Toggle checked={g.on} onChange={() => toggleGroup(g.id)} />
-          </Row>
-        ))}
+        {availableGroups.length === 0 ? (
+          <div className="px-4 py-4 text-center text-xs text-faint">{t.settings.groupsEmpty}</div>
+        ) : (
+          availableGroups.map((name) => (
+            <Row key={name} label={name}>
+              <Toggle checked={!s.disabledGroups.includes(name)} onChange={() => toggleGroup(name)} />
+            </Row>
+          ))
+        )}
       </Section>
 
       <p className="px-1 pb-2 text-center text-xs text-faint">{t.settings.autosave}</p>

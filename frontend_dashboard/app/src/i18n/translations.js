@@ -23,6 +23,7 @@ export const STRINGS = {
       asRole: (label) => `הילד שלי כ${label}`,
       police: (n) => `🚨 ${n} דורשות פנייה למשטרה`,
       disinfo: (n) => `📰 ${n} דיסאינפורמציה`,
+      monitoring: (name) => `מנטר את ${name}`,
     },
     filters: { all: "הכל", victim: "קורבן", aggressor: "תוקף", bystander: "צופה", exposed: "נחשף" },
     card: {
@@ -76,6 +77,7 @@ export const STRINGS = {
       email: "סיכום במייל", emailHint: "דוח יומי מרוכז",
       quiet: "שעות שקט", quietHint: "ללא התראות 22:00–07:00 (אלא אם חמור)",
       groups: "קבוצות במעקב", groupsDesc: "בחר אילו קבוצות וואטסאפ לנטר.",
+      groupsEmpty: "אין עדיין קבוצות עם התראות.",
       autosave: "השינויים נשמרים אוטומטית",
       defaultChild: "יונתן",
       defaultGroups: ["כיתה ו'2 - בלי המורה", "חברים מהשכונה", "כדורגל שכבה ו'"],
@@ -152,6 +154,7 @@ export const STRINGS = {
       asRole: (label) => `My child — ${label}`,
       police: (n) => `🚨 ${n} need police contact`,
       disinfo: (n) => `📰 ${n} disinformation`,
+      monitoring: (name) => `Monitoring ${name}`,
     },
     filters: { all: "All", victim: "Victim", aggressor: "Aggressor", bystander: "Bystander", exposed: "Exposed" },
     card: {
@@ -205,6 +208,7 @@ export const STRINGS = {
       email: "Email summary", emailHint: "Daily digest",
       quiet: "Quiet hours", quietHint: "No alerts 22:00–07:00 (unless severe)",
       groups: "Monitored groups", groupsDesc: "Choose which WhatsApp groups to monitor.",
+      groupsEmpty: "No groups with alerts yet.",
       autosave: "Changes are saved automatically",
       defaultChild: "Jonathan",
       defaultGroups: ["Class 6-2 — without the teacher", "Neighborhood friends", "Grade 6 football"],

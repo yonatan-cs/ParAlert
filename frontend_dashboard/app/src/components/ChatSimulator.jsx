@@ -110,7 +110,7 @@ export default function ChatSimulator() {
   }
 
   return (
-    <div className="flex h-[72vh] flex-col overflow-hidden rounded-2xl border border-edge lg:h-[calc(100vh-3rem)] lg:flex-row">
+    <div className="flex h-[68vh] flex-col overflow-hidden rounded-2xl border border-edge lg:h-[560px] lg:flex-row">
       {/* WhatsApp-Web sidebar: vertical group list (desktop) */}
       <div className="hidden w-[210px] shrink-0 flex-col border-e border-edge bg-surface lg:flex">
         <div className="border-b border-edge px-3 py-3 text-sm font-semibold">{t.chat.chatsTitle}</div>

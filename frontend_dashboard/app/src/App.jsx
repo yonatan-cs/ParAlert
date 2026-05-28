@@ -7,6 +7,7 @@ import Settings from "./components/Settings.jsx";
 import LanguageToggle from "./components/LanguageToggle.jsx";
 import GroupChat from "./components/GroupChat.jsx";
 import { useI18n } from "./i18n/I18nContext.jsx";
+import { useSettings, SEVERITY_RANK, SENSITIVITY_MIN, isQuietNow } from "./settings/SettingsContext.jsx";
 
 // Backend base is env-driven for deploy (Vercel sets VITE_API_BASE to the hosted
 // backend). Defaults to local FS-A server. WS scheme derived: http->ws, https->wss.
@@ -27,6 +28,9 @@ const SECTIONS = [
 
 export default function App() {
   const { t, lang } = useI18n();
+  const { settings, setAvailableGroups } = useSettings();
+  const settingsRef = useRef(settings); // fresh settings inside the WS callback
+  settingsRef.current = settings;
   const [alerts, setAlerts] = useState([]);
   const [source, setSource] = useState(t.status.loading);
   const [live, setLive] = useState(false);
@@ -145,6 +149,23 @@ export default function App() {
         );
         setLive(true);
         setSource(t.status.live);
+        // Push notification (best-effort), gated by parent settings + quiet hours.
+        try {
+          const st = settingsRef.current;
+          if (
+            st.notify.push &&
+            !(st.notify.quietHours && isQuietNow()) &&
+            !st.disabledGroups.includes(msg.group_name) &&
+            "Notification" in window &&
+            Notification.permission === "granted"
+          ) {
+            new Notification("🛡️ SafeNet", {
+              body: `${msg.group_name} · ${t.category[msg.category] || msg.category || ""}`,
+            });
+          }
+        } catch {
+          /* notifications unavailable */
+        }
       };
       ws.onclose = () => {
         if (!stopped) scheduleReconnect();
@@ -170,12 +191,26 @@ export default function App() {
     };
   }, [lang, t]);
 
+  // Tell Settings which groups currently have alerts (for the monitored-groups toggles).
+  useEffect(() => {
+    setAvailableGroups(alerts.map((a) => a.group_name));
+  }, [alerts, setAvailableGroups]);
+
+  // Apply parent settings: only monitored groups, and only severities the sensitivity allows.
+  const scoped = useMemo(() => {
+    const minRank = SENSITIVITY_MIN[settings.sensitivity] ?? 1;
+    const off = new Set(settings.disabledGroups);
+    return alerts.filter(
+      (a) => !off.has(a.group_name) && (SEVERITY_RANK[a.severity] ?? 1) >= minRank
+    );
+  }, [alerts, settings.sensitivity, settings.disabledGroups]);
+
   const visible = useMemo(() => {
-    const sorted = [...alerts].sort(
+    const sorted = [...scoped].sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
     );
     return filter === "all" ? sorted : sorted.filter((a) => a.role_of_child === filter);
-  }, [alerts, filter]);
+  }, [scoped, filter]);
 
   const isNew = (id) => {
     if (seen.current.has(id)) return false;
@@ -239,11 +274,17 @@ export default function App() {
         )}
         {view === "dashboard" && (
           <>
-            <SummaryBar alerts={alerts} />
-            <FilterBar value={filter} onChange={setFilter} alerts={alerts} />
+            <div className="mb-3 flex items-center gap-2 text-sm text-muted">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent/15 text-[11px] font-bold text-accent">
+                {(settings.childName || "?").trim().charAt(0)}
+              </span>
+              {t.summary.monitoring(settings.childName)}
+            </div>
+            <SummaryBar alerts={scoped} />
+            <FilterBar value={filter} onChange={setFilter} alerts={scoped} />
             {visible.length === 0 ? (
               <div className="py-16 text-center text-faint">
-                {alerts.length === 0 ? t.empty.none : t.empty.noneInFilter}
+                {scoped.length === 0 ? t.empty.none : t.empty.noneInFilter}
               </div>
             ) : (
               SECTIONS.map((s) => {
