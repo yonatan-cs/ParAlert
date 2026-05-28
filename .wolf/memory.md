@@ -61,3 +61,6 @@
 | 16:24 | Bridge: npm install skip-Chromium + system Chrome via executablePath; booted Chrome + QR | whatsapp_bridge/ | ⭐ judge deliverable boots to QR-scan stage; logged bug-007 | ~60 |
 | 16:25 | Edited backend_api/main.py | 2→3 lines | ~41 |
 | 16:27 | Session end: 13 writes across 5 files (_test_toxic.json, main.py, _ws_test.py, index.js, README.md) | 22 reads | ~3844 tok |
+
+| 16:55 | Reviewed FS-A (99527c0): backend WS /ws/alerts + env USE_MODEL/ALERT_THRESHOLD. Integrated fs-dashboard into fullstack | fullstack | merged 203dbe1 | ~800 |
+| 17:00 | Verified integration end-to-end in venv: /health, toxic→alert, normal→no-alert, /alerts, WS push all OK | backend_api, frontend_dashboard | PASS, pushed fullstack | ~1500 |

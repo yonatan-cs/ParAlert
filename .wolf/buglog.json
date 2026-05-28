@@ -121,6 +121,30 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-28T13:10:30Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-05-28T16:50:00Z",
+      "error_message": "curl http://localhost:8000/health returned a type schema ({ alert_threshold: float, ... }) instead of the real JSON values.",
+      "file": "n/a (verification)",
+      "root_cause": "RTK (rtk hook) rewrites curl and compresses the HTTP response body into a type-schema to save tokens, hiding actual values.",
+      "fix": "Verify HTTP/WS endpoints from Python (.venv/bin/python with requests/websockets), not curl, so real values are visible. Used a standalone e2e script to confirm /health, /ingest, /alerts, and the /ws/alerts push.",
+      "tags": ["rtk", "curl", "verification", "http", "tooling"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T16:50:00Z"
+    },
+    {
+      "id": "bug-010",
+      "timestamp": "2026-05-28T16:55:00Z",
+      "error_message": "git reset --hard origin/fs-server ran on the wrong branch after a 'git checkout fs-server' aborted, resetting fullstack instead.",
+      "file": "n/a (git)",
+      "root_cause": "Chained 'checkout && reset --hard'; the checkout aborted (dirty .wolf working tree) but the chained reset still executed on the current branch (fullstack). No remote damage because the integration was pushed first.",
+      "fix": "Re-synced local fullstack with 'git reset --hard origin/fullstack'. Lesson: never chain 'reset --hard' after a 'checkout' that can abort; run them separately and confirm the branch first.",
+      "tags": ["git", "reset", "checkout", "branch-safety"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T16:55:00Z"
     }
   ]
 }
