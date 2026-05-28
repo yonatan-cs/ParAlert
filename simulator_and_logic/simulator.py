@@ -15,11 +15,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import time
 import uuid
 from datetime import datetime
 
-BACKEND_URL = "http://localhost:8000/ingest"
+# Override to point at a deployed backend, e.g.
+#   BACKEND_URL=https://safenet-backend-cnmy.onrender.com/ingest
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000/ingest")
 CONTEXT_WINDOW = 2  # messages of context on each side
 
 
