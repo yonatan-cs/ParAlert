@@ -184,45 +184,59 @@ export default function App() {
   };
 
   return (
-    <div className="mx-auto min-h-screen max-w-2xl px-4 py-6 md:px-6">
-      <header className="mb-5 flex items-center gap-3">
-        <h1 className="text-xl font-bold tracking-tight">🛡️ {t.appName}</h1>
-        {view === "dashboard" && (
-          <span className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs text-muted">
-            <span
-              className={`inline-block h-1.5 w-1.5 rounded-full ${live ? "bg-sev-low animate-pulse-live" : "bg-sev-medium"}`}
-            />
-            {source}
-          </span>
-        )}
-        <div className="ms-auto">
-          <LanguageToggle />
-        </div>
-      </header>
+    <div
+      className={`mx-auto min-h-screen px-4 py-6 md:px-6 ${
+        view === "chat" ? "max-w-2xl lg:max-w-5xl" : "max-w-2xl"
+      }`}
+    >
+      <div className="mx-auto max-w-2xl">
+        <header className="mb-5 flex items-center gap-3">
+          <h1 className="text-xl font-bold tracking-tight">🛡️ {t.appName}</h1>
+          {view === "dashboard" && (
+            <span className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs text-muted">
+              <span
+                className={`inline-block h-1.5 w-1.5 rounded-full ${live ? "bg-sev-low animate-pulse-live" : "bg-sev-medium"}`}
+              />
+              {source}
+            </span>
+          )}
+          <div className="ms-auto">
+            <LanguageToggle />
+          </div>
+        </header>
 
-      <nav className="mb-5 grid grid-cols-3 gap-1 rounded-xl bg-surface p-1">
-        {TAB_KEYS.map((key) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setView(key)}
-            className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 ${
-              view === key ? "bg-content text-ink" : "text-muted hover:text-content"
-            }`}
-          >
-            {t.tabs[key]}
-          </button>
-        ))}
-      </nav>
+        <nav className="mb-5 grid grid-cols-3 gap-1 rounded-xl bg-surface p-1">
+          {TAB_KEYS.map((key) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setView(key)}
+              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 ${
+                view === key ? "bg-content text-ink" : "text-muted hover:text-content"
+              }`}
+            >
+              {t.tabs[key]}
+            </button>
+          ))}
+        </nav>
+      </div>
 
       <div key={view} className="animate-fade">
         {view === "chat" && (
-          <div className="space-y-6">
-            <GroupChat />
-            <ChatSimulator />
+          <div className="grid items-start gap-6 lg:grid-cols-2">
+            <div className="mx-auto w-full max-w-[400px]">
+              <GroupChat />
+            </div>
+            <div className="mx-auto w-full max-w-[400px]">
+              <ChatSimulator />
+            </div>
           </div>
         )}
-        {view === "settings" && <Settings />}
+        {view === "settings" && (
+          <div className="mx-auto max-w-2xl">
+            <Settings />
+          </div>
+        )}
         {view === "dashboard" && (
           <>
             <SummaryBar alerts={alerts} />
