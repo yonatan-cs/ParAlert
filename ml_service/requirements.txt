@@ -1,3 +1,8 @@
 pydantic>=2.0
 transformers>=4.40
-torch
+torch>=2.1
+pillow
+opencv-python
+requests
+yt-dlp
+av
