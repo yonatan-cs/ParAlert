@@ -102,6 +102,9 @@ export default function GroupChat() {
         )}
       </div>
 
+      {/* not-the-product disclaimer (always visible) */}
+      <div className="bg-surface px-3 py-1 text-center text-[11px] text-faint">{g.disclaimer}</div>
+
       {/* chat body */}
       <div className="flex-1 space-y-2 overflow-y-auto bg-[#ECE5DD] p-3">
         {msgs.length === 0 && (
