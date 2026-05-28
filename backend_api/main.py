@@ -34,6 +34,11 @@ from backend_api import database  # noqa: E402
 #   ALERT_THRESHOLD  -> min toxicity score to raise an alert (0.5 matches severity_from_score)
 USE_MODEL = os.getenv("USE_MODEL", "false").lower() == "true"
 ALERT_THRESHOLD = float(os.getenv("ALERT_THRESHOLD", "0.5"))
+# Below this credibility score, a non-bullying message is raised as a disinformation alert.
+# fact_check runs with has_media=False so a plain photo is never auto-flagged as "fake".
+DISINFO_THRESHOLD = float(os.getenv("DISINFO_THRESHOLD", "0.5"))
+# Seconds of socket idle before the server sends a heartbeat ping (keeps proxies open).
+WS_HEARTBEAT_SECONDS = float(os.getenv("WS_HEARTBEAT_SECONDS", "25"))
 # Comma-separated allowed origins for the deployed frontend; "*" is fine for the demo.
 CORS_ORIGINS = [o.strip() for o in os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()]
 _MOCK_ALERTS_PATH = os.path.join(os.path.dirname(__file__), "..", "contracts", "mock_alerts.json")
@@ -66,6 +71,7 @@ app.add_middleware(
 
 # Connected dashboards for real-time alert push. Polling /alerts still works in parallel.
 _ws_clients: set[WebSocket] = set()
+_ws_locks: dict[WebSocket, asyncio.Lock] = {}  # serialize sends per socket (no frame interleave)
 _loop: asyncio.AbstractEventLoop | None = None
 
 
@@ -74,11 +80,13 @@ async def _startup() -> None:
     global _loop
     database.init_db()
     _loop = asyncio.get_running_loop()  # captured so the sync /ingest can broadcast onto it
-    # Render free tier wipes the ephemeral SQLite on every restart/redeploy. With
-    # SEED_ON_STARTUP=true the demo dataset reloads automatically, so the dashboard
-    # is never empty for judges and nobody has to re-run /demo/seed by hand.
-    if os.getenv("SEED_ON_STARTUP", "false").lower() == "true" and not database.get_alerts():
-        print(f"[backend] DB empty on startup, auto-seeded {_seed_from_mock()} demo alerts")
+    # Render free tier wipes the ephemeral SQLite on every restart/redeploy, so we
+    # auto-reload the demo dataset whenever the DB is empty (default ON; set
+    # SEED_ON_STARTUP=false to disable). Defaulting on keeps the dashboard populated
+    # for judges even if the env var never reached the service (blueprint not synced).
+    if os.getenv("SEED_ON_STARTUP", "true").lower() == "true" and not database.get_alerts():
+        seeded = _seed_from_mock()
+        print(f"[backend] DB empty on startup, auto-seeded {seeded} demo alerts")
 
 
 @app.get("/health")
@@ -93,16 +101,26 @@ def health() -> dict[str, object]:
 
 @app.post("/ingest")
 def ingest(message: IncomingMessage) -> dict[str, object]:
-    """Receive one chat message, analyze it, raise an alert if toxic."""
+    """Analyze one chat message and raise a bullying or disinformation alert."""
     analysis = _analyze(message)
-    if not analysis.is_toxic or analysis.toxicity_score < ALERT_THRESHOLD:
-        return {"alert_created": False, "toxicity_score": analysis.toxicity_score}
+    if analysis.is_toxic and analysis.toxicity_score >= ALERT_THRESHOLD:
+        return _save_and_push(_build_alert(message, analysis))
 
-    alert = _build_alert(message, analysis)
+    # Not bullying — check the text for disinformation (low credibility). This is the
+    # live counterpart to the seeded disinfo demo data, gated so benign chatter is ignored.
+    disinfo = _disinfo_analysis(message)
+    if disinfo is not None:
+        return _save_and_push(_build_alert(message, disinfo))
+
+    return {"alert_created": False, "toxicity_score": analysis.toxicity_score}
+
+
+def _save_and_push(alert: Alert) -> dict[str, object]:
+    """Persist an alert (contract C) and push it to connected dashboards."""
     payload = alert.model_dump(mode="json")
     database.save_alert(payload)
     _broadcast(payload)
-    return {"alert_created": True, "alert_id": alert.alert_id}
+    return {"alert_created": True, "alert_id": alert.alert_id, "alert_type": alert.alert_type}
 
 
 @app.get("/alerts")
@@ -119,16 +137,43 @@ def demo_seed() -> dict[str, object]:
 
 @app.websocket("/ws/alerts")
 async def ws_alerts(ws: WebSocket) -> None:
-    """Dashboard subscribes here to get new alerts pushed the instant they're created."""
+    """Dashboard subscribes here to get new alerts pushed the instant they're created.
+
+    On connect we replay the current alerts so a freshly (re)connected dashboard is
+    instantly in sync — important on Render free tier, where cold starts drop sockets.
+    When the socket is idle we send a heartbeat ping so proxies don't close it.
+    """
     await ws.accept()
+    _ws_locks[ws] = asyncio.Lock()
+    for alert in database.get_alerts():  # snapshot replay (client dedupes by alert_id)
+        if not await _safe_send(ws, alert):
+            break
     _ws_clients.add(ws)
     try:
         while True:
-            await ws.receive_text()  # keep the socket open; inbound messages are ignored
+            try:
+                await asyncio.wait_for(ws.receive_text(), timeout=WS_HEARTBEAT_SECONDS)
+            except asyncio.TimeoutError:
+                if not await _safe_send(ws, {"type": "ping"}):  # heartbeat; stop if dead
+                    break
     except WebSocketDisconnect:
         pass
     finally:
         _ws_clients.discard(ws)
+        _ws_locks.pop(ws, None)
+
+
+async def _safe_send(ws: WebSocket, data: dict) -> bool:
+    """Send JSON under the socket's lock so concurrent broadcasts can't interleave frames."""
+    lock = _ws_locks.get(ws)
+    if lock is None:
+        return False
+    try:
+        async with lock:
+            await ws.send_json(data)
+        return True
+    except Exception:  # noqa: BLE001 — caller drops the dead client
+        return False
 
 
 # ---- demo data ----
@@ -153,14 +198,10 @@ def _broadcast(alert: dict) -> None:
 
 
 async def _async_broadcast(alert: dict) -> None:
-    dead = []
     for ws in list(_ws_clients):
-        try:
-            await ws.send_json(alert)
-        except Exception:  # noqa: BLE001 — drop clients that have gone away
-            dead.append(ws)
-    for ws in dead:
-        _ws_clients.discard(ws)
+        if not await _safe_send(ws, alert):  # per-socket lock; drop clients that error
+            _ws_clients.discard(ws)
+            _ws_locks.pop(ws, None)
 
 
 # ---- helpers ----
@@ -171,6 +212,35 @@ def _analyze(message: IncomingMessage) -> AnalysisResult:
         message_id=message.message_id, is_toxic=False, toxicity_score=0.0,
         category="none", role_of_child="none", explanation="analyzer stub",
         model_used="stub",
+    )
+
+
+def _disinfo_analysis(message: IncomingMessage) -> AnalysisResult | None:
+    """Fact-check the message text; return a disinformation result if it's not credible.
+
+    has_media is deliberately False: a plain photo must NOT be auto-flagged as fake —
+    media authenticity (deepfake/AI) is the vision model's separate job. The threshold
+    keeps benign chatter out (the heuristic only dips low on suspicious-forward phrasing).
+    """
+    if check_claim is None:
+        return None
+    try:
+        cred = check_claim(message.text, has_media=False)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[backend] disinfo fact_check failed: {exc}")
+        return None
+    if cred is None or cred.score >= DISINFO_THRESHOLD:
+        return None
+    return AnalysisResult(
+        message_id=message.message_id,
+        is_toxic=False,
+        toxicity_score=round(1.0 - cred.score, 3),  # disinfo "risk" drives the severity colour
+        category="disinformation",
+        role_of_child="exposed",
+        explanation=f"disinformation: {cred.verdict} (credibility={cred.score:.2f})",
+        model_used="fact_check",
+        alert_type="disinformation",
+        credibility=cred,
     )
 
 
@@ -206,7 +276,8 @@ def _credibility(message: IncomingMessage, analysis: AnalysisResult):
         return analysis.credibility
     if analysis.alert_type == "disinformation" and check_claim is not None:
         try:
-            return check_claim(message.text, has_media=bool(message.media_url))
+            # has_media=False on purpose: media presence alone must not imply "fake".
+            return check_claim(message.text, has_media=False)
         except Exception as exc:  # noqa: BLE001
             print(f"[backend] fact_check failed: {exc}")
     return None
