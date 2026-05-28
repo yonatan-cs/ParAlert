@@ -6,10 +6,15 @@
 **Drop-in לסימולטור:** אותו חוזה בדיוק → אפס שינוי בבקאנד. הסימולטור נשאר fallback לבמה.
 
 ## הרצה
+מדלגים על ה-Chromium המובנה של Puppeteer (הורדה כבדה ולא יציבה) — הגשר מזהה אוטומטית
+Chrome/Edge מותקן במערכת.
 ```bash
 cd whatsapp_bridge
-npm install                  # whatsapp-web.js + qrcode-terminal (מוריד Chromium ~1-2 דק')
-node index.js               # מדפיס QR בטרמינל
+# bash / macOS / Linux:
+PUPPETEER_SKIP_DOWNLOAD=true npm install
+# Windows PowerShell:
+#   $env:PUPPETEER_SKIP_DOWNLOAD="true"; npm install
+node index.js               # מפעיל Chrome + מדפיס QR בטרמינל
 # בטלפון: WhatsApp > הגדרות > מכשירים מקושרים > קישור מכשיר > סרוק
 ```
 אחרי סריקה: הסשן נשמר ב-`.wwebjs_auth/` — לא צריך לסרוק שוב בהרצה הבאה.
@@ -29,6 +34,7 @@ node index.js               # מדפיס QR בטרמינל
 ## הגדרות (env, אופציונלי)
 - `BACKEND_URL` (ברירת מחדל `http://localhost:8000/ingest`)
 - `GROUPS_ONLY` (`true` = רק קבוצות)
+- `CHROME_PATH` — נתיב מפורש ל-`chrome.exe`/`msedge.exe` אם הזיהוי האוטומטי נכשל
 
 ## משימות
 - [ ] `npm install` + סריקת QR ראשונה על מספר burner/דמו

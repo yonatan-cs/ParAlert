@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-28T11:26:26.426Z",
   "lifetime": {
-    "total_tokens_estimated": 10928,
-    "total_reads": 0,
-    "total_writes": 20,
-    "total_sessions": 1,
+    "total_tokens_estimated": 14772,
+    "total_reads": 22,
+    "total_writes": 33,
+    "total_sessions": 2,
     "anatomy_hits": 0,
-    "anatomy_misses": 0,
-    "repeated_reads_blocked": 0,
-    "estimated_savings_vs_bare_cli": 0
+    "anatomy_misses": 22,
+    "repeated_reads_blocked": 6,
+    "estimated_savings_vs_bare_cli": 1788
   },
   "sessions": [
     {
@@ -125,6 +125,220 @@
         "reads_count": 0,
         "writes_count": 20,
         "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-05-28-1553",
+      "started": "2026-05-28T12:53:45.685Z",
+      "ended": "2026-05-28T13:27:45.878Z",
+      "reads": [
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/Idea+Plan.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+          "tokens_estimated": 1788,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/database.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/contracts/schemas.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/ml_service/analyzer.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/index.js",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/WORKPLAN.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/requirements.txt",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/package.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/.env.example",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/netan/AppData/Local/Temp/claude/c--Hackathon-Project-Hackathon-Project/3d1e2b0d-76fd-467c-b0d3-16ce1c94a3e5/tasks/bnjvmrec5.output",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/.wolf/memory.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/netan/AppData/Local/Temp/claude/c--Hackathon-Project-Hackathon-Project/3d1e2b0d-76fd-467c-b0d3-16ce1c94a3e5/tasks/b7v93sr2g.output",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/netan/AppData/Local/Temp/claude/c--Hackathon-Project-Hackathon-Project/3d1e2b0d-76fd-467c-b0d3-16ce1c94a3e5/tasks/b58kmqmtn.output",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/netan/AppData/Local/Temp/claude/c--Hackathon-Project-Hackathon-Project/3d1e2b0d-76fd-467c-b0d3-16ce1c94a3e5/tasks/bytyrns0b.output",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/netan/AppData/Local/Temp/claude/c--Hackathon-Project-Hackathon-Project/3d1e2b0d-76fd-467c-b0d3-16ce1c94a3e5/tasks/b1wcwvre6.output",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/netan/AppData/Local/Temp/claude/c--Hackathon-Project-Hackathon-Project/3d1e2b0d-76fd-467c-b0d3-16ce1c94a3e5/tasks/bx40e1hcg.output",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/.gitignore",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/README.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/_test_toxic.json",
+          "tokens_estimated": 84,
+          "action": "create"
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+          "tokens_estimated": 288,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+          "tokens_estimated": 68,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+          "tokens_estimated": 65,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+          "tokens_estimated": 104,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+          "tokens_estimated": 230,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+          "tokens_estimated": 190,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/_ws_test.py",
+          "tokens_estimated": 345,
+          "action": "create"
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/index.js",
+          "tokens_estimated": 286,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/index.js",
+          "tokens_estimated": 156,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/README.md",
+          "tokens_estimated": 140,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/README.md",
+          "tokens_estimated": 59,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+          "tokens_estimated": 41,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 1788,
+        "output_tokens_estimated": 2056,
+        "reads_count": 22,
+        "writes_count": 13,
+        "repeated_reads_blocked": 6,
         "anatomy_lookups": 0
       }
     }

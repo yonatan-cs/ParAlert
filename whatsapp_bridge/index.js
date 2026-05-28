@@ -12,6 +12,7 @@
  *   node index.js          # prints a QR in the terminal — scan it from the phone
  *                          # (WhatsApp > Settings > Linked devices > Link a device)
  */
+const fs = require("fs");
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 
@@ -19,12 +20,38 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000/ingest";
 const GROUPS_ONLY = (process.env.GROUPS_ONLY || "true") === "true";
 const CONTEXT_WINDOW = 2;
 
+// We skip Puppeteer's bundled Chromium (flaky download) and drive a system browser.
+// Override with CHROME_PATH; otherwise auto-detect Chrome/Edge on Windows.
+function resolveBrowserPath() {
+  if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
+  const candidates = [
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
+  ];
+  return candidates.find((p) => fs.existsSync(p)); // undefined -> Puppeteer's own Chromium
+}
+const BROWSER_PATH = resolveBrowserPath();
+
 // Rolling buffer of recent messages per chat, for context_before.
 const recent = new Map(); // chatId -> [{sender_name, text}]
 
+if (!BROWSER_PATH) {
+  console.warn(
+    "[bridge] No system Chrome/Edge found. Set CHROME_PATH=...chrome.exe, " +
+      "or run `npm install` without PUPPETEER_SKIP_DOWNLOAD to fetch bundled Chromium."
+  );
+} else {
+  console.log(`[bridge] using browser: ${BROWSER_PATH}`);
+}
+
 const client = new Client({
   authStrategy: new LocalAuth(), // persists session in .wwebjs_auth/ — scan once
-  puppeteer: { args: ["--no-sandbox", "--disable-setuid-sandbox"] },
+  puppeteer: {
+    executablePath: BROWSER_PATH, // undefined -> Puppeteer's bundled Chromium
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  },
 });
 
 client.on("qr", (qr) => {

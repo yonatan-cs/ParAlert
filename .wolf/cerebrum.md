@@ -27,6 +27,8 @@
 
 - [2026-05-28] Do not say a root commit can be removed with `git reset` to an earlier parent; if the user wants it out of the graph, re-root the branch instead.
 - [2026-05-28] Do not leave remote-tracking refs in place when the user asks for zero commits in the graph; delete them too.
+- [2026-05-28] On Windows, do NOT trust `uvicorn --reload` for this project — WatchFiles can log "Reloading..." but never bring up the new worker, leaving the OLD code serving (a WS route 403'd because it wasn't loaded). Run uvicorn WITHOUT `--reload` and restart manually after edits. See bug-008.
+- [2026-05-28] `cd whatsapp_bridge && npm install` fails on a flaky network because Puppeteer downloads Chromium. Use `PUPPETEER_SKIP_DOWNLOAD=true` and let index.js use system Chrome/Edge via executablePath. See bug-007.
 
 ## Decision Log
 
@@ -43,6 +45,18 @@
 - **WhatsApp Business API (official BSP)** — the only ToS-safe path, but too heavy/slow to set up for a demo. Deferred to "real production" note.
 **Trade-off accepted:** whatsapp-web.js is unofficial (ToS violation), ban possible within weeks → use a burner/demo number only. Fine for a one-shot demo.
 **Architectural consequence:** the bridge emits the exact same **contract A** (`IncomingMessage`) as `simulator_and_logic/simulator.py`. Two interchangeable producers, backend is source-agnostic → ZERO backend change, and the simulator stays as a stage fallback.
+
+### [2026-05-28] WhatsApp bridge drives system Chrome (skip Puppeteer Chromium)
+**Decision:** `whatsapp_bridge/index.js` resolves a browser path (`CHROME_PATH` env → auto-detect Chrome/Edge on Windows) and passes it as `puppeteer.executablePath`; install with `PUPPETEER_SKIP_DOWNLOAD=true`.
+**Why:** Puppeteer's bundled-Chromium download is large and failed here with ECONNRESET (bug-007). Every Windows dev already has Chrome/Edge, so reusing it is faster and removes a flaky network dependency. Verified the bridge boots Chrome and renders the linked-device QR.
+
+### [2026-05-28] Realtime alert push via WebSocket (additive, polling still works)
+**Decision:** Added `GET ws://.../ws/alerts`. `/ingest` stays a sync def (so a blocking LLM recommendation can't stall the event loop) and broadcasts new alerts onto the captured main loop via `asyncio.run_coroutine_threadsafe`. Dashboards may still poll `GET /alerts`.
+**Why:** Real-time pop on stage without forcing the frontend off polling; sync /ingest avoids event-loop blocking. FS-B (frontend) can consume `/ws/alerts` when ready.
+
+### [2026-05-28] Backend runtime config via env vars (USE_MODEL, ALERT_THRESHOLD)
+**Decision:** `backend_api/main.py` reads `USE_MODEL` (default false → keyword fallback) and `ALERT_THRESHOLD` (default 0.5) from the environment; both are echoed by `GET /health`.
+**Why:** On stage we need to flip from the keyword stub to the real HF model and tune the alert threshold without editing/redeploying code. Defaults preserve the safe demo behavior. ML model still loads with its own keyword fallback, so `USE_MODEL=true` never crashes even if transformers/torch are missing.
 
 ### [2026-05-28] Contract-first design + 2-pair team split
 **Decision:** Lock the 3 JSON contracts in `contracts/schemas.py` (A: incoming msg, B: analysis, C: alert) before writing feature code; everything communicates only through them. Team works as 2 pairs on separate branches: `ml` (`ml_service/`: analyzer.py + role_classifier.py) and `fullstack` (`backend_api/` + `frontend_dashboard/` + `whatsapp_bridge/`).

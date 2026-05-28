@@ -8,10 +8,119 @@
       "file": ".git refs",
       "root_cause": "I initially stopped at a new root commit, which still left a commit in the local graph.",
       "fix": "Converted main into an unborn branch and deleted local remote-tracking refs so no commits remain reachable from local refs.",
-      "tags": ["git", "history-rewrite", "unborn-branch", "refs"],
+      "tags": [
+        "git",
+        "history-rewrite",
+        "unborn-branch",
+        "refs"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-28T14:40:00Z"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-05-28T13:09:57.373Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend_api/main.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 15→19 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T13:09:57.373Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-05-28T13:10:06.255Z",
+      "error_message": "Wrong return value",
+      "file": "backend_api/main.py",
+      "root_cause": "Was returning: {\"status\": \"ok\"}",
+      "fix": "Now returns: {",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T13:10:06.255Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-05-28T13:12:26.660Z",
+      "error_message": "Function not marked async",
+      "file": "backend_api/main.py",
+      "root_cause": "Function uses await but wasn't declared async",
+      "fix": "Added async modifier | Also: payload = alert.model_dump(mode=\"json\"); database.save_alert(payload) | Also: # ---- realtime push ----; def _broadcast(alert: dict) -> None:",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-28T13:12:43.910Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-05-28T13:21:56.615Z",
+      "error_message": "Missing guard clause",
+      "file": "whatsapp_bridge/index.js",
+      "root_cause": "No early return/throw for edge case: process.env.CHROME_PATH",
+      "fix": "Added guard clause: if (process.env.CHROME_PATH)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T13:21:56.616Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-05-28T13:23:26.418Z",
+      "error_message": "Significant refactor of ",
+      "file": "whatsapp_bridge/README.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 8→13 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T13:23:26.418Z"
+    },
+    {
+      "id": "bug-007",
+      "timestamp": "2026-05-28T13:11:00Z",
+      "error_message": "npm install in whatsapp_bridge fails: 'Failed to set up chrome v146! ... All providers failed: read ECONNRESET' (Puppeteer postinstall Chromium download), exit code 1; rollback then hits EPERM rmdir on node_modules.",
+      "file": "whatsapp_bridge/index.js, whatsapp_bridge/package.json",
+      "root_cause": "whatsapp-web.js depends on puppeteer, whose postinstall downloads a ~150MB Chromium. The download was killed by a flaky network (ECONNRESET) and the whole install failed.",
+      "fix": "Install with PUPPETEER_SKIP_DOWNLOAD=true (bash) / $env:PUPPETEER_SKIP_DOWNLOAD='true' (PowerShell), then drive the system browser: index.js auto-detects Chrome/Edge (or CHROME_PATH) and passes it as puppeteer.executablePath. Verified: bridge launches Chrome and renders the linked-device QR.",
+      "tags": ["whatsapp", "puppeteer", "chromium", "npm-install", "windows", "econnreset"],
+      "related_bugs": ["bug-005"],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T13:11:00Z"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-05-28T13:10:30Z",
+      "error_message": "WebSocket /ws/alerts rejected with HTTP 403 (websockets InvalidStatus) even though the route was added to main.py.",
+      "file": "backend_api/main.py",
+      "root_cause": "uvicorn --reload (WatchFiles) on Windows stalled: it logged 'Reloading...' but the new worker never started, so the old worker (without the new /ws route) kept serving. Starlette returns 403 for a WebSocket path that matches no registered route, which looked like a code bug but was stale code.",
+      "fix": "Stopped the server and restarted WITHOUT --reload (run fresh on each code change). WS push then verified end-to-end: connect -> POST /ingest toxic -> alert pushed over the socket. Lesson: on Windows, prefer a manual restart over --reload for this project.",
+      "tags": ["fastapi", "uvicorn", "reload", "watchfiles", "websocket", "windows", "403"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T13:10:30Z"
     }
   ]
 }

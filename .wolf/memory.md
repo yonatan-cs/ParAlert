@@ -36,3 +36,28 @@
 | 11:55 | Verified pipeline end-to-end (analyzer->alert->reco) with fallbacks, no HF/LLM | all | PIPELINE OK: high/victim/exclusion | ~300 |
 | 14:51 | Session end: 20 writes across 13 files (Idea+Plan.md, schemas.py, mock_alerts.json, README.md, analyzer.py) | 0 reads | ~10928 tok |
 | 14:53 | Edited .gitignore | 4→7 lines | ~20 |
+
+## Session: 2026-05-28 15:53
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:09 | Created backend_api/_test_toxic.json | — | ~84 |
+| 16:09 | Edited backend_api/main.py | 15→19 lines | ~288 |
+| 16:10 | Edited backend_api/main.py | modified health() | ~68 |
+| 16:10 | Installed backend deps + ran uvicorn :8000 | backend_api/ | /health /docs /alerts /ingest all OK; toxic msg→high/victim/exclusion alert end-to-end | ~120 |
+| 16:11 | Made USE_MODEL + ALERT_THRESHOLD env-tunable, surfaced in /health | backend_api/main.py | flip to real model / tune threshold without code edit | ~90 |
+| 16:11 | Removed temp backend_api/_test_toxic.json after verifying pipeline | backend_api/ | clean tree | ~10 |
+| 16:12 | Edited backend_api/main.py | added 1 import(s) | ~65 |
+| 16:12 | Edited backend_api/main.py | modified _startup() | ~104 |
+| 16:12 | Edited backend_api/main.py | modified list_alerts() | ~230 |
+| 16:12 | Edited backend_api/main.py | modified _broadcast() | ~190 |
+| 16:18 | Created backend_api/_ws_test.py | — | ~345 |
+| 16:21 | Edited whatsapp_bridge/index.js | added 1 condition(s) | ~286 |
+| 16:22 | Edited whatsapp_bridge/index.js | added 1 condition(s) | ~156 |
+| 16:23 | Edited whatsapp_bridge/README.md | terminal() → Puppeteer() | ~131 |
+| 16:23 | Edited whatsapp_bridge/README.md | 3→4 lines | ~55 |
+| 16:24 | WS /ws/alerts verified end-to-end (connect→ingest→pushed alert), then removed temp _ws_test.py | backend_api/ | realtime push works; tree clean | ~40 |
+| 16:24 | uvicorn --reload stalled on Windows (WS 403 from stale worker) → restart without --reload | backend_api/ | fresh server serves new code; logged bug-008 | ~30 |
+| 16:24 | Bridge: npm install skip-Chromium + system Chrome via executablePath; booted Chrome + QR | whatsapp_bridge/ | ⭐ judge deliverable boots to QR-scan stage; logged bug-007 | ~60 |
+| 16:25 | Edited backend_api/main.py | 2→3 lines | ~41 |
+| 16:27 | Session end: 13 writes across 5 files (_test_toxic.json, main.py, _ws_test.py, index.js, README.md) | 22 reads | ~3844 tok |
