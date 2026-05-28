@@ -14,6 +14,7 @@ npm run dev      # http://localhost:5173
 npm run build    # בדיקת קומפילציה (dist/)
 ```
 מושך מ-`http://localhost:8000/alerts`; אם אין שרת → fallback ל-`public/mock_data.json`. Polling כל 3 שניות.
+**זמן אמת:** מתחבר ל-`ws://localhost:8000/ws/alerts` (WebSocket של FS-A) לדחיפת התראות מיידית; ה-polling נשאר רשת ביטחון אם ה-socket נכשל.
 
 ### מבנה `app/`
 | קובץ | תפקיד |

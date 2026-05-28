@@ -6,6 +6,7 @@ import ChatSimulator from "./components/ChatSimulator.jsx";
 import Settings from "./components/Settings.jsx";
 
 const API = "http://localhost:8000/alerts";
+const WS_URL = "ws://localhost:8000/ws/alerts"; // FS-A real-time push; polling stays as fallback
 const POLL_MS = 3000;
 
 const TABS = [
@@ -53,6 +54,38 @@ export default function App() {
     return () => {
       active = false;
       clearInterval(id);
+    };
+  }, []);
+
+  // Real-time push (FS-A's WebSocket). Enhancement only — polling above is the
+  // safety net, so a missing/closed socket degrades gracefully.
+  useEffect(() => {
+    let ws;
+    try {
+      ws = new WebSocket(WS_URL);
+    } catch {
+      return;
+    }
+    ws.onmessage = (ev) => {
+      let alert;
+      try {
+        alert = JSON.parse(ev.data);
+      } catch {
+        return;
+      }
+      if (!alert || !alert.alert_id) return;
+      setAlerts((prev) =>
+        prev.some((a) => a.alert_id === alert.alert_id) ? prev : [alert, ...prev]
+      );
+      setLive(true);
+      setSource("מחובר · זמן אמת");
+    };
+    return () => {
+      try {
+        ws.close();
+      } catch {
+        /* already closed */
+      }
     };
   }, []);
 
