@@ -1,109 +1,141 @@
 """
-ML Service — toxicity analyzer. OWNER: Dev 1.
+Backend-facing ML service facade.
 
-Black box for the backend. Input = IncomingMessage (contract A),
-output = AnalysisResult (contract B). No HTTP here.
+The backend imports ToxicityAnalyzer from this module and treats it as a black
+box. The public contract remains:
 
-Strategy (see Idea+Plan.md §5):
-  1. Try a HuggingFace toxicity model.
-  2. Fall back to a keyword heuristic if the model fails to load (OOM / offline).
-The backend never crashes because analyze() always returns a valid AnalysisResult.
+    IncomingMessage -> ToxicityAnalyzer.analyze() -> AnalysisResult
+
+Task-specific logic lives in smaller analyzers:
+  - TextToxicityAnalyzer: Hebrew text/context toxicity.
+  - MediaAnalyzer: optional media_url image/video safety.
+  - role_classifier.py: child role and text category.
+
+The facade is defensive by design. Model loading, media downloads, and scoring
+must never crash the backend demo; unexpected failures return a valid safe
+AnalysisResult.
 """
 from __future__ import annotations
 
-import sys
 import os
+import sys
+from dataclasses import dataclass
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from contracts.schemas import IncomingMessage, AnalysisResult  # noqa: E402
+from contracts.schemas import AnalysisResult, IncomingMessage  # noqa: E402
+from ml_service.role_classifier import classify_category, classify_role  # noqa: E402
+from ml_service.text_analyzer import (  # noqa: E402
+    TOXIC_THRESHOLD,
+    TextAnalysis,
+    TextToxicityAnalyzer,
+)
+from ml_service.vision import MediaAnalysis, MediaAnalyzer  # noqa: E402
 
-# Swap for "dicta-il/dictabert" + a fine-tuned head, or the multilingual model below.
-HF_MODEL = "unitary/multilingual-toxic-xlm-roberta"
 
-# Cheap Hebrew heuristic for the fall-back path. Expand freely.
-_TOXIC_KEYWORDS = [
-    "אפס", "מטומטם", "טמבל", "שמן", "מכוער", "דביל", "תמות",
-    "אני מחכה לך", "כולם נגדך", "אל תבוא", "לא מזמינים", "מעצבן",
-]
+@dataclass
+class CombinedAnalysis:
+    """Internal merged result before conversion to AnalysisResult."""
+
+    score: float
+    category: str
+    text: TextAnalysis
+    media: MediaAnalysis | None
 
 
 class ToxicityAnalyzer:
-    def __init__(self, use_model: bool = True):
-        self.model = None
-        self.model_name = "keyword-fallback"
-        if use_model:
-            self._try_load_model()
+    """Compose text, media, role, and category analysis.
 
-    def _try_load_model(self) -> None:
-        try:
-            from transformers import pipeline  # local import: optional dep
+    Args:
+        use_model: Load the text Hugging Face model when True. If it fails,
+            the text analyzer falls back to deterministic keyword heuristics.
+        use_vision: Enable media_url analysis when True. Media models are
+            loaded lazily only when a message contains media.
+    """
 
-            self.model = pipeline("text-classification", model=HF_MODEL, top_k=None)
-            self.model_name = HF_MODEL
-        except Exception as exc:  # OOM, no internet, missing dep — degrade gracefully
-            print(f"[analyzer] model load failed, using fallback: {exc}")
-            self.model = None
+    def __init__(self, use_model: bool = True, use_vision: bool = True):
+        self.text_analyzer = TextToxicityAnalyzer(use_model=use_model)
+        self.media_analyzer = MediaAnalyzer(use_model=False) if use_vision else None
+
+        # Compatibility aliases for older backend/dev code.
+        self.vision = self.media_analyzer
+        self.model_name = self.text_analyzer.model_name
 
     def analyze(self, message: IncomingMessage) -> AnalysisResult:
-        """Always returns a valid AnalysisResult. Never raises."""
+        """Analyze one incoming message and always return AnalysisResult."""
         try:
-            score = self._score(message.text)
+            combined = self._analyze_content(message)
+            is_toxic = combined.score >= TOXIC_THRESHOLD
+            role = classify_role(message, is_toxic)
+
+            return AnalysisResult(
+                message_id=message.message_id,
+                is_toxic=is_toxic,
+                toxicity_score=round(combined.score, 3),
+                category=combined.category if is_toxic else "none",
+                role_of_child=role,
+                aggressor=message.sender_id if role == "aggressor" else None,
+                victim=message.child_id if role == "victim" else None,
+                explanation=self._explain(combined, role),
+                model_used=self._model_used(combined_media=combined.media),
+            )
         except Exception as exc:
-            print(f"[analyzer] scoring failed, defaulting to 0: {exc}")
-            score = 0.0
+            print(f"[analyzer] analysis failed, returning safe fallback: {exc}")
+            return self._safe_result(message)
 
-        is_toxic = score >= 0.5
-        category = self._classify_category(message.text) if is_toxic else "none"
-        role = self._classify_role(message, is_toxic)
+    def _analyze_content(self, message: IncomingMessage) -> CombinedAnalysis:
+        """Run text/media analyzers and choose the strongest signal."""
+        text = self.text_analyzer.analyze(message)
+        media = self._analyze_media(message)
+        media_score = media.score if media is not None else 0.0
+        score = max(text.score, media_score)
 
+        if media is not None and media.is_harmful and media_score >= text.score:
+            category = media.category
+        elif score >= TOXIC_THRESHOLD:
+            category = classify_category(message.text)
+        else:
+            category = "none"
+
+        return CombinedAnalysis(score=score, category=category, text=text, media=media)
+
+    def _analyze_media(self, message: IncomingMessage) -> MediaAnalysis | None:
+        """Analyze message.media_url when media analysis is enabled."""
+        if not message.media_url or self.vision is None:
+            return None
+        return self.vision.analyze_url(message.media_url)
+
+    def _explain(self, combined: CombinedAnalysis, role: str) -> str:
+        """Build a compact explanation for logs, API output, and the dashboard."""
+        level = TextToxicityAnalyzer.toxicity_level(combined.score)
+        explanation = (
+            f"{level}: category={combined.category}, role={role}, "
+            f"score={combined.score:.2f}, text_score={combined.text.score:.2f}, "
+            f"threshold={TOXIC_THRESHOLD:.2f}"
+        )
+        if combined.media is not None:
+            explanation += (
+                f", media_score={combined.media.score:.2f}, "
+                f"media={combined.media.explanation}"
+            )
+        return explanation
+
+    def _model_used(self, combined_media: MediaAnalysis | None) -> str:
+        """Return a readable model list for the shared AnalysisResult field."""
+        text_model = self.text_analyzer.model_name
+        if combined_media is None:
+            return text_model
+        return f"{text_model}; media={combined_media.model_used}"
+
+    def _safe_result(self, message: IncomingMessage) -> AnalysisResult:
+        """Return a valid non-toxic result after an unexpected failure."""
         return AnalysisResult(
             message_id=message.message_id,
-            is_toxic=is_toxic,
-            toxicity_score=round(score, 3),
-            category=category,
-            role_of_child=role,
-            aggressor=message.sender_id if role == "aggressor" else None,
-            victim=message.child_id if role == "victim" else None,
-            explanation=self._explain(category, role, score),
-            model_used=self.model_name,
+            is_toxic=False,
+            toxicity_score=0.0,
+            category="none",
+            role_of_child="none",
+            aggressor=None,
+            victim=None,
+            explanation="safe fallback after analyzer error",
+            model_used="safe-fallback",
         )
-
-    # ---- scoring ----
-    def _score(self, text: str) -> float:
-        if self.model is not None:
-            results = self.model(text)[0]  # list of {label, score}
-            toxic = [r["score"] for r in results if "toxic" in r["label"].lower()]
-            return max(toxic) if toxic else 0.0
-        # fallback: fraction of toxic keywords present, capped
-        hits = sum(1 for kw in _TOXIC_KEYWORDS if kw in text)
-        return min(0.6 + 0.15 * hits, 0.97) if hits else 0.1
-
-    # ---- TODO Dev 1: replace heuristics with a real classifier head ----
-    def _classify_category(self, text: str) -> str:
-        if any(w in text for w in ["מחכה לך", "תמות", "אני אחכה"]):
-            return "threat"
-        if any(w in text for w in ["לא מזמינים", "כולם נגדך", "אל תבוא"]):
-            return "exclusion"
-        return "harassment"
-
-    def _classify_role(self, message: IncomingMessage, is_toxic: bool) -> str:
-        if not is_toxic:
-            return "none"
-        # If our child sent the toxic message -> aggressor. Else victim.
-        # bystander logic (toxic msg between two others) = TODO Dev 1.
-        return "aggressor" if message.sender_id == message.child_id else "victim"
-
-    def _explain(self, category: str, role: str, score: float) -> str:
-        return f"{category} זוהה (role={role}, score={score:.2f})"
-
-
-if __name__ == "__main__":
-    from datetime import datetime
-
-    a = ToxicityAnalyzer(use_model=False)
-    msg = IncomingMessage(
-        message_id="t1", group_name="טסט", sender_id="dani_2",
-        sender_name="דני", child_id="yonatan_1",
-        text="איזה אפס אתה, אל תבוא מחר", timestamp=datetime.now(),
-    )
-    print(a.analyze(msg).model_dump_json(indent=2))
