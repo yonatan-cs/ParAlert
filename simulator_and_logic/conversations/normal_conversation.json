@@ -1,0 +1,14 @@
+{
+  "group_name": "כיתה ו'2 - בלי המורה",
+  "child_id": "child_001",
+  "child_sender_id": "yonatan_1",
+  "_scenario": "שיחה תקינה לגמרי. בדיקת false-positive — צפי: 0 התראות",
+  "messages": [
+    { "sender_id": "noa_4",     "sender_name": "נועה",  "text": "מישהו הבין מה צריך להכין למבחן?", "delay_sec": 2 },
+    { "sender_id": "yonatan_1", "sender_name": "יונתן", "text": "כן פרקים 3-4, אני יכול לשלוח סיכום", "delay_sec": 2 },
+    { "sender_id": "ron_3",     "sender_name": "רון",   "text": "אלוף תודה!", "delay_sec": 2 },
+    { "sender_id": "noa_4",     "sender_name": "נועה",  "text": "מתי קובעים ללמוד יחד?", "delay_sec": 2 },
+    { "sender_id": "yonatan_1", "sender_name": "יונתן", "text": "מחר אחרי הצהריים אצלי?", "delay_sec": 2 },
+    { "sender_id": "ron_3",     "sender_name": "רון",   "text": "מעולה אני בא", "delay_sec": 2 }
+  ]
+}

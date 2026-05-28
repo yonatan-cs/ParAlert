@@ -6,15 +6,24 @@
 פתח את `demo.html` בדפדפן. מושך מ-`localhost:8000/alerts`, ואם אין שרת — נופל ל-`mock_data.json`.
 **רשת ביטחון:** תמיד יש דמו עובד. בנה את אפליקציית React לצידו.
 
-## אופציה B — React + Vite (המוצר האמיתי)
+## אופציה B — React + Vite + Tailwind (המוצר האמיתי) — כבר בנוי ב-`app/`
 ```bash
-cd frontend_dashboard
-npm create vite@latest app -- --template react
-cd app && npm install
-npm install -D tailwindcss postcss autoprefixer && npx tailwindcss init -p
+cd frontend_dashboard/app
+npm install
 npm run dev      # http://localhost:5173
+npm run build    # בדיקת קומפילציה (dist/)
 ```
-מושכים נתונים מ-`http://localhost:8000/alerts`. בזמן פיתוח אפשר לייבא את `../mock_data.json`.
+מושך מ-`http://localhost:8000/alerts`; אם אין שרת → fallback ל-`public/mock_data.json`. Polling כל 3 שניות.
+
+### מבנה `app/`
+| קובץ | תפקיד |
+|------|-------|
+| `src/App.jsx` | טעינה + polling + מצב חיבור (API / MOCK) + highlight להתראה חדשה |
+| `src/components/AlertCard.jsx` | כרטיס לפי חוזה C: קבוצה, תפקיד, מד רעילות, בועות, המלצה |
+| `src/index.css` | Tailwind v4 (`@import "tailwindcss"`) + אנימציית כניסה |
+| `public/mock_data.json` | fallback (עותק מ-`contracts/mock_alerts.json`) |
+
+Tailwind v4 דרך `@tailwindcss/vite` (ב-`vite.config.js`). RTL מוגדר ב-`index.html` (`dir="rtl"`).
 
 ## מה לבנות (חוזה C)
 - כרטיס התראה: שם קבוצה + תפקיד הילד (קורבן/תוקף/צופה)

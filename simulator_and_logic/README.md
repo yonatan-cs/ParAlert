@@ -23,8 +23,15 @@ python simulator.py --conversation conversations/escalation_demo.json --speed 0.
 | `recommendation_engine.py` | `generate_recommendation(analysis, message) -> str` — black box לבקאנד |
 | `conversations/*.json` | תסריטי שיחה מדומים (רגיל → הסלמה לחרם/איום) |
 
+## תסריטים זמינים (`conversations/`)
+| קובץ | תרחיש | צפי |
+|------|-------|-----|
+| `escalation_demo.json` | הסלמה לחרם + איום על הילד | victim/bystander, high |
+| `bystander_demo.json` | הילד צופה בחרם על אחר | bystander |
+| `aggressor_demo.json` | הילד הוא התוקף | aggressor |
+| `normal_conversation.json` | שיחה תקינה | 0 התראות (false-positive check) |
+
 ## משימות
-- [ ] להוסיף עוד תסריטים: צופה מהצד, הילד כתוקף, שיחה רגילה לגמרי (false-positive check)
 - [ ] לכוונן את `SYSTEM_PROMPT` להמלצות אמפתיות יותר
 - [ ] (אופ') הזרמה אקראית בקצב משתנה לדמו חי
 
