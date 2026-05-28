@@ -18,18 +18,34 @@ function flagType(m) {
 }
 
 function Media({ m }) {
+  const [revealed, setRevealed] = useState(false);
   if (!m.media) return null;
   const isVideo = m.media === "video";
-  if (m.severe && m.media === "image") {
-    return (
-      <div className="mt-1 rounded-md border border-red-300 bg-red-50 px-2 py-1 text-[11px] text-red-700">
-        🔞 תוכן רגיש — חסום (תמונה)
-      </div>
-    );
-  }
+  const url = m.mediaUrl || "https://picsum.photos/seed/safenet/480/300";
+  const blurred = m.severe && m.media === "image" && !revealed;
   return (
-    <div className="mt-1 rounded-md bg-black/5 px-2 py-1 text-[11px] text-slate-600">
-      {isVideo ? "🎥 וידאו" : "🖼️ תמונה"}
+    <div className="relative mt-1 max-w-[220px] overflow-hidden rounded-md">
+      <img
+        src={url}
+        alt=""
+        loading="lazy"
+        className={`max-h-44 w-full object-cover ${blurred ? "scale-110 blur-2xl" : ""}`}
+      />
+      {isVideo && !blurred && (
+        <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-3xl text-white/90">
+          ▶
+        </span>
+      )}
+      {blurred && (
+        <button
+          type="button"
+          onClick={() => setRevealed(true)}
+          className="absolute inset-0 flex flex-col items-center justify-center gap-0.5 bg-black/35 text-[11px] font-medium text-white"
+        >
+          <span>תמונה רגישה</span>
+          <span className="underline">הצג</span>
+        </button>
+      )}
     </div>
   );
 }

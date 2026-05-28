@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   CATEGORY_HE,
   ROLE_HE,
@@ -14,19 +15,43 @@ const SEV = {
 
 const SENSITIVE = new Set(["nudity", "sexual", "sexual_harassment"]);
 
-function MediaChip({ bubble, sensitive }) {
+// Shows the actual media the child received. Sensitive content is blurred (the
+// parent can reveal it) — the system only reports, it can't block WhatsApp.
+function MediaPreview({ bubble, sensitive }) {
+  const [revealed, setRevealed] = useState(false);
   if (!bubble.media_type) return null;
   const isVideo = bubble.media_type === "video";
-  if (sensitive) {
-    return (
-      <div className="mt-1.5 rounded-lg border border-sev-high/40 bg-sev-high/10 px-3 py-2 text-xs text-sev-high">
-        🔞 תוכן רגיש — חסום ({isVideo ? "וידאו" : "תמונה"})
-      </div>
-    );
-  }
+  const url = bubble.media_url || "https://picsum.photos/seed/safenet/480/300";
+  const blurred = sensitive && !revealed;
+
   return (
-    <div className="mt-1.5 rounded-lg bg-surface-2 px-3 py-2 text-xs text-muted">
-      {isVideo ? "🎥 וידאו" : "🖼️ תמונה"}
+    <div className="relative mt-2 overflow-hidden rounded-lg bg-black/20">
+      <img
+        src={url}
+        alt=""
+        loading="lazy"
+        className={`max-h-52 w-full object-cover transition duration-300 ${blurred ? "scale-110 blur-2xl" : ""}`}
+      />
+      {isVideo && !blurred && (
+        <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-4xl text-white/90 drop-shadow">
+          ▶
+        </span>
+      )}
+      {isVideo && (
+        <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] text-white">
+          וידאו
+        </span>
+      )}
+      {blurred && (
+        <button
+          type="button"
+          onClick={() => setRevealed(true)}
+          className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/35 text-xs font-medium text-white"
+        >
+          <span>תמונה רגישה</span>
+          <span className="underline">הצג בכל זאת</span>
+        </button>
+      )}
     </div>
   );
 }
@@ -40,7 +65,7 @@ function Bubble({ bubble, trigger = false, sensitive = false }) {
     >
       <span className="mb-0.5 block text-[11px] text-faint">{bubble.sender_name}</span>
       {bubble.text}
-      <MediaChip bubble={bubble} sensitive={sensitive} />
+      <MediaPreview bubble={bubble} sensitive={sensitive} />
     </div>
   );
 }

@@ -21,22 +21,22 @@ export const DEMO_SCENARIOS = [
     members: "קבוצה גדולה",
     messages: [
       { sender: "מספר לא מוכר", text: "היי, ראיתי אותך, את ממש יפה", delayMs: 900 },
-      { sender: "מספר לא מוכר", text: "שלחי לי תמונה שלך בלי בגדים או שאני מפיץ את מה שיש לי", media: "image", toxic: true, severe: true, delayMs: 1700 },
+      { sender: "מספר לא מוכר", text: "שלחי לי תמונה שלך בלי בגדים או שאני מפיץ את מה שיש לי", media: "image", mediaUrl: "https://picsum.photos/seed/safenet-a/480/300", toxic: true, severe: true, delayMs: 1700 },
     ],
   },
   {
     group: "חדשות הכיתה 📰",
     members: "12 משתתפים",
     messages: [
-      { sender: "ליאור", text: "תראו את הסרטון הזה!! חיסון הקורונה גורם ל... חייבים לשתף", media: "video", disinfo: true, delayMs: 1500 },
+      { sender: "ליאור", text: "תראו את הסרטון הזה!! חיסון הקורונה גורם ל... חייבים לשתף", media: "video", mediaUrl: "https://picsum.photos/seed/safenet-vid/480/300", disinfo: true, delayMs: 1500 },
       { sender: "יונתן", fromChild: true, text: "וואו לא ידעתי, אשתף", delayMs: 1300 },
     ],
   },
   {
-    group: "קבוצה אנונימית 🔞",
-    members: "אנונימי",
+    group: "כיתה ח'1 🎒",
+    members: "28 משתתפים",
     messages: [
-      { sender: "אנונימי", text: "הופצה תמונה פוגענית של הילדה שלך", media: "image", toxic: true, severe: true, delayMs: 1500 },
+      { sender: "מספר לא מוכר", text: "תראו את זה 👀", media: "image", mediaUrl: "https://picsum.photos/seed/safenet-b/480/300", toxic: true, severe: true, delayMs: 1500 },
     ],
   },
 ];

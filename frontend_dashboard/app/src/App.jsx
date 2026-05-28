@@ -18,6 +18,13 @@ const TABS = [
   { key: "settings", label: "⚙️ הגדרות" },
 ];
 
+// Dashboard is grouped into sections; each alert lands in exactly one (severe first).
+const SECTIONS = [
+  { key: "severe", title: "🚨 מקרים חמורים — מומלץ לפנות למשטרה", match: (a) => a.escalation === "police" },
+  { key: "bullying", title: "🛡️ בריונות", match: (a) => a.alert_type !== "disinformation" && a.escalation !== "police" },
+  { key: "disinfo", title: "📰 דיסאינפורמציה", match: (a) => a.alert_type === "disinformation" },
+];
+
 export default function App() {
   const [alerts, setAlerts] = useState([]);
   const [source, setSource] = useState("טוען…");
@@ -146,9 +153,23 @@ export default function App() {
                 {alerts.length === 0 ? "אין התראות 🎉" : "אין התראות בקטגוריה זו"}
               </div>
             ) : (
-              visible.map((a) => (
-                <AlertCard key={a.alert_id} alert={a} isNew={isNew(a.alert_id)} />
-              ))
+              SECTIONS.map((s) => {
+                const items = visible.filter(s.match);
+                if (!items.length) return null;
+                return (
+                  <section key={s.key} className="mb-6">
+                    <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold text-muted">
+                      {s.title}
+                      <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] text-faint">
+                        {items.length}
+                      </span>
+                    </h2>
+                    {items.map((a) => (
+                      <AlertCard key={a.alert_id} alert={a} isNew={isNew(a.alert_id)} />
+                    ))}
+                  </section>
+                );
+              })
             )}
           </>
         )}
