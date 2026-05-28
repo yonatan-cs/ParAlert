@@ -34,6 +34,9 @@ from backend_api import database  # noqa: E402
 #   ALERT_THRESHOLD  -> min toxicity score to raise an alert (0.5 matches severity_from_score)
 USE_MODEL = os.getenv("USE_MODEL", "false").lower() == "true"
 ALERT_THRESHOLD = float(os.getenv("ALERT_THRESHOLD", "0.5"))
+# Comma-separated allowed origins for the deployed frontend; "*" is fine for the demo.
+CORS_ORIGINS = [o.strip() for o in os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()]
+_MOCK_ALERTS_PATH = os.path.join(os.path.dirname(__file__), "..", "contracts", "mock_alerts.json")
 
 # ---- black-box deps (graceful import: demo runs even if a teammate's module is missing) ----
 try:
@@ -51,7 +54,7 @@ except Exception as exc:  # noqa: BLE001
 
 app = FastAPI(title="SafeNet API", version="0.1.0")
 app.add_middleware(
-    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
+    CORSMiddleware, allow_origins=CORS_ORIGINS, allow_methods=["*"], allow_headers=["*"]
 )
 
 
@@ -98,15 +101,17 @@ def list_alerts(child_id: str | None = None) -> list[dict]:
 
 
 @app.post("/demo/seed")
-def demo_seed() -> dict[str, int]:
-    """Reset to a clean 3-angle demo set (contracts/mock_alerts.json). Idempotent."""
+def demo_seed() -> dict[str, object]:
+    """Reset to a clean 3-angle demo set (contracts/mock_alerts.json), each pushed
+    over WS. Clears existing alerts first so the dashboard is pristine; idempotent."""
     database.clear_alerts()
-    path = os.path.join(os.path.dirname(__file__), "..", "contracts", "mock_alerts.json")
-    with open(path, encoding="utf-8") as f:
-        alerts = json.load(f)
-    for alert in alerts:
-        database.save_alert(alert)
-    return {"seeded": len(alerts)}
+    with open(_MOCK_ALERTS_PATH, encoding="utf-8") as f:
+        raw_alerts = json.load(f)
+    for raw in raw_alerts:
+        payload = Alert.model_validate(raw).model_dump(mode="json")  # enforce contract C
+        database.save_alert(payload)
+        _broadcast(payload)
+    return {"seeded": len(raw_alerts)}
 
 
 @app.websocket("/ws/alerts")

@@ -8,6 +8,8 @@
 
 <!-- How the user likes things done. Code style, tools, patterns, communication. -->
 
+- The user is **FS-A** on branch `fs-server`. Edit ONLY `backend_api/` + `whatsapp_bridge/`. NEVER touch teammate code: `frontend_dashboard/` + `simulator_and_logic/` (FS-B, `fs-dashboard`) or `ml_service/` (ML pair, `ml`). A teammate is actively working on `fs-dashboard`.
+- `fetch`/`pull` from origin periodically to stay in sync with teammates; never force-push a shared branch without explicit approval.
 - When the user asks to revert commits from the graph, prefer a history rewrite like `git reset --hard` over creating a revert commit.
 - If the target commit is the root, use a new root commit or ref rewrite to remove it from the graph instead of trying to reset past it.
 - If the user wants zero commits in the graph, convert the branch to an unborn branch and delete all local refs, including remote-tracking refs.
