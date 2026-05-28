@@ -21,6 +21,8 @@ services:
         value: "false"               # flip to "true" once the ML pair merges the real model
       - key: ALERT_THRESHOLD
         value: "0.5"
+      - key: SEED_ON_STARTUP
+        value: "true"            # free tier wipes the DB on restart -> auto-reload demo data
       # CORS defaults to "*" (fine for the demo). To lock down, add:
       #   - key: CORS_ORIGINS
       #     value: "https://<your-vercel-app>.vercel.app"

@@ -74,6 +74,11 @@ async def _startup() -> None:
     global _loop
     database.init_db()
     _loop = asyncio.get_running_loop()  # captured so the sync /ingest can broadcast onto it
+    # Render free tier wipes the ephemeral SQLite on every restart/redeploy. With
+    # SEED_ON_STARTUP=true the demo dataset reloads automatically, so the dashboard
+    # is never empty for judges and nobody has to re-run /demo/seed by hand.
+    if os.getenv("SEED_ON_STARTUP", "false").lower() == "true" and not database.get_alerts():
+        print(f"[backend] DB empty on startup, auto-seeded {_seed_from_mock()} demo alerts")
 
 
 @app.get("/health")
@@ -108,16 +113,8 @@ def list_alerts(child_id: str | None = None) -> list[dict]:
 
 @app.post("/demo/seed")
 def demo_seed() -> dict[str, object]:
-    """Reset to a clean 3-angle demo set (contracts/mock_alerts.json), each pushed
-    over WS. Clears existing alerts first so the dashboard is pristine; idempotent."""
-    database.clear_alerts()
-    with open(_MOCK_ALERTS_PATH, encoding="utf-8") as f:
-        raw_alerts = json.load(f)
-    for raw in raw_alerts:
-        payload = Alert.model_validate(raw).model_dump(mode="json")  # enforce contract C
-        database.save_alert(payload)
-        _broadcast(payload)
-    return {"seeded": len(raw_alerts)}
+    """Reset to a clean demo set (contracts/mock_alerts.json). Idempotent; re-runnable."""
+    return {"seeded": _seed_from_mock()}
 
 
 @app.websocket("/ws/alerts")
@@ -132,6 +129,19 @@ async def ws_alerts(ws: WebSocket) -> None:
         pass
     finally:
         _ws_clients.discard(ws)
+
+
+# ---- demo data ----
+def _seed_from_mock() -> int:
+    """Clear all alerts and load the demo set (contract C) from mock_alerts.json."""
+    database.clear_alerts()
+    with open(_MOCK_ALERTS_PATH, encoding="utf-8") as f:
+        raw_alerts = json.load(f)
+    for raw in raw_alerts:
+        payload = Alert.model_validate(raw).model_dump(mode="json")  # enforce contract C
+        database.save_alert(payload)
+        _broadcast(payload)
+    return len(raw_alerts)
 
 
 # ---- realtime push ----
