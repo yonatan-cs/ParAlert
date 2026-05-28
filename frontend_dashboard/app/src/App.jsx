@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AlertCard from "./components/AlertCard.jsx";
+import SummaryBar from "./components/SummaryBar.jsx";
+import FilterBar from "./components/FilterBar.jsx";
 
 const API = "http://localhost:8000/alerts";
 const POLL_MS = 3000;
@@ -8,7 +10,8 @@ export default function App() {
   const [alerts, setAlerts] = useState([]);
   const [source, setSource] = useState("טוען…");
   const [live, setLive] = useState(false);
-  const seen = useRef(new Set()); // alert_ids already shown — for "new" highlight
+  const [filter, setFilter] = useState("all");
+  const seen = useRef(new Set()); // alert_ids already shown — for the "new" highlight
 
   useEffect(() => {
     let active = true;
@@ -44,7 +47,16 @@ export default function App() {
     };
   }, []);
 
-  // Mark which alerts are new this render (for entrance animation).
+  // Newest first; filter by the child's role (the 3 angles).
+  const visible = useMemo(() => {
+    const sorted = [...alerts].sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+    return filter === "all"
+      ? sorted
+      : sorted.filter((a) => a.role_of_child === filter);
+  }, [alerts, filter]);
+
   const isNew = (id) => {
     if (seen.current.has(id)) return false;
     seen.current.add(id);
@@ -52,7 +64,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen mx-auto max-w-3xl px-4 py-6 md:px-8">
+    <div className="mx-auto min-h-screen max-w-3xl px-4 py-6 md:px-8">
       <header className="mb-6 flex items-center gap-3">
         <h1 className="text-2xl font-bold">🛡️ SafeNet</h1>
         <span className="flex items-center gap-1.5 rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-400">
@@ -63,10 +75,17 @@ export default function App() {
         </span>
       </header>
 
-      {alerts.length === 0 ? (
-        <div className="py-16 text-center text-slate-500">אין התראות 🎉</div>
+      <SummaryBar alerts={alerts} />
+      <FilterBar value={filter} onChange={setFilter} />
+
+      {visible.length === 0 ? (
+        <div className="py-16 text-center text-slate-500">
+          {alerts.length === 0 ? "אין התראות 🎉" : "אין התראות בקטגוריה זו"}
+        </div>
       ) : (
-        alerts.map((a) => <AlertCard key={a.alert_id} alert={a} isNew={isNew(a.alert_id)} />)
+        visible.map((a) => (
+          <AlertCard key={a.alert_id} alert={a} isNew={isNew(a.alert_id)} />
+        ))
       )}
     </div>
   );
