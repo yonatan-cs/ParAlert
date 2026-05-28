@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-05-28T14:40:00Z",
+      "error_message": "User asked for no commits in the graph, not a revert or re-rooted branch.",
+      "file": ".git refs",
+      "root_cause": "I initially stopped at a new root commit, which still left a commit in the local graph.",
+      "fix": "Converted main into an unborn branch and deleted local remote-tracking refs so no commits remain reachable from local refs.",
+      "tags": ["git", "history-rewrite", "unborn-branch", "refs"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T14:40:00Z"
+    }
+  ]
+}

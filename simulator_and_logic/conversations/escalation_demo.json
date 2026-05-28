@@ -1,0 +1,14 @@
+{
+  "group_name": "כיתה ו'2 - בלי המורה",
+  "child_id": "child_001",
+  "child_sender_id": "yonatan_1",
+  "messages": [
+    { "sender_id": "yonatan_1", "sender_name": "יונתן", "text": "מתי קובעים למשחק היום?", "delay_sec": 2 },
+    { "sender_id": "ron_3",      "sender_name": "רון",   "text": "אחרי הצהריים בפארק", "delay_sec": 2 },
+    { "sender_id": "dani_2",     "sender_name": "דני",   "text": "יונתן אל תבוא, אף אחד לא רוצה אותך", "delay_sec": 3 },
+    { "sender_id": "dani_2",     "sender_name": "דני",   "text": "איזה אפס אתה בכלל", "delay_sec": 2 },
+    { "sender_id": "noa_4",      "sender_name": "נועה",  "text": "תפסיקו כבר נו", "delay_sec": 2 },
+    { "sender_id": "dani_2",     "sender_name": "דני",   "text": "כולם נגדך פה תתרגל", "delay_sec": 3 },
+    { "sender_id": "itay_5",     "sender_name": "איתי",  "text": "אם תספר למורה אני מחכה לך אחרי בית ספר", "delay_sec": 3 }
+  ]
+}

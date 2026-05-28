@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!--
+  SafeNet — standalone fallback dashboard. OWNER: Dev 3.
+  Zero build. Open in a browser. Polls the backend; falls back to mock_data.json.
+  This is the safety net so a demo always exists. Build the real React app alongside it.
+-->
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeNet — לוח הורה</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, "Segoe UI", Arial, sans-serif; background: #0f172a; color: #e2e8f0; padding: 24px; }
+    header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+    header h1 { font-size: 24px; }
+    .badge { background: #1e293b; padding: 4px 10px; border-radius: 999px; font-size: 12px; color: #94a3b8; }
+    .alert { background: #1e293b; border-radius: 14px; padding: 18px; margin-bottom: 16px; border-right: 5px solid #64748b; }
+    .alert.high { border-color: #ef4444; }
+    .alert.medium { border-color: #f59e0b; }
+    .alert.low { border-color: #22c55e; }
+    .alert-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .group { font-weight: 600; }
+    .role { font-size: 12px; padding: 3px 10px; border-radius: 999px; background: #334155; }
+    .meter { height: 8px; background: #334155; border-radius: 999px; overflow: hidden; margin: 10px 0; }
+    .meter > div { height: 100%; background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444); }
+    .bubble { background: #0f172a; padding: 8px 12px; border-radius: 10px; margin: 6px 0; font-size: 14px; }
+    .bubble.trigger { background: #7f1d1d; font-weight: 600; }
+    .bubble .who { font-size: 11px; color: #94a3b8; display: block; }
+    .reco { margin-top: 12px; background: #164e63; padding: 12px; border-radius: 10px; font-size: 14px; }
+    .reco strong { display: block; margin-bottom: 4px; color: #67e8f9; }
+    .empty { text-align: center; color: #64748b; padding: 40px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🛡️ SafeNet</h1>
+    <span class="badge" id="source">טוען…</span>
+  </header>
+  <div id="alerts"><div class="empty">ממתין להתראות…</div></div>
+
+  <script>
+    const API = "http://localhost:8000/alerts";
+    const roleHe = { victim: "הילד שלי — קורבן", aggressor: "הילד שלי — תוקף", bystander: "הילד שלי — צופה", none: "—" };
+
+    async function load() {
+      let alerts, source;
+      try {
+        const r = await fetch(API);
+        alerts = await r.json();
+        source = "מחובר ל-API";
+      } catch (e) {
+        const r = await fetch("mock_data.json");
+        alerts = await r.json();
+        source = "נתוני MOCK (אין חיבור לשרת)";
+      }
+      document.getElementById("source").textContent = source;
+      render(alerts);
+    }
+
+    function bubble(b, trigger) {
+      return `<div class="bubble ${trigger ? "trigger" : ""}">
+        <span class="who">${b.sender_name}</span>${b.text}</div>`;
+    }
+
+    function render(alerts) {
+      const el = document.getElementById("alerts");
+      if (!alerts.length) { el.innerHTML = '<div class="empty">אין התראות 🎉</div>'; return; }
+      el.innerHTML = alerts.map(a => `
+        <div class="alert ${a.severity}">
+          <div class="alert-top">
+            <span class="group">${a.group_name}</span>
+            <span class="role">${roleHe[a.role_of_child] || a.role_of_child}</span>
+          </div>
+          <div class="meter"><div style="width:${Math.round(a.toxicity_score * 100)}%"></div></div>
+          <div style="font-size:12px;color:#94a3b8;margin-bottom:8px">מדד רעילות: ${Math.round(a.toxicity_score * 100)}% · ${a.category}</div>
+          ${(a.context_before || []).map(b => bubble(b, false)).join("")}
+          ${bubble(a.trigger_message, true)}
+          ${(a.context_after || []).map(b => bubble(b, false)).join("")}
+          <div class="reco"><strong>המלצה לפעולה</strong>${a.recommendation}</div>
+        </div>`).join("");
+    }
+
+    load();
+    setInterval(load, 3000); // poll for new alerts
+  </script>
+</body>
+</html>
