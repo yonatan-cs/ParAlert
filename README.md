@@ -51,4 +51,4 @@ cd frontend_dashboard/app && npm install && npm run dev
 
 הכל ממוזג ל-`main`: ML + בקאנד + פרונט + סימולטור + חוזי v2 (התראת בריונות **ו**דיסאינפורמציה,
 הסלמה למשטרה, מדד אמינות, מדיה). הענפים הישנים (`fs-server`/`fs-dashboard`/`fullstack`/`ml`)
-נשמרים ב-origin בלבד. הרצת מודלים אמיתיים למצגת: ראה [`DEPLOY.md`](./DEPLOY.md) (ngrok).
+נשמרים ב-origin בלבד. הרצת מודלים אמיתיים למצגת: ראה [`DEPLOY.md`](./DEPLOY.md) (Cloudflare Tunnel).

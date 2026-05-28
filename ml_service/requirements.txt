@@ -5,7 +5,7 @@ pillow
 opencv-python
 requests
 av
-# ML service (ml_service/server.py) — real-model HTTP API behind ngrok
+# ML service (ml_service/server.py) — real-model HTTP API behind a Cloudflare Tunnel
 fastapi>=0.110
 uvicorn[standard]>=0.27
 python-multipart>=0.0.9

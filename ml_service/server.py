@@ -1,6 +1,6 @@
 """
 Standalone ML service — runs the REAL models on a powerful local machine and is
-exposed via ngrok. Render's backend forwards analysis here when USE_MODEL=true and
+exposed via a Cloudflare Tunnel. Render's backend forwards analysis here when USE_MODEL=true and
 ML_SERVICE_URL is set, so Render stays light (no torch) while judges still get real
 OpenCensor toxicity / NSFW / deepfake scores.
 
@@ -8,8 +8,8 @@ Run (use Python 3.11 or 3.12 — NOT 3.14; torch wheels):
     python3.12 -m venv .venv && source .venv/bin/activate
     pip install -r ml_service/requirements.txt
     uvicorn ml_service.server:app --host 0.0.0.0 --port 8100
-    ngrok http 8100            # copy the https URL
-    # then on Render set:  USE_MODEL=true  and  ML_SERVICE_URL=https://<id>.ngrok.app
+    cloudflared tunnel --url http://localhost:8100   # copy the https://<...>.trycloudflare.com URL
+    # then on Render set:  USE_MODEL=true  and  ML_SERVICE_URL=https://<...>.trycloudflare.com
 
 Contract: returns contracts.schemas.AnalyzeResponse (the backend adds
 credibility/alert on top). The first call downloads the HF models — warm it up

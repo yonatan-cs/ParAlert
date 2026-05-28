@@ -43,7 +43,7 @@ ALERT_THRESHOLD = float(os.getenv("ALERT_THRESHOLD", "0.5"))
 DISINFO_THRESHOLD = float(os.getenv("DISINFO_THRESHOLD", "0.5"))
 # Seconds of socket idle before the server sends a heartbeat ping (keeps proxies open).
 WS_HEARTBEAT_SECONDS = float(os.getenv("WS_HEARTBEAT_SECONDS", "25"))
-# When set (e.g. an ngrok URL to a powerful local box), heavy ML runs THERE instead of
+# When set (e.g. a Cloudflare Tunnel URL to a powerful local box), heavy ML runs THERE instead of
 # in-process — Render stays light (no torch) while judges still get real-model scores.
 # Routing is active only when USE_MODEL=true AND this is set; any failure falls back to
 # the in-process keyword analyzer so the endpoint never hard-fails.
