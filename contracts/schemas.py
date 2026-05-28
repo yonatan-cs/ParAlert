@@ -96,6 +96,32 @@ class Alert(BaseModel):
     credibility: Optional[Credibility] = None
 
 
+# ---- Interactive analysis report (Backend/ML service -> "Try it" playground) ----
+class MediaReport(BaseModel):
+    """Per-media model scores for the interactive playground."""
+    media_type: Optional[MediaType] = None
+    safety_score: float = 0.0   # unsafe/NSFW visual content
+    ai_score: float = 0.0       # AI-generated / deepfake likelihood
+    is_harmful: bool = False
+    model_used: str = "none"
+    explanation: str = ""
+
+
+class AnalyzeResponse(BaseModel):
+    """Full analysis report for one submitted message/media (no alert required)."""
+    is_toxic: bool
+    toxicity_score: float = Field(ge=0.0, le=1.0)
+    category: Category
+    role_of_child: Role = "none"
+    alert_type: AlertType = "bullying"
+    explanation: str = ""
+    model_used: str = ""
+    media: Optional[MediaReport] = None
+    credibility: Optional[Credibility] = None
+    alert_created: bool = False
+    alert_id: Optional[str] = None
+
+
 def severity_from_score(score: float) -> Severity:
     """Shared rule so backend + sim agree. <0.5 low, 0.5-0.8 medium, >0.8 high."""
     if score > 0.8:

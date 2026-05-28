@@ -270,35 +270,42 @@ class MediaAnalyzer:
         self.video_authenticity_analyzer = VideoAuthenticityAnalyzer(self.ai_video_provider)
 
     def analyze_url(self, media_url: str) -> MediaAnalysis:
-        """Download media_url and analyze it according to its file type."""
+        """Download media_url to a temp file and analyze it by file type."""
         try:
             with tempfile.TemporaryDirectory() as tmpdir:
                 media_path = self.downloader.download(media_url, Path(tmpdir))
-                media_type = self._media_type(media_path)
-                if media_type == "image":
-                    safety_score = self.image_analyzer.score_path(media_path)
-                    ai_score = self.image_authenticity_analyzer.score_path(media_path)
-                    return _result(
-                        score=max(safety_score, ai_score),
-                        media_type="image",
-                        model_used=self._model_used("image"),
-                        safety_score=safety_score,
-                        ai_score=ai_score,
-                    )
-                if media_type == "video":
-                    safety_score = self.video_analyzer.score_path(media_path)
-                    ai_score = self.video_authenticity_analyzer.score_path(media_path)
-                    return _result(
-                        score=max(safety_score, ai_score),
-                        media_type="video",
-                        model_used=self._model_used("video"),
-                        safety_score=safety_score,
-                        ai_score=ai_score,
-                    )
-                return _fallback(
-                    f"unsupported media type: {media_path.suffix}",
-                    self._model_used(media_type),
+                return self.analyze_path(media_path)
+        except Exception as exc:
+            return _fallback(f"media analysis failed: {exc}", self._model_used("unknown"))
+
+    def analyze_path(self, media_path: Path) -> MediaAnalysis:
+        """Analyze a local image/video file (used for uploads and after URL download)."""
+        try:
+            media_type = self._media_type(media_path)
+            if media_type == "image":
+                safety_score = self.image_analyzer.score_path(media_path)
+                ai_score = self.image_authenticity_analyzer.score_path(media_path)
+                return _result(
+                    score=max(safety_score, ai_score),
+                    media_type="image",
+                    model_used=self._model_used("image"),
+                    safety_score=safety_score,
+                    ai_score=ai_score,
                 )
+            if media_type == "video":
+                safety_score = self.video_analyzer.score_path(media_path)
+                ai_score = self.video_authenticity_analyzer.score_path(media_path)
+                return _result(
+                    score=max(safety_score, ai_score),
+                    media_type="video",
+                    model_used=self._model_used("video"),
+                    safety_score=safety_score,
+                    ai_score=ai_score,
+                )
+            return _fallback(
+                f"unsupported media type: {media_path.suffix}",
+                self._model_used(media_type),
+            )
         except Exception as exc:
             return _fallback(f"media analysis failed: {exc}", self._model_used("unknown"))
 

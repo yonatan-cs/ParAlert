@@ -23,6 +23,10 @@ _TOXIC_KEYWORDS = [
     "אפס", "מטומטם", "טמבל", "שמן", "מכוער", "דביל", "תמות",
     "אני מחכה לך", "כולם נגדך", "אל תבוא", "לא מזמינים", "מעצבן",
     "אף אחד לא רוצה אותך", "לך מפה", "סתום", "חנון", "לוזר",
+    # English (matched case-insensitively) so the fallback isn't blind to English.
+    "idiot", "stupid", "loser", "ugly", "dumb", "moron", "retard", "freak",
+    "shut up", "kill yourself", "kys", "nobody likes you", "worthless",
+    "hate you", "pathetic", "you suck", "go die",
 ]
 
 _EXCLUSION_PHRASES = [
@@ -33,10 +37,17 @@ _EXCLUSION_PHRASES = [
     "לא עובדים איתו", "שלא יבוא", "לא לשתף אותך",
     "מוציאים אותי מהקבוצה", "זה חרם", "עדיף שלא תציג",
     "יותר טוב לכולם", "מישהו אחר ידבר במקומו", "רק לשלוח את הסיכום",
+    # English
+    "nobody wants you", "don't come", "you're not invited", "not invited",
+    "everyone is against you", "everyone's against you", "go away", "without you",
+    "no one likes you", "leave the group",
 ]
 
 _THREAT_PHRASES = [
     "אני מחכה לך", "אחרי בית ספר", "תיזהר", "אם תספר", "תמות",
+    # English
+    "i'll be waiting", "after school", "you're dead", "you are dead",
+    "watch your back", "i'll get you", "i will find you", "i'll hurt you",
 ]
 
 _SAFE_CONTEXT_PHRASES = [
@@ -123,17 +134,18 @@ class TextToxicityAnalyzer:
 
     def _heuristic_score(self, text: str) -> float:
         """Score bullying patterns that profanity-only models often miss."""
-        hits = sum(1 for phrase in _TOXIC_KEYWORDS if phrase in text)
-        exclusion_hits = sum(1 for phrase in _EXCLUSION_PHRASES if phrase in text)
-        threat_hits = sum(1 for phrase in _THREAT_PHRASES if phrase in text)
-        safe_context_hits = sum(1 for phrase in _SAFE_CONTEXT_PHRASES if phrase in text)
+        low = text.lower()  # case-insensitive matching for English; Hebrew is unaffected
+        hits = sum(1 for phrase in _TOXIC_KEYWORDS if phrase in low)
+        exclusion_hits = sum(1 for phrase in _EXCLUSION_PHRASES if phrase in low)
+        threat_hits = sum(1 for phrase in _THREAT_PHRASES if phrase in low)
+        safe_context_hits = sum(1 for phrase in _SAFE_CONTEXT_PHRASES if phrase in low)
 
         # Example: "don't come to the library, we meet in class" is logistical,
         # not bullying. These guards reduce that false positive.
         if exclusion_hits == 1 and safe_context_hits >= 2 and not hits and not threat_hits:
             exclusion_hits = 0
         if safe_context_hits >= 2 and not threat_hits:
-            hits -= sum(1 for phrase in _AMBIGUOUS_LOGISTICS_PHRASES if phrase in text)
+            hits -= sum(1 for phrase in _AMBIGUOUS_LOGISTICS_PHRASES if phrase in low)
             hits = max(hits, 0)
             if exclusion_hits == 1:
                 exclusion_hits = 0
