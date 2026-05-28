@@ -1,0 +1,14 @@
+{
+  "name": "safenet-whatsapp-bridge",
+  "version": "0.1.0",
+  "description": "Links WhatsApp as a device and streams group messages to the SafeNet backend (contract A).",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "whatsapp-web.js": "^1.34.7",
+    "qrcode-terminal": "^0.12.0"
+  }
+}

@@ -10,8 +10,10 @@
 | בראנץ' | זוג | תיקייה |
 |--------|-----|--------|
 | `ml` | זוג ML (2) | `ml_service/` |
-| `fullstack` | זוג Fullstack (2) | `backend_api/` + `frontend_dashboard/` |
+| `fullstack` | זוג Fullstack (2) | `backend_api/` + `frontend_dashboard/` + `whatsapp_bridge/` |
 | `main` | — | בסיס משותף. מיזוג רק כשעובד מקצה לקצה |
+
+> **דרישת השופט:** משהו שעובד אמיתי על פלטפורמה אחת → `whatsapp_bridge/` (וואטסאפ דרך QR). זה עכשיו deliverable בעדיפות גבוהה, לא אופציונלי.
 
 **כלל ברזל:** כל מפתח בעלים של קבצים נפרדים. אף אחד לא נוגע בקובץ של אחר. תקשורת רק דרך החוזים.
 
@@ -63,24 +65,34 @@
 - [ ] משיכה מ-`GET /alerts` + polling/ריענון
 - [ ] אנימציה כשהתראה חדשה קופצת
 
+### גשר וואטסאפ — `whatsapp_bridge/` (זוג Fullstack, אחרי שהשרת חי) ⭐ דרישת השופט
+מי שמסיים את הליבה ראשון לוקח. קובץ נפרד (Node) — לא מתנגש עם backend/frontend.
+- [ ] `cd whatsapp_bridge && npm install`
+- [ ] `node index.js` → לסרוק QR ממספר **burner/דמו** (לא אישי!)
+- [ ] לוודא הודעות קבוצה אמיתיות מגיעות ל-`/ingest` (לוג `🚨 ALERT`)
+- [ ] לבדוק מיפוי חוזה A (group_name, sender, child_id, context_before)
+- [ ] (אופ') הורדת מדיה לניתוח תמונות
+
 ---
 
-## שלב אחרון — `simulator_and_logic/` (זוג Fullstack)
+## fallback + המלצות — `simulator_and_logic/` (זוג Fullstack)
 
-אחרי שהבקאנד יציב. שני קבצים מנותקים, כבר כתובים:
+הסימולטור = רשת ביטחון לבמה אם וואטסאפ מקרטע. שני קבצים מנותקים, כבר כתובים:
 - [ ] `recommendation_engine.py` — להכניס `ANTHROPIC_API_KEY`, לכוון `SYSTEM_PROMPT`
 - [ ] עוד תסריטים ב-`conversations/` (צופה, תוקף, שיחה רגילה ל-false-positive)
-- [ ] `python simulator.py` מול השרת החי — לכוון קצב, להריץ את תרחיש הדמו
+- [ ] `python simulator.py` מול השרת החי — לכוון קצב, תרחיש הדמו
 
 ---
 
 ## סדר תלויות
 
 ```
-FS-1 (שרת) ──► משחרר את ML / FS-2 / סימולטור
-ML-1+ML-2 ──► analyzer מחזיר ניתוח אמיתי ──► FS-1 מחבר use_model=True
-FS-2 ──► דשבורד מול /alerts
-סימולטור (אחרון) ──► מזרים שיחה, מדגים הכל זורם
+FS-1 (שרת) ──► משחרר את כולם
+   ├─► whatsapp_bridge ⭐ (הודעות אמיתיות → /ingest)   ← דרישת השופט
+   ├─► simulator (fallback לבמה, אותו חוזה A)
+   └─► FS-2 דשבורד מול /alerts
+ML-1+ML-2 ──► analyzer אמיתי ──► FS-1 מחבר use_model=True
 ```
 
-**מתחילים מ-FS-1.** הכל מוכן ב-fallback — הדמו לא קורס גם בלי מודל/LLM.
+**מתחילים מ-FS-1.** הכל מוכן ב-fallback — הדמו לא קורס גם בלי מודל/LLM/וואטסאפ.
+**עדיפות לשופט:** שרת → גשר וואטסאפ עובד מקצה לקצה. זה ה"עובד באמת".
