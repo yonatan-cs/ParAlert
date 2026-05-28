@@ -1,11 +1,14 @@
+import { useI18n } from "../i18n/I18nContext.jsx";
+
 // At-a-glance: the 3 bullying angles + the two new dimensions (police-severe, disinfo).
 const ANGLES = [
-  { role: "victim", label: "קורבן", dot: "bg-victim" },
-  { role: "aggressor", label: "תוקף", dot: "bg-aggressor" },
-  { role: "bystander", label: "צופה", dot: "bg-bystander" },
+  { role: "victim", dot: "bg-victim" },
+  { role: "aggressor", dot: "bg-aggressor" },
+  { role: "bystander", dot: "bg-bystander" },
 ];
 
 export default function SummaryBar({ alerts }) {
+  const { t } = useI18n();
   const counts = { victim: 0, aggressor: 0, bystander: 0 };
   let police = 0;
   let disinfo = 0;
@@ -31,7 +34,7 @@ export default function SummaryBar({ alerts }) {
                 <span className={`h-2 w-2 rounded-full ${a.dot}`} />
                 <span className="text-2xl font-bold leading-none">{n}</span>
               </span>
-              <span className="text-xs text-muted">הילד שלי כ{a.label}</span>
+              <span className="text-xs text-muted">{t.summary.asRole(t.roleShort[a.role])}</span>
             </div>
           );
         })}
@@ -41,12 +44,12 @@ export default function SummaryBar({ alerts }) {
         <div className="mt-3 flex flex-wrap justify-center gap-2 border-t border-edge pt-3 text-xs">
           {police > 0 && (
             <span className="rounded-full bg-sev-high/15 px-3 py-1 font-medium text-sev-high">
-              🚨 {police} דורשות פנייה למשטרה
+              {t.summary.police(police)}
             </span>
           )}
           {disinfo > 0 && (
             <span className="rounded-full bg-accent/15 px-3 py-1 font-medium text-accent">
-              📰 {disinfo} דיסאינפורמציה
+              {t.summary.disinfo(disinfo)}
             </span>
           )}
         </div>

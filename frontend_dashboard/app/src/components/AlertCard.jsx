@@ -1,11 +1,6 @@
 import { useState } from "react";
-import {
-  CATEGORY_HE,
-  ROLE_HE,
-  SEVERITY_HE,
-  ESCALATION_HE,
-  relativeTime,
-} from "../lib/format.js";
+import { useI18n } from "../i18n/I18nContext.jsx";
+import { relativeTime } from "../lib/format.js";
 
 const SEV = {
   high: { dot: "bg-sev-high", badge: "bg-sev-high/15 text-sev-high", fill: "bg-sev-high" },
@@ -18,6 +13,7 @@ const SENSITIVE = new Set(["nudity", "sexual", "sexual_harassment"]);
 // Shows the actual media the child received. Sensitive content is blurred (the
 // parent can reveal it) — the system only reports, it can't block WhatsApp.
 function MediaPreview({ bubble, sensitive }) {
+  const { t } = useI18n();
   const [revealed, setRevealed] = useState(false);
   if (!bubble.media_type) return null;
   const isVideo = bubble.media_type === "video";
@@ -38,8 +34,8 @@ function MediaPreview({ bubble, sensitive }) {
         </span>
       )}
       {isVideo && (
-        <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] text-white">
-          וידאו
+        <span className="absolute bottom-1 start-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] text-white">
+          {t.card.video}
         </span>
       )}
       {blurred && (
@@ -48,8 +44,8 @@ function MediaPreview({ bubble, sensitive }) {
           onClick={() => setRevealed(true)}
           className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/35 text-xs font-medium text-white"
         >
-          <span>תמונה רגישה</span>
-          <span className="underline">הצג בכל זאת</span>
+          <span>{t.card.sensitive}</span>
+          <span className="underline">{t.card.reveal}</span>
         </button>
       )}
     </div>
@@ -71,10 +67,11 @@ function Bubble({ bubble, trigger = false, sensitive = false }) {
 }
 
 function EscalationBanner({ escalation }) {
+  const { t } = useI18n();
   if (!escalation || escalation === "none") return null;
   const cls =
     "mb-3 flex items-center gap-2 rounded-xl bg-sev-high px-3 py-2.5 text-sm font-semibold text-white shadow";
-  const body = <span>🚨 {ESCALATION_HE[escalation] || ""}</span>;
+  const body = <span>🚨 {t.escalation[escalation] || ""}</span>;
   return escalation === "police" ? (
     <a href="tel:100" className={cls}>
       {body}
@@ -85,6 +82,7 @@ function EscalationBanner({ escalation }) {
 }
 
 function CredibilitySection({ c }) {
+  const { t } = useI18n();
   const pct = Math.round((c.score ?? 0) * 100);
   return (
     <>
@@ -92,17 +90,20 @@ function CredibilitySection({ c }) {
         {/* fill = disinformation risk (1 - credibility), in red */}
         <div className="meter-fill h-full rounded-full bg-sev-high" style={{ width: `${100 - pct}%` }} />
       </div>
-      <div className="mb-2 mt-1.5 text-xs text-faint">מדד אמינות {pct}% · {c.verdict}</div>
+      <div className="mb-2 mt-1.5 text-xs text-faint">
+        {t.card.credibility} {pct}% · {c.verdict}
+      </div>
       <div className="rounded-xl bg-surface-2 p-3 text-sm">
-        <span className="mb-0.5 block text-[11px] text-faint">הטענה שנבדקה</span>
+        <span className="mb-0.5 block text-[11px] text-faint">{t.card.claimChecked}</span>
         {c.claim}
-        {c.source && <span className="mt-1 block text-[11px] text-faint">מקור: {c.source}</span>}
+        {c.source && <span className="mt-1 block text-[11px] text-faint">{t.card.source}: {c.source}</span>}
       </div>
     </>
   );
 }
 
 export default function AlertCard({ alert, isNew = false }) {
+  const { t, locale } = useI18n();
   const sev = SEV[alert.severity] || SEV.low;
   const isDisinfo = alert.alert_type === "disinformation";
   const sensitive = SENSITIVE.has(alert.category);
@@ -121,18 +122,18 @@ export default function AlertCard({ alert, isNew = false }) {
           <span className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${sev.dot}`} />
           <div>
             <h3 className="font-semibold leading-tight">{alert.group_name}</h3>
-            <span className="text-[11px] text-faint">{relativeTime(alert.created_at)}</span>
+            <span className="text-[11px] text-faint">{relativeTime(alert.created_at, locale)}</span>
           </div>
         </div>
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
           {isDisinfo && (
-            <span className="rounded-full bg-accent/15 px-2.5 py-1 text-xs text-accent">דיסאינפורמציה</span>
+            <span className="rounded-full bg-accent/15 px-2.5 py-1 text-xs text-accent">{t.card.disinfoBadge}</span>
           )}
           <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${sev.badge}`}>
-            {SEVERITY_HE[alert.severity] || alert.severity}
+            {t.severity[alert.severity] || alert.severity}
           </span>
           <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs text-muted">
-            {ROLE_HE[alert.role_of_child] || alert.role_of_child}
+            {t.role[alert.role_of_child] || alert.role_of_child}
           </span>
         </div>
       </div>
@@ -145,7 +146,7 @@ export default function AlertCard({ alert, isNew = false }) {
             <div className={`meter-fill h-full rounded-full ${sev.fill}`} style={{ width: `${toxPct}%` }} />
           </div>
           <div className="mb-3 mt-1.5 text-xs text-faint">
-            מדד רעילות {toxPct}% · {CATEGORY_HE[alert.category] || alert.category}
+            {t.card.toxicity} {toxPct}% · {t.category[alert.category] || alert.category}
           </div>
         </>
       )}
@@ -159,7 +160,7 @@ export default function AlertCard({ alert, isNew = false }) {
       ))}
 
       <div className="mt-3 rounded-xl bg-accent/10 p-3 text-sm ring-1 ring-accent/20">
-        <strong className="mb-1 block text-accent">המלצה לפעולה</strong>
+        <strong className="mb-1 block text-accent">{t.card.recommendation}</strong>
         <span className="text-content">{alert.recommendation}</span>
       </div>
     </article>

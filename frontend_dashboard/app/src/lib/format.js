@@ -1,49 +1,17 @@
-// Hebrew label maps + helpers, shared across components. Keys match contract C.
+// Locale-aware relative time. Intl.RelativeTimeFormat gives correct grammar in
+// both Hebrew and English; "now" is special-cased for a cleaner reading.
+// (Hebrew label maps moved to src/i18n/translations.js.)
 
-export const CATEGORY_HE = {
-  harassment: "הטרדה",
-  threat: "איום",
-  exclusion: "נידוי חברתי",
-  hate_speech: "שיח שנאה",
-  sexual: "תוכן מיני",
-  sexual_harassment: "הטרדה מינית / סחיטה",
-  nudity: "הפצת תוכן עירום",
-  self_harm: "פגיעה עצמית / אובדנות",
-  disinformation: "דיסאינפורמציה",
-  none: "—",
-};
-
-export const ROLE_HE = {
-  victim: "הילד שלי — קורבן",
-  aggressor: "הילד שלי — תוקף",
-  bystander: "הילד שלי — צופה",
-  exposed: "הילד שלי — נחשף",
-  none: "—",
-};
-
-export const SEVERITY_HE = {
-  high: "חמור",
-  medium: "בינוני",
-  low: "קל",
-};
-
-// Police / school escalation banner copy for severe cases.
-export const ESCALATION_HE = {
-  police: "מומלץ מאוד לפנות למשטרה — חיוג 100",
-  school: "מומלץ לפנות לבית הספר",
-  none: "",
-};
-
-export function relativeTime(iso) {
+export function relativeTime(iso, locale = "he-IL") {
   if (!iso) return "";
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return "";
+  // Demo timestamps can be later "today"; clamp the future to "now" so we never
+  // render "in 17 minutes". Always shown as past ("… ago" / "לפני …").
   const sec = Math.max(0, Math.round((Date.now() - then) / 1000));
-  if (sec < 60) return "עכשיו";
-  const min = Math.round(sec / 60);
-  if (min < 60) return `לפני ${min} ${min === 1 ? "דקה" : "דקות"}`;
-  const hr = Math.round(min / 60);
-  if (hr < 24) return `לפני ${hr} ${hr === 1 ? "שעה" : "שעות"}`;
-  const day = Math.round(hr / 24);
-  return `לפני ${day} ${day === 1 ? "יום" : "ימים"}`;
+  if (sec < 60) return locale.startsWith("he") ? "עכשיו" : "now";
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+  if (sec < 3600) return rtf.format(-Math.round(sec / 60), "minute");
+  if (sec < 86400) return rtf.format(-Math.round(sec / 3600), "hour");
+  return rtf.format(-Math.round(sec / 86400), "day");
 }

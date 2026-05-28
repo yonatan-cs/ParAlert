@@ -3,7 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SafeNet — לוח הורה</title>
+    <title>SafeNet</title>
+    <script>
+      // Apply language + direction before paint to avoid an RTL/LTR flash.
+      // Priority: ?lang= query (shareable English link) > saved choice.
+      try {
+        var q = new URLSearchParams(location.search).get("lang");
+        var l = q === "en" || q === "he" ? q : localStorage.getItem("safenet.lang");
+        if (l === "en" || l === "he") {
+          document.documentElement.lang = l;
+          document.documentElement.dir = l === "he" ? "rtl" : "ltr";
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

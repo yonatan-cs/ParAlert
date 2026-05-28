@@ -1,64 +1,76 @@
 import { useEffect, useState } from "react";
+import { useI18n } from "../i18n/I18nContext.jsx";
 
 const STORAGE_KEY = "safenet.settings";
 
-const DEFAULTS = {
-  childName: "יונתן",
-  childAge: 12,
-  sensitivity: "medium",
-  notify: { push: true, email: false, quietHours: true },
-  groups: [
-    { id: "g1", name: "כיתה ו'2 - בלי המורה", on: true },
-    { id: "g2", name: "חברים מהשכונה", on: true },
-    { id: "g3", name: "כדורגל שכבה ו'", on: false },
-  ],
-};
-
-function loadSettings() {
-  try {
-    return { ...DEFAULTS, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") };
-  } catch {
-    return DEFAULTS;
-  }
+function defaultsFor(t) {
+  return {
+    childName: t.settings.defaultChild,
+    childAge: 12,
+    sensitivity: "medium",
+    notify: { push: true, email: false, quietHours: true },
+    groups: t.settings.defaultGroups.map((name, i) => ({ id: `g${i + 1}`, name, on: i !== 2 })),
+    _touched: false,
+  };
 }
 
-const SENSITIVITY = [
-  { key: "low", label: "נמוך", hint: "רק חמור" },
-  { key: "medium", label: "בינוני", hint: "מאוזן" },
-  { key: "high", label: "גבוה", hint: "גם רמזים" },
+function loadSettings(t) {
+  try {
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    if (stored && stored._touched) return { ...defaultsFor(t), ...stored };
+  } catch {
+    /* ignore */
+  }
+  return defaultsFor(t);
+}
+
+const SENS = [
+  { key: "low", label: "sensLow", hint: "sensLowHint" },
+  { key: "medium", label: "sensMedium", hint: "sensMediumHint" },
+  { key: "high", label: "sensHigh", hint: "sensHighHint" },
 ];
 
 export default function Settings() {
-  const [s, setS] = useState(loadSettings);
+  const { t, lang } = useI18n();
+  const [s, setS] = useState(() => loadSettings(t));
+
+  // Untouched settings follow the active language (clean fresh demo); once the
+  // parent edits anything, their data is kept and persisted across reloads.
+  useEffect(() => {
+    setS((prev) => (prev._touched ? prev : defaultsFor(t)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+    if (s._touched) localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
   }, [s]);
 
-  const set = (patch) => setS((prev) => ({ ...prev, ...patch }));
-  const setNotify = (k, v) => setS((prev) => ({ ...prev, notify: { ...prev.notify, [k]: v } }));
+  const set = (patch) => setS((prev) => ({ ...prev, ...patch, _touched: true }));
+  const setNotify = (k, v) =>
+    setS((prev) => ({ ...prev, notify: { ...prev.notify, [k]: v }, _touched: true }));
   const toggleGroup = (id) =>
     setS((prev) => ({
       ...prev,
+      _touched: true,
       groups: prev.groups.map((g) => (g.id === id ? { ...g, on: !g.on } : g)),
     }));
 
   return (
     <div className="animate-fade">
-      <Section title="פרופיל הילד">
+      <Section title={t.settings.profile}>
         <div className="flex items-center gap-3 px-4 py-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent/15 text-lg font-bold text-accent">
             {(s.childName || "?").trim().charAt(0)}
           </div>
           <div className="flex flex-1 gap-2">
-            <Field label="שם">
+            <Field label={t.settings.name}>
               <input
                 value={s.childName}
                 onChange={(e) => set({ childName: e.target.value })}
                 className="w-full rounded-lg border border-edge bg-ink px-3 py-1.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
               />
             </Field>
-            <Field label="גיל">
+            <Field label={t.settings.age}>
               <input
                 type="number"
                 min="5"
@@ -72,10 +84,10 @@ export default function Settings() {
         </div>
       </Section>
 
-      <Section title="רגישות ההתראות" desc="כמה מוקדם להתריע. בינוני מומלץ לרוב המשפחות.">
+      <Section title={t.settings.sensitivity} desc={t.settings.sensitivityDesc}>
         <div className="p-3">
           <div className="grid grid-cols-3 gap-1 rounded-xl bg-ink p-1">
-            {SENSITIVITY.map((opt) => {
+            {SENS.map((opt) => {
               const active = s.sensitivity === opt.key;
               return (
                 <button
@@ -86,8 +98,8 @@ export default function Settings() {
                     active ? "bg-surface-2 text-content" : "text-muted hover:text-content"
                   }`}
                 >
-                  <div className="text-sm font-medium">{opt.label}</div>
-                  <div className="text-[11px] text-faint">{opt.hint}</div>
+                  <div className="text-sm font-medium">{t.settings[opt.label]}</div>
+                  <div className="text-[11px] text-faint">{t.settings[opt.hint]}</div>
                 </button>
               );
             })}
@@ -95,19 +107,19 @@ export default function Settings() {
         </div>
       </Section>
 
-      <Section title="התראות">
-        <Row label="התראת פוש" hint="הודעה מיידית לטלפון">
+      <Section title={t.settings.notifications}>
+        <Row label={t.settings.push} hint={t.settings.pushHint}>
           <Toggle checked={s.notify.push} onChange={(v) => setNotify("push", v)} />
         </Row>
-        <Row label="סיכום במייל" hint="דוח יומי מרוכז">
+        <Row label={t.settings.email} hint={t.settings.emailHint}>
           <Toggle checked={s.notify.email} onChange={(v) => setNotify("email", v)} />
         </Row>
-        <Row label="שעות שקט" hint="ללא התראות 22:00–07:00 (אלא אם חמור)">
+        <Row label={t.settings.quiet} hint={t.settings.quietHint}>
           <Toggle checked={s.notify.quietHours} onChange={(v) => setNotify("quietHours", v)} />
         </Row>
       </Section>
 
-      <Section title="קבוצות במעקב" desc="בחר אילו קבוצות וואטסאפ לנטר.">
+      <Section title={t.settings.groups} desc={t.settings.groupsDesc}>
         {s.groups.map((g) => (
           <Row key={g.id} label={g.name}>
             <Toggle checked={g.on} onChange={() => toggleGroup(g.id)} />
@@ -115,7 +127,7 @@ export default function Settings() {
         ))}
       </Section>
 
-      <p className="px-1 pb-2 text-center text-xs text-faint">השינויים נשמרים אוטומטית</p>
+      <p className="px-1 pb-2 text-center text-xs text-faint">{t.settings.autosave}</p>
     </div>
   );
 }
