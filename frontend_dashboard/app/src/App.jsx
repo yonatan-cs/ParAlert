@@ -43,8 +43,14 @@ export default function App() {
         const r = await fetch(API);
         if (!r.ok) throw new Error(`status ${r.status}`);
         data = await r.json();
-        connected = true;
+        // Treat backend as "live" only if it actually has alerts. An empty
+        // backend (e.g. Render reset, not re-seeded) falls back to the rich
+        // mock so the demo dashboard is never empty.
+        connected = Array.isArray(data) && data.length > 0;
       } catch {
+        connected = false;
+      }
+      if (!connected) {
         try {
           const r = await fetch("/mock_data.json");
           data = await r.json();
@@ -55,7 +61,7 @@ export default function App() {
       }
       if (!active || !Array.isArray(data)) return;
       setLive(connected);
-      setSource(connected ? "מחובר" : "מצב הדגמה");
+      setSource(connected ? "מחובר · זמן אמת" : "מצב הדגמה");
       setAlerts(data);
     }
 
