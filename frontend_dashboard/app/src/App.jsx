@@ -73,32 +73,71 @@ export default function App() {
     };
   }, []);
 
-  // Real-time push (FS-A's WebSocket). Enhancement only — polling above is the
-  // safety net, so a missing/closed socket degrades gracefully.
+  // Real-time push (FS-A's WebSocket) with auto-reconnect + heartbeat. Polling above
+  // stays the safety net, so a dropped socket (e.g. a Render free-tier cold start)
+  // degrades gracefully and then transparently re-subscribes with backoff.
   useEffect(() => {
     let ws;
-    try {
-      ws = new WebSocket(WS_URL);
-    } catch {
-      return;
+    let retry = 0;
+    let reconnectTimer;
+    let stopped = false;
+
+    function scheduleReconnect() {
+      const delay = Math.min(1000 * 2 ** retry, 15000); // exponential backoff, cap 15s
+      retry += 1;
+      reconnectTimer = setTimeout(connect, delay);
     }
-    ws.onmessage = (ev) => {
-      let alert;
+
+    function connect() {
+      if (stopped) return;
       try {
-        alert = JSON.parse(ev.data);
+        ws = new WebSocket(WS_URL);
       } catch {
+        scheduleReconnect();
         return;
       }
-      if (!alert || !alert.alert_id) return;
-      setAlerts((prev) =>
-        prev.some((a) => a.alert_id === alert.alert_id) ? prev : [alert, ...prev]
-      );
-      setLive(true);
-      setSource("מחובר · זמן אמת");
-    };
+      ws.onopen = () => {
+        retry = 0;
+        setLive(true);
+        setSource("מחובר · זמן אמת");
+      };
+      ws.onmessage = (ev) => {
+        let msg;
+        try {
+          msg = JSON.parse(ev.data);
+        } catch {
+          return;
+        }
+        if (!msg) return;
+        if (msg.type === "ping") {
+          setLive(true); // heartbeat — keep the indicator green between alerts
+          return;
+        }
+        if (!msg.alert_id) return;
+        setAlerts((prev) =>
+          prev.some((a) => a.alert_id === msg.alert_id) ? prev : [msg, ...prev]
+        );
+        setLive(true);
+        setSource("מחובר · זמן אמת");
+      };
+      ws.onclose = () => {
+        if (!stopped) scheduleReconnect();
+      };
+      ws.onerror = () => {
+        try {
+          ws.close(); // onclose will schedule the reconnect
+        } catch {
+          /* already closed */
+        }
+      };
+    }
+
+    connect();
     return () => {
+      stopped = true;
+      clearTimeout(reconnectTimer);
       try {
-        ws.close();
+        ws && ws.close();
       } catch {
         /* already closed */
       }
@@ -125,7 +164,7 @@ export default function App() {
         {view === "dashboard" && (
           <span className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs text-muted">
             <span
-              className={`inline-block h-1.5 w-1.5 rounded-full ${live ? "bg-sev-low" : "bg-sev-medium"}`}
+              className={`inline-block h-1.5 w-1.5 rounded-full ${live ? "bg-sev-low animate-pulse-live" : "bg-sev-medium"}`}
             />
             {source}
           </span>

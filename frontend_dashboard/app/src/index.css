@@ -8,7 +8,7 @@
   --color-edge: oklch(0.32 0.015 270);
   --color-content: oklch(0.96 0.005 270);
   --color-muted: oklch(0.72 0.012 270);
-  --color-faint: oklch(0.56 0.012 270);
+  --color-faint: oklch(0.62 0.012 270);
 
   --color-accent: oklch(0.74 0.1 205);
 
@@ -53,6 +53,11 @@ body {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
 }
+@keyframes pulse-live {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--color-sev-low) 65%, transparent); }
+  70% { box-shadow: 0 0 0 5px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
 
 .animate-enter { animation: enter var(--dur-slow) var(--ease) both; }
 .animate-fade { animation: fade-in var(--dur) var(--ease) both; }
@@ -61,6 +66,7 @@ body {
   transform-origin: right; /* RTL: grow from the inline-start */
   animation: meter var(--dur-slow) var(--ease) both;
 }
+.animate-pulse-live { animation: pulse-live 2s ease-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   *,
