@@ -18,10 +18,17 @@ npm run build    # בדיקת קומפילציה (dist/)
 ### מבנה `app/`
 | קובץ | תפקיד |
 |------|-------|
-| `src/App.jsx` | טעינה + polling + מצב חיבור (API / MOCK) + highlight להתראה חדשה |
-| `src/components/AlertCard.jsx` | כרטיס לפי חוזה C: קבוצה, תפקיד, מד רעילות, בועות, המלצה |
+| `src/App.jsx` | טאבים (צ'אט/דשבורד) + polling + מצב חיבור + מיון + highlight להתראה חדשה |
+| `src/components/ChatSimulator.jsx` | פתיחת הדמו — צ'אט קבוצתי בסגנון וואטסאפ שמתדרדר לחרם + banner התראה |
+| `src/components/SummaryBar.jsx` | פירוק ל-3 זוויות (קורבן/תוקף/צופה) |
+| `src/components/FilterBar.jsx` | סינון לפי תפקיד הילד |
+| `src/components/AlertCard.jsx` | כרטיס לפי חוזה C: חומרה, זמן, מד רעילות, בועות, המלצה |
+| `src/lib/format.js` | מפות עברית (קטגוריה/תפקיד/חומרה) + זמן יחסי |
+| `src/data/demoChat.js` | תסריט הצ'אט לפתיחת הדמו |
 | `src/index.css` | Tailwind v4 (`@import "tailwindcss"`) + אנימציית כניסה |
 | `public/mock_data.json` | fallback (עותק מ-`contracts/mock_alerts.json`) |
+
+**זרימת דמו:** טאב "צ'אט הילד" → ▶ הפעל → שיחה מתדרדרת + banner "התראה נשלחה" → עבור לטאב "דשבורד הורה" לראות את ההתראה.
 
 Tailwind v4 דרך `@tailwindcss/vite` (ב-`vite.config.js`). RTL מוגדר ב-`index.html` (`dir="rtl"`).
 

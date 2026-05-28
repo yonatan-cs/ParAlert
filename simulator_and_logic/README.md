@@ -14,6 +14,9 @@ python recommendation_engine.py
 # 2) סימולטור (הבקאנד חייב לרוץ על :8000)
 python simulator.py
 python simulator.py --conversation conversations/escalation_demo.json --speed 0.5
+
+# בדיקת תסריט + מיפוי חוזה A בלי שרת (מדפיס payloads, בלי sleep):
+python simulator.py --dry-run --conversation conversations/aggressor_demo.json
 ```
 
 ## רכיבים
