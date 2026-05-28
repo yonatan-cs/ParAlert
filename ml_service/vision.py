@@ -11,6 +11,8 @@ This module is split by task:
 """
 from __future__ import annotations
 
+import os
+import shutil
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,7 +20,10 @@ from urllib.parse import urlparse
 
 MEDIA_MODEL = "Falconsai/nsfw_image_detection"
 AI_IMAGE_MODEL = "capcheck/ai-image-detection"
-AI_VIDEO_MODEL = "Vansh180/VideoMae-ffc23-deepfake-detector"
+AI_VIDEO_MODEL = os.getenv(
+    "SAFENET_AI_VIDEO_MODEL",
+    "Ammar2k/videomae-base-finetuned-deepfake-subset",
+)
 MEDIA_THRESHOLD = 0.5
 AI_THRESHOLD = 0.5
 DOWNLOAD_TIMEOUT_SECONDS = 20
@@ -27,6 +32,15 @@ VIDEO_SAMPLE_SECONDS = 2
 MAX_VIDEO_FRAMES = 12
 DOWNLOAD_HEADERS = {
     "User-Agent": "SafeNetHackathon/0.1 (educational demo; contact: local)",
+}
+_CONTENT_TYPE_SUFFIXES = {
+    "image/jpeg": ".jpg",
+    "image/png": ".png",
+    "image/webp": ".webp",
+    "image/bmp": ".bmp",
+    "video/mp4": ".mp4",
+    "video/quicktime": ".mov",
+    "video/webm": ".webm",
 }
 
 _IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
@@ -38,7 +52,12 @@ _REAL_LABEL_HINTS = {"real", "human", "authentic", "natural"}
 
 @dataclass
 class MediaAnalysis:
-    """Compact result returned by media analyzers."""
+    """Media analysis result used by the ML orchestrator.
+
+    safety_score is the only media score that can create an alert. ai_score is
+    intentionally kept as experimental/debug information because current public
+    AI/deepfake detectors are noisy.
+    """
 
     is_harmful: bool
     score: float
@@ -81,18 +100,9 @@ class MediaDownloader:
 
     def download(self, media_url: str, target_dir: Path) -> Path:
         """Download a URL to target_dir with timeout and size limits."""
-        if self._is_youtube_url(media_url):
-            return self._download_youtube(media_url, target_dir)
-        return self._download_direct(media_url, target_dir)
-
-    def _download_direct(self, media_url: str, target_dir: Path) -> Path:
-        """Download a direct image/video URL with requests."""
         import requests
 
         parsed = urlparse(media_url)
-        suffix = Path(parsed.path).suffix.lower() or ".bin"
-        target = target_dir / f"media{suffix}"
-
         with requests.get(
             media_url,
             stream=True,
@@ -100,6 +110,8 @@ class MediaDownloader:
             headers=DOWNLOAD_HEADERS,
         ) as response:
             response.raise_for_status()
+            suffix = self._suffix_from_response(parsed.path, response.headers.get("content-type"))
+            target = target_dir / f"media{suffix}"
             downloaded = 0
             with target.open("wb") as file:
                 for chunk in response.iter_content(chunk_size=1024 * 1024):
@@ -112,39 +124,12 @@ class MediaDownloader:
 
         return target
 
-    def _download_youtube(self, media_url: str, target_dir: Path) -> Path:
-        """Download a YouTube URL as a small mp4 with yt-dlp."""
-        from yt_dlp import YoutubeDL
-
-        output_template = str(target_dir / "youtube.%(ext)s")
-        options = {
-            "format": "worst[ext=mp4]/worst",
-            "outtmpl": output_template,
-            "quiet": True,
-            "no_warnings": True,
-            "noplaylist": True,
-            "max_filesize": MAX_DOWNLOAD_BYTES,
-        }
-        with YoutubeDL(options) as ydl:
-            info = ydl.extract_info(media_url, download=True)
-
-        downloaded = Path(ydl.prepare_filename(info))
-        if not downloaded.exists():
-            matches = list(target_dir.glob("youtube.*"))
-            if not matches:
-                raise ValueError("yt-dlp did not create a video file")
-            downloaded = matches[0]
-
-        if downloaded.suffix.lower() not in _VIDEO_EXTENSIONS:
-            mp4_target = target_dir / "youtube.mp4"
-            downloaded.rename(mp4_target)
-            downloaded = mp4_target
-
-        return downloaded
-
-    def _is_youtube_url(self, media_url: str) -> bool:
-        host = urlparse(media_url).netloc.lower()
-        return "youtube.com" in host or "youtu.be" in host
+    def _suffix_from_response(self, url_path: str, content_type: str | None) -> str:
+        suffix = Path(url_path).suffix.lower()
+        if suffix:
+            return suffix
+        clean_content_type = (content_type or "").split(";", 1)[0].strip().lower()
+        return _CONTENT_TYPE_SUFFIXES.get(clean_content_type, ".bin")
 
 
 class ImageSafetyAnalyzer:
@@ -217,6 +202,7 @@ class ImageAuthenticityAnalyzer:
         self.model_provider = model_provider
 
     def score_path(self, image_path: Path) -> float:
+        """Return AI-generated score for an image, or 0.0 on model failure."""
         self.model_provider.load()
         if self.model_provider.model is None:
             return 0.0
@@ -235,19 +221,28 @@ class VideoAuthenticityAnalyzer:
         self.model_provider = model_provider
 
     def score_path(self, video_path: Path) -> float:
+        """Return AI/deepfake score for a video, or 0.0 on model failure."""
         self.model_provider.load()
         if self.model_provider.model is None:
             return 0.0
         try:
-            results = self.model_provider.model(str(video_path))
-            return _ai_generated_score(results)
+            with tempfile.TemporaryDirectory() as tmpdir:
+                stable_path = Path(tmpdir) / "video_for_model.mp4"
+                shutil.copyfile(video_path, stable_path)
+                results = self.model_provider.model(str(stable_path))
+                return _ai_generated_score(results)
         except Exception as exc:
             print(f"[media] video authenticity failed: {exc}")
             return 0.0
 
 
 class MediaAnalyzer:
-    """Analyze a media URL by delegating to image or video analyzers."""
+    """Analyze direct image/video URLs.
+
+    Supported input should be a direct media file URL, such as .jpg, .png,
+    .webp, .mp4, .mov, or a URL that returns a supported media Content-Type.
+    Webpage URLs such as YouTube watch pages are intentionally unsupported.
+    """
 
     def __init__(self, use_model: bool = True):
         self.safety_provider = PipelineModelProvider(
@@ -308,6 +303,7 @@ class MediaAnalyzer:
             return _fallback(f"media analysis failed: {exc}", self._model_used("unknown"))
 
     def _media_type(self, media_path: Path) -> str:
+        """Infer image/video type from the downloaded local file suffix."""
         suffix = media_path.suffix.lower()
         if suffix in _IMAGE_EXTENSIONS:
             return "image"
@@ -354,11 +350,11 @@ def _result(
     safety_score: float,
     ai_score: float,
 ) -> MediaAnalysis:
-    is_harmful = safety_score >= MEDIA_THRESHOLD or ai_score >= AI_THRESHOLD
+    # AI/deepfake scores are experimental and too noisy to create alerts alone.
+    # Keep them in the explanation, but use visual safety as the alert trigger.
+    is_harmful = safety_score >= MEDIA_THRESHOLD
     if safety_score >= MEDIA_THRESHOLD:
         category = "sexual"
-    elif ai_score >= AI_THRESHOLD:
-        category = "harassment"
     else:
         category = "none"
     return MediaAnalysis(

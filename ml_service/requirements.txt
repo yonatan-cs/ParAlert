@@ -4,5 +4,4 @@ torch>=2.1
 pillow
 opencv-python
 requests
-yt-dlp
 av

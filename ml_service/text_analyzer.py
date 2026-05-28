@@ -1,13 +1,13 @@
 """
-Text toxicity analyzer. OWNER: Dev 1.
+Text toxicity analysis for Hebrew chat messages.
 
-This module owns only text analysis:
-  - Hebrew profanity/toxicity scoring with Hugging Face.
-  - Contextual bullying heuristics for exclusion and threats.
-  - Five-level safety labels.
+This module owns text-only ML logic:
+  - Hugging Face Hebrew profanity/toxicity scoring.
+  - Contextual bullying heuristics for exclusion, boycott, and threats.
+  - Conversion of numeric scores into five safety levels.
 
-It does not know about images, videos, URLs, backend alerts, or role/category
-classification. Those are handled by other classes.
+It intentionally does not know about HTTP, media URLs, backend alerts, or child
+role classification. Those responsibilities live in other modules.
 """
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ _AMBIGUOUS_LOGISTICS_PHRASES = [
 
 @dataclass
 class TextAnalysis:
-    """Result returned by TextToxicityAnalyzer."""
+    """Text analysis result used by the orchestrator."""
 
     score: float
     level: str
@@ -58,9 +58,10 @@ class TextAnalysis:
 
 
 class TextToxicityAnalyzer:
-    """Analyze Hebrew chat text and context."""
+    """Score Hebrew text and surrounding context for bullying/toxicity."""
 
     def __init__(self, use_model: bool = True):
+        """Create the analyzer and optionally load the Hugging Face model."""
         self.model = None
         self.tokenizer = None
         self.torch = None
@@ -86,7 +87,7 @@ class TextToxicityAnalyzer:
             self.model_name = "keyword-fallback"
 
     def analyze(self, message: IncomingMessage) -> TextAnalysis:
-        """Analyze message text plus conversation context."""
+        """Analyze message.text together with its before/after context."""
         text = self.build_context_text(message)
         score = self.score_text(text)
         return TextAnalysis(
@@ -96,7 +97,7 @@ class TextToxicityAnalyzer:
         )
 
     def score_text(self, text: str) -> float:
-        """Return a text toxicity score between 0.0 and 1.0."""
+        """Return a toxicity score between 0.0 and 1.0."""
         heuristic_score = self._heuristic_score(text)
 
         if self.model is None or self.tokenizer is None or self.torch is None:
@@ -121,12 +122,14 @@ class TextToxicityAnalyzer:
         return max(model_score, heuristic_score)
 
     def _heuristic_score(self, text: str) -> float:
-        """Score bullying patterns that a profanity model may miss."""
+        """Score bullying patterns that profanity-only models often miss."""
         hits = sum(1 for phrase in _TOXIC_KEYWORDS if phrase in text)
         exclusion_hits = sum(1 for phrase in _EXCLUSION_PHRASES if phrase in text)
         threat_hits = sum(1 for phrase in _THREAT_PHRASES if phrase in text)
         safe_context_hits = sum(1 for phrase in _SAFE_CONTEXT_PHRASES if phrase in text)
 
+        # Example: "don't come to the library, we meet in class" is logistical,
+        # not bullying. These guards reduce that false positive.
         if exclusion_hits == 1 and safe_context_hits >= 2 and not hits and not threat_hits:
             exclusion_hits = 0
         if safe_context_hits >= 2 and not threat_hits:
@@ -152,7 +155,7 @@ class TextToxicityAnalyzer:
 
     @staticmethod
     def toxicity_level(score: float) -> str:
-        """Map a numeric score into one of five levels."""
+        """Map a numeric score into one of five stable severity labels."""
         if score < 0.2:
             return "level_1_safe"
         if score < 0.4:
