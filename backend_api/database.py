@@ -38,6 +38,11 @@ def save_alert(alert: dict[str, Any]) -> None:
         )
 
 
+def clear_alerts() -> None:
+    with _conn() as c:
+        c.execute("DELETE FROM alerts")
+
+
 def get_alerts(child_id: str | None = None) -> list[dict[str, Any]]:
     with _conn() as c:
         if child_id:

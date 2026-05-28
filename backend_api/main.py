@@ -14,6 +14,7 @@ Run:  uvicorn main:app --port 8000   (Swagger at /docs)
 from __future__ import annotations
 
 import asyncio
+import json
 import os
 import sys
 import uuid
@@ -94,6 +95,18 @@ def ingest(message: IncomingMessage) -> dict[str, object]:
 def list_alerts(child_id: str | None = None) -> list[dict]:
     """Feed for the parent dashboard (contract C)."""
     return database.get_alerts(child_id)
+
+
+@app.post("/demo/seed")
+def demo_seed() -> dict[str, int]:
+    """Reset to a clean 3-angle demo set (contracts/mock_alerts.json). Idempotent."""
+    database.clear_alerts()
+    path = os.path.join(os.path.dirname(__file__), "..", "contracts", "mock_alerts.json")
+    with open(path, encoding="utf-8") as f:
+        alerts = json.load(f)
+    for alert in alerts:
+        database.save_alert(alert)
+    return {"seeded": len(alerts)}
 
 
 @app.websocket("/ws/alerts")
