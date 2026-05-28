@@ -5,7 +5,7 @@ import FilterBar from "./components/FilterBar.jsx";
 import ChatSimulator from "./components/ChatSimulator.jsx";
 import Settings from "./components/Settings.jsx";
 import LanguageToggle from "./components/LanguageToggle.jsx";
-import TryIt from "./components/TryIt.jsx";
+import GroupChat from "./components/GroupChat.jsx";
 import { useI18n } from "./i18n/I18nContext.jsx";
 
 // Backend base is env-driven for deploy (Vercel sets VITE_API_BASE to the hosted
@@ -15,7 +15,7 @@ const API = `${API_BASE}/alerts`;
 const WS_URL = `${API_BASE.replace(/^http/, "ws")}/ws/alerts`;
 const POLL_MS = 3000;
 
-const TAB_KEYS = ["chat", "dashboard", "tryit", "settings"];
+const TAB_KEYS = ["chat", "dashboard", "settings"];
 
 // Dashboard is grouped into sections; each alert lands in exactly one (severe first).
 // Titles are looked up by key from the active locale (t.sections[key]).
@@ -184,69 +184,87 @@ export default function App() {
   };
 
   return (
-    <div className="mx-auto min-h-screen max-w-2xl px-4 py-6 md:px-6">
-      <header className="mb-5 flex items-center gap-3">
-        <h1 className="text-xl font-bold tracking-tight">🛡️ {t.appName}</h1>
-        {view === "dashboard" && (
-          <span className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs text-muted">
-            <span
-              className={`inline-block h-1.5 w-1.5 rounded-full ${live ? "bg-sev-low animate-pulse-live" : "bg-sev-medium"}`}
-            />
-            {source}
-          </span>
-        )}
-        <div className="ms-auto">
-          <LanguageToggle />
-        </div>
-      </header>
+    <div
+      className={`mx-auto min-h-screen px-4 py-6 md:px-6 ${
+        view === "dashboard" ? "max-w-2xl lg:max-w-6xl" : "max-w-2xl"
+      }`}
+    >
+      <div className="mx-auto max-w-2xl">
+        <header className="mb-5 flex items-center gap-3">
+          <h1 className="text-xl font-bold tracking-tight">🛡️ {t.appName}</h1>
+          {view === "dashboard" && (
+            <span className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs text-muted">
+              <span
+                className={`inline-block h-1.5 w-1.5 rounded-full ${live ? "bg-sev-low animate-pulse-live" : "bg-sev-medium"}`}
+              />
+              {source}
+            </span>
+          )}
+          <div className="ms-auto">
+            <LanguageToggle />
+          </div>
+        </header>
 
-      <nav className="mb-5 grid grid-cols-4 gap-1 rounded-xl bg-surface p-1">
-        {TAB_KEYS.map((key) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setView(key)}
-            className={`truncate rounded-lg px-2 py-2 text-xs font-medium transition-colors duration-150 sm:text-sm ${
-              view === key ? "bg-content text-ink" : "text-muted hover:text-content"
-            }`}
-          >
-            {t.tabs[key]}
-          </button>
-        ))}
-      </nav>
+        <nav className="mb-5 grid grid-cols-3 gap-1 rounded-xl bg-surface p-1">
+          {TAB_KEYS.map((key) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setView(key)}
+              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 ${
+                view === key ? "bg-content text-ink" : "text-muted hover:text-content"
+              }`}
+            >
+              {t.tabs[key]}
+            </button>
+          ))}
+        </nav>
+      </div>
 
       <div key={view} className="animate-fade">
-        {view === "chat" && <ChatSimulator />}
-        {view === "tryit" && <TryIt />}
-        {view === "settings" && <Settings />}
+        {view === "chat" && (
+          <div className="mx-auto max-w-2xl">
+            <ChatSimulator />
+          </div>
+        )}
+        {view === "settings" && (
+          <div className="mx-auto max-w-2xl">
+            <Settings />
+          </div>
+        )}
         {view === "dashboard" && (
-          <>
-            <SummaryBar alerts={alerts} />
-            <FilterBar value={filter} onChange={setFilter} alerts={alerts} />
-            {visible.length === 0 ? (
-              <div className="py-16 text-center text-faint">
-                {alerts.length === 0 ? t.empty.none : t.empty.noneInFilter}
-              </div>
-            ) : (
-              SECTIONS.map((s) => {
-                const items = visible.filter(s.match);
-                if (!items.length) return null;
-                return (
-                  <section key={s.key} className="mb-6">
-                    <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold text-muted">
-                      {t.sections[s.key]}
-                      <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] text-faint">
-                        {items.length}
-                      </span>
-                    </h2>
-                    {items.map((a) => (
-                      <AlertCard key={a.alert_id} alert={a} isNew={isNew(a.alert_id)} />
-                    ))}
-                  </section>
-                );
-              })
-            )}
-          </>
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div className="min-w-0">
+              <SummaryBar alerts={alerts} />
+              <FilterBar value={filter} onChange={setFilter} alerts={alerts} />
+              {visible.length === 0 ? (
+                <div className="py-16 text-center text-faint">
+                  {alerts.length === 0 ? t.empty.none : t.empty.noneInFilter}
+                </div>
+              ) : (
+                SECTIONS.map((s) => {
+                  const items = visible.filter(s.match);
+                  if (!items.length) return null;
+                  return (
+                    <section key={s.key} className="mb-6">
+                      <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold text-muted">
+                        {t.sections[s.key]}
+                        <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] text-faint">
+                          {items.length}
+                        </span>
+                      </h2>
+                      {items.map((a) => (
+                        <AlertCard key={a.alert_id} alert={a} isNew={isNew(a.alert_id)} />
+                      ))}
+                    </section>
+                  );
+                })
+              )}
+            </div>
+            <aside className="lg:sticky lg:top-6 lg:self-start">
+              <GroupChat />
+            </aside>
+          </div>
         )}
       </div>
     </div>
