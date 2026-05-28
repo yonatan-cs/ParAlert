@@ -105,8 +105,17 @@
       "file": "whatsapp_bridge/index.js, whatsapp_bridge/package.json",
       "root_cause": "whatsapp-web.js depends on puppeteer, whose postinstall downloads a ~150MB Chromium. The download was killed by a flaky network (ECONNRESET) and the whole install failed.",
       "fix": "Install with PUPPETEER_SKIP_DOWNLOAD=true (bash) / $env:PUPPETEER_SKIP_DOWNLOAD='true' (PowerShell), then drive the system browser: index.js auto-detects Chrome/Edge (or CHROME_PATH) and passes it as puppeteer.executablePath. Verified: bridge launches Chrome and renders the linked-device QR.",
-      "tags": ["whatsapp", "puppeteer", "chromium", "npm-install", "windows", "econnreset"],
-      "related_bugs": ["bug-005"],
+      "tags": [
+        "whatsapp",
+        "puppeteer",
+        "chromium",
+        "npm-install",
+        "windows",
+        "econnreset"
+      ],
+      "related_bugs": [
+        "bug-005"
+      ],
       "occurrences": 1,
       "last_seen": "2026-05-28T13:11:00Z"
     },
@@ -117,10 +126,34 @@
       "file": "backend_api/main.py",
       "root_cause": "uvicorn --reload (WatchFiles) on Windows stalled: it logged 'Reloading...' but the new worker never started, so the old worker (without the new /ws route) kept serving. Starlette returns 403 for a WebSocket path that matches no registered route, which looked like a code bug but was stale code.",
       "fix": "Stopped the server and restarted WITHOUT --reload (run fresh on each code change). WS push then verified end-to-end: connect -> POST /ingest toxic -> alert pushed over the socket. Lesson: on Windows, prefer a manual restart over --reload for this project.",
-      "tags": ["fastapi", "uvicorn", "reload", "watchfiles", "websocket", "windows", "403"],
+      "tags": [
+        "fastapi",
+        "uvicorn",
+        "reload",
+        "watchfiles",
+        "websocket",
+        "windows",
+        "403"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-28T13:10:30Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-05-28T13:55:19.823Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend_api/main.py",
+      "root_cause": "Had \"], allow_methods=[\"",
+      "fix": "Changed to \"], allow_headers=[\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T13:55:19.823Z"
     }
   ]
 }
