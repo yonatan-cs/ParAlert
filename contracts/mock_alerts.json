@@ -1,5 +1,21 @@
 [
   {
+    "alert_id": "alert_003",
+    "child_id": "child_001",
+    "alert_type": "bullying",
+    "severity": "high",
+    "toxicity_score": 0.89,
+    "role_of_child": "victim",
+    "category": "threat",
+    "escalation": "police",
+    "group_name": "כיתה ו'2 - בלי המורה",
+    "trigger_message": { "sender_name": "איתי", "text": "אם תספר למורה אני מחכה לך אחרי בית ספר", "timestamp": "2026-05-28T23:59:00" },
+    "context_before": [ { "sender_name": "נועה", "text": "תפסיקו כבר", "timestamp": "2026-05-28T23:58:40" } ],
+    "context_after": [],
+    "recommendation": "הילד שלך קיבל איום מפורש לפגיעה פיזית. גשו אליו בנחת, הבהירו שזו לא אשמתו ושאתם איתו. בשל האיום - תעדו (צילומי מסך), פנו להנהלת בית הספר, ובמקרה הצורך למשטרה (100).",
+    "created_at": "2026-05-28T23:59:03"
+  },
+  {
     "alert_id": "alert_001",
     "child_id": "child_001",
     "alert_type": "bullying",
@@ -9,11 +25,30 @@
     "category": "harassment",
     "escalation": "none",
     "group_name": "כיתה ו'2 - בלי המורה",
-    "trigger_message": { "sender_name": "דני", "text": "איזה אפס אתה, אל תבוא מחר", "timestamp": "2026-05-28T14:20:00" },
-    "context_before": [ { "sender_name": "יונתן", "text": "מתי קובעים למשחק?", "timestamp": "2026-05-28T14:19:30" } ],
-    "context_after": [ { "sender_name": "דני", "text": "כולם נגדך פה", "timestamp": "2026-05-28T14:20:40" } ],
-    "recommendation": "הילד שלך היה קורבן להשפלה ישירה. שוחח איתו בנחת, שאל איך הרגיש, והבהר שזו לא אשמתו. שקול פנייה למחנכת.",
-    "created_at": "2026-05-28T14:20:03"
+    "trigger_message": { "sender_name": "דני", "text": "יונתן אל תבוא, אף אחד לא רוצה אותך", "timestamp": "2026-05-28T23:58:00" },
+    "context_before": [
+      { "sender_name": "יונתן", "text": "מתי קובעים למשחק היום?", "timestamp": "2026-05-28T23:57:20" },
+      { "sender_name": "רון", "text": "אחרי הצהריים בפארק", "timestamp": "2026-05-28T23:57:35" }
+    ],
+    "context_after": [ { "sender_name": "דני", "text": "איזה אפס אתה בכלל", "timestamp": "2026-05-28T23:58:15" } ],
+    "recommendation": "הילד שלך היה קורבן להשפלה ונידוי. שוחח איתו בנחת, שאל איך הרגיש, והבהר שזו לא אשמתו. שקול פנייה למחנכת.",
+    "created_at": "2026-05-28T23:58:03"
+  },
+  {
+    "alert_id": "alert_009",
+    "child_id": "child_001",
+    "alert_type": "bullying",
+    "severity": "medium",
+    "toxicity_score": 0.7,
+    "role_of_child": "bystander",
+    "category": "harassment",
+    "escalation": "none",
+    "group_name": "כדורגל שכבה ו'",
+    "trigger_message": { "sender_name": "דני", "text": "עומר אתה אפס אל תבוא לאימון", "timestamp": "2026-05-28T22:00:00" },
+    "context_before": [ { "sender_name": "יונתן", "text": "מי בא לאימון מחר?", "timestamp": "2026-05-28T21:59:30" } ],
+    "context_after": [],
+    "recommendation": "הילד שלך נכח כשילד אחר הושפל. שאל מה ראה, הסבר שאדישות מזיקה, ועודד אותו לתמוך בנפגע או לדווח.",
+    "created_at": "2026-05-28T22:00:03"
   },
   {
     "alert_id": "alert_002",
@@ -30,22 +65,6 @@
     "context_after": [],
     "recommendation": "הילד שלך יזם הוצאה חברתית של ילד אחר. שוחח על איך מרגיש מי שמודר, בלי להאשים, ועודד הכלה.",
     "created_at": "2026-05-28T16:05:02"
-  },
-  {
-    "alert_id": "alert_003",
-    "child_id": "child_001",
-    "alert_type": "bullying",
-    "severity": "high",
-    "toxicity_score": 0.88,
-    "role_of_child": "bystander",
-    "category": "threat",
-    "escalation": "police",
-    "group_name": "כיתה ו'2 - בלי המורה",
-    "trigger_message": { "sender_name": "איתי", "text": "אם תספר למורה אני מחכה לך אחרי בית ספר", "timestamp": "2026-05-28T17:30:00" },
-    "context_before": [ { "sender_name": "נועה", "text": "תפסיקו כבר", "timestamp": "2026-05-28T17:29:10" } ],
-    "context_after": [],
-    "recommendation": "הילד שלך נחשף לאיום חמור כלפי ילד אחר. שאל מה ראה, הסבר שאסור להישאר אדיש. בשל האיום המפורש לפגיעה פיזית - מומלץ מאוד לתעד ולפנות למשטרה (100) ולהנהלת בית הספר.",
-    "created_at": "2026-05-28T17:30:04"
   },
   {
     "alert_id": "alert_004",
