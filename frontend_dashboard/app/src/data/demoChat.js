@@ -1,14 +1,42 @@
-// Scripted conversation for the demo opener (the child's group chat).
-// MUST stay in sync with the two "כיתה ו'2" alerts in contracts/mock_alerts.json
-// (alert_001 harassment + alert_003 threat) so the chat the judge watches matches
-// exactly what appears on the dashboard. `toxic` drives the alert flash.
-export const DEMO_GROUP = "כיתה ו'2 - בלי המורה";
-
-export const DEMO_CHAT = [
-  { sender: "יונתן", fromChild: true, text: "מתי קובעים למשחק היום?", delayMs: 700 },
-  { sender: "רון", fromChild: false, text: "אחרי הצהריים בפארק", delayMs: 1100 },
-  { sender: "דני", fromChild: false, text: "יונתן אל תבוא, אף אחד לא רוצה אותך", toxic: true, delayMs: 1600 },
-  { sender: "דני", fromChild: false, text: "איזה אפס אתה בכלל", toxic: true, delayMs: 1300 },
-  { sender: "נועה", fromChild: false, text: "תפסיקו כבר", delayMs: 1200 },
-  { sender: "איתי", fromChild: false, text: "אם תספר למורה אני מחכה לך אחרי בית ספר", toxic: true, delayMs: 1600 },
+// Multi-group demo scenarios for the chat opener ("הפעל").
+// Each group's flagged messages match a dashboard alert in
+// contracts/mock_alerts.json (kept in sync) so what the judge watches escalate
+// equals what pops on the dashboard.
+// flags: toxic = bullying · severe = police escalation · disinfo = credibility.
+export const DEMO_SCENARIOS = [
+  {
+    group: "כיתה ו'2 - בלי המורה",
+    members: "5 משתתפים",
+    messages: [
+      { sender: "יונתן", fromChild: true, text: "מתי קובעים למשחק היום?", delayMs: 700 },
+      { sender: "רון", text: "אחרי הצהריים בפארק", delayMs: 1100 },
+      { sender: "דני", text: "יונתן אל תבוא, אף אחד לא רוצה אותך", toxic: true, delayMs: 1500 },
+      { sender: "דני", text: "איזה אפס אתה בכלל", toxic: true, delayMs: 1200 },
+      { sender: "נועה", text: "תפסיקו כבר", delayMs: 1100 },
+      { sender: "איתי", text: "אם תספר למורה אני מחכה לך אחרי בית ספר", toxic: true, severe: true, delayMs: 1500 },
+    ],
+  },
+  {
+    group: "שכבה ז' - צ'אט כללי",
+    members: "קבוצה גדולה",
+    messages: [
+      { sender: "מספר לא מוכר", text: "היי, ראיתי אותך, את ממש יפה", delayMs: 900 },
+      { sender: "מספר לא מוכר", text: "שלחי לי תמונה שלך בלי בגדים או שאני מפיץ את מה שיש לי", media: "image", toxic: true, severe: true, delayMs: 1700 },
+    ],
+  },
+  {
+    group: "חדשות הכיתה 📰",
+    members: "12 משתתפים",
+    messages: [
+      { sender: "ליאור", text: "תראו את הסרטון הזה!! חיסון הקורונה גורם ל... חייבים לשתף", media: "video", disinfo: true, delayMs: 1500 },
+      { sender: "יונתן", fromChild: true, text: "וואו לא ידעתי, אשתף", delayMs: 1300 },
+    ],
+  },
+  {
+    group: "קבוצה אנונימית 🔞",
+    members: "אנונימי",
+    messages: [
+      { sender: "אנונימי", text: "הופצה תמונה פוגענית של הילדה שלך", media: "image", toxic: true, severe: true, delayMs: 1500 },
+    ],
+  },
 ];
