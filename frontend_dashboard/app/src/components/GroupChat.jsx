@@ -80,7 +80,7 @@ export default function GroupChat() {
   }
 
   return (
-    <div className="flex h-[74vh] flex-col overflow-hidden rounded-2xl border border-edge lg:h-[640px]">
+    <div className="flex h-[82vh] flex-col overflow-hidden rounded-2xl border border-edge lg:h-[720px]">
       {/* WhatsApp-style header */}
       <div className="flex items-center justify-between bg-[#075E54] px-4 py-3 text-white">
         <div className="flex items-center gap-2.5">
