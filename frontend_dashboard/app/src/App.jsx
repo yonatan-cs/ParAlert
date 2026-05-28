@@ -186,7 +186,7 @@ export default function App() {
   return (
     <div
       className={`mx-auto min-h-screen px-4 py-6 md:px-6 ${
-        view === "chat" ? "max-w-2xl lg:max-w-5xl" : "max-w-2xl"
+        view === "chat" ? "max-w-2xl lg:max-w-6xl" : "max-w-2xl"
       }`}
     >
       <div className="mx-auto max-w-2xl">
@@ -223,13 +223,13 @@ export default function App() {
 
       <div key={view} className="animate-fade">
         {view === "chat" && (
-          <div className="grid items-start gap-6 lg:grid-cols-2">
-            <div className="mx-auto w-full max-w-[400px]">
-              <GroupChat />
-            </div>
-            <div className="mx-auto w-full max-w-[400px]">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div className="min-w-0">
               <ChatSimulator />
             </div>
+            <aside className="lg:sticky lg:top-6 lg:self-start">
+              <GroupChat />
+            </aside>
           </div>
         )}
         {view === "settings" && (
