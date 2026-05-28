@@ -27,3 +27,4 @@ whatsapp_bridge/.wwebjs_cache/
 
 # OpenWolf runtime
 .wolf/daemon.log
+.wolf/designqc-captures/

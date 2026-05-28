@@ -76,8 +76,8 @@ export default function ChatSimulator() {
 
       <div className="relative h-[420px] space-y-2 overflow-y-auto bg-[#ECE5DD] p-3">
         {flash && (
-          <div className="sticky top-0 z-10 mx-auto w-fit rounded-full bg-red-600 px-4 py-1.5 text-sm font-medium text-white shadow">
-            🚨 SafeNet זיהה בעיה — התראה נשלחה להורה
+          <div className="animate-enter sticky top-0 z-10 mx-auto w-fit rounded-full bg-sev-high px-4 py-1.5 text-sm font-medium text-white shadow-lg">
+            🛡️ SafeNet זיהה בעיה — התראה נשלחה להורה
           </div>
         )}
 
@@ -87,7 +87,7 @@ export default function ChatSimulator() {
           </div>
         ) : (
           DEMO_CHAT.slice(0, shown).map((m, i) => (
-            <div key={i} className={`flex ${m.fromChild ? "justify-end" : "justify-start"}`}>
+            <div key={i} className={`animate-msg flex ${m.fromChild ? "justify-end" : "justify-start"}`}>
               <div
                 className={`max-w-[78%] rounded-lg px-3 py-1.5 text-sm shadow-sm ${
                   m.fromChild ? "bg-[#DCF8C6] text-slate-800" : "bg-white text-slate-800"

@@ -1,27 +1,73 @@
 @import "tailwindcss";
 
+/* Design tokens (see DESIGN.md). OKLCH, tinted-neutral ink + calm teal accent. */
+@theme {
+  --color-ink: oklch(0.17 0.012 270);
+  --color-surface: oklch(0.22 0.014 270);
+  --color-surface-2: oklch(0.27 0.016 270);
+  --color-edge: oklch(0.32 0.015 270);
+  --color-content: oklch(0.96 0.005 270);
+  --color-muted: oklch(0.72 0.012 270);
+  --color-faint: oklch(0.56 0.012 270);
+
+  --color-accent: oklch(0.74 0.1 205);
+
+  --color-sev-high: oklch(0.63 0.19 25);
+  --color-sev-medium: oklch(0.78 0.14 80);
+  --color-sev-low: oklch(0.74 0.15 150);
+
+  --color-victim: oklch(0.7 0.13 15);
+  --color-aggressor: oklch(0.78 0.13 70);
+  --color-bystander: oklch(0.72 0.1 235);
+}
+
 :root {
   color-scheme: dark;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 140ms;
+  --dur: 220ms;
+  --dur-slow: 360ms;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, "Segoe UI", system-ui, Arial, sans-serif;
-  background: #0f172a;
-  color: #e2e8f0;
+  font-family: -apple-system, "Segoe UI", system-ui, "Helvetica Neue", Arial, sans-serif;
+  background: var(--color-ink);
+  color: var(--color-content);
+  font-variant-numeric: tabular-nums;
 }
 
 @keyframes enter {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes meter {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 
-.animate-enter {
-  animation: enter 0.35s ease-out;
+.animate-enter { animation: enter var(--dur-slow) var(--ease) both; }
+.animate-fade { animation: fade-in var(--dur) var(--ease) both; }
+.animate-msg { animation: msg-in var(--dur) var(--ease) both; }
+.meter-fill {
+  transform-origin: right; /* RTL: grow from the inline-start */
+  animation: meter var(--dur-slow) var(--ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

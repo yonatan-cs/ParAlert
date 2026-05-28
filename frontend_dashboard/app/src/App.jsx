@@ -3,16 +3,23 @@ import AlertCard from "./components/AlertCard.jsx";
 import SummaryBar from "./components/SummaryBar.jsx";
 import FilterBar from "./components/FilterBar.jsx";
 import ChatSimulator from "./components/ChatSimulator.jsx";
+import Settings from "./components/Settings.jsx";
 
 const API = "http://localhost:8000/alerts";
 const POLL_MS = 3000;
+
+const TABS = [
+  { key: "chat", label: "📱 צ'אט הילד" },
+  { key: "dashboard", label: "🛡️ דשבורד" },
+  { key: "settings", label: "⚙️ הגדרות" },
+];
 
 export default function App() {
   const [alerts, setAlerts] = useState([]);
   const [source, setSource] = useState("טוען…");
   const [live, setLive] = useState(false);
   const [filter, setFilter] = useState("all");
-  const [view, setView] = useState("dashboard"); // "dashboard" | "chat"
+  const [view, setView] = useState("dashboard");
   const seen = useRef(new Set()); // alert_ids already shown — for the "new" highlight
 
   useEffect(() => {
@@ -37,7 +44,7 @@ export default function App() {
       }
       if (!active || !Array.isArray(data)) return;
       setLive(connected);
-      setSource(connected ? "מחובר ל-API" : "נתוני MOCK (אין חיבור לשרת)");
+      setSource(connected ? "מחובר" : "מצב הדגמה");
       setAlerts(data);
     }
 
@@ -49,14 +56,11 @@ export default function App() {
     };
   }, []);
 
-  // Newest first; filter by the child's role (the 3 angles).
   const visible = useMemo(() => {
     const sorted = [...alerts].sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
     );
-    return filter === "all"
-      ? sorted
-      : sorted.filter((a) => a.role_of_child === filter);
+    return filter === "all" ? sorted : sorted.filter((a) => a.role_of_child === filter);
   }, [alerts, filter]);
 
   const isNew = (id) => {
@@ -66,59 +70,53 @@ export default function App() {
   };
 
   return (
-    <div className="mx-auto min-h-screen max-w-3xl px-4 py-6 md:px-8">
+    <div className="mx-auto min-h-screen max-w-2xl px-4 py-6 md:px-6">
       <header className="mb-5 flex items-center gap-3">
-        <h1 className="text-2xl font-bold">🛡️ SafeNet</h1>
+        <h1 className="text-xl font-bold tracking-tight">🛡️ SafeNet</h1>
         {view === "dashboard" && (
-          <span className="flex items-center gap-1.5 rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-400">
+          <span className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs text-muted">
             <span
-              className={`inline-block h-2 w-2 rounded-full ${live ? "bg-green-400" : "bg-amber-400"}`}
+              className={`inline-block h-1.5 w-1.5 rounded-full ${live ? "bg-sev-low" : "bg-sev-medium"}`}
             />
             {source}
           </span>
         )}
       </header>
 
-      <div className="mb-5 flex gap-1 rounded-xl bg-slate-800 p-1">
-        <TabButton active={view === "chat"} onClick={() => setView("chat")}>
-          📱 צ'אט הילד
-        </TabButton>
-        <TabButton active={view === "dashboard"} onClick={() => setView("dashboard")}>
-          🛡️ דשבורד הורה
-        </TabButton>
+      <nav className="mb-5 grid grid-cols-3 gap-1 rounded-xl bg-surface p-1">
+        {TABS.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            onClick={() => setView(t.key)}
+            className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 ${
+              view === t.key ? "bg-content text-ink" : "text-muted hover:text-content"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </nav>
+
+      <div key={view} className="animate-fade">
+        {view === "chat" && <ChatSimulator />}
+        {view === "settings" && <Settings />}
+        {view === "dashboard" && (
+          <>
+            <SummaryBar alerts={alerts} />
+            <FilterBar value={filter} onChange={setFilter} alerts={alerts} />
+            {visible.length === 0 ? (
+              <div className="py-16 text-center text-faint">
+                {alerts.length === 0 ? "אין התראות 🎉" : "אין התראות בקטגוריה זו"}
+              </div>
+            ) : (
+              visible.map((a) => (
+                <AlertCard key={a.alert_id} alert={a} isNew={isNew(a.alert_id)} />
+              ))
+            )}
+          </>
+        )}
       </div>
-
-      {view === "chat" ? (
-        <ChatSimulator />
-      ) : (
-        <>
-          <SummaryBar alerts={alerts} />
-          <FilterBar value={filter} onChange={setFilter} />
-          {visible.length === 0 ? (
-            <div className="py-16 text-center text-slate-500">
-              {alerts.length === 0 ? "אין התראות 🎉" : "אין התראות בקטגוריה זו"}
-            </div>
-          ) : (
-            visible.map((a) => (
-              <AlertCard key={a.alert_id} alert={a} isNew={isNew(a.alert_id)} />
-            ))
-          )}
-        </>
-      )}
     </div>
-  );
-}
-
-function TabButton({ active, onClick, children }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium transition ${
-        active ? "bg-slate-200 text-slate-900" : "text-slate-300 hover:bg-slate-700"
-      }`}
-    >
-      {children}
-    </button>
   );
 }
