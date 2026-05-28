@@ -1,0 +1,14 @@
+{
+  "group_name": "חברים מהשכונה",
+  "child_id": "child_001",
+  "child_sender_id": "yonatan_1",
+  "_scenario": "הילד (יונתן) הוא התוקף כלפי עומר. צפי: role=aggressor",
+  "messages": [
+    { "sender_id": "omer_6",    "sender_name": "עומר",  "text": "היי אפשר להצטרף למשחק?", "delay_sec": 2 },
+    { "sender_id": "yonatan_1", "sender_name": "יונתן", "text": "לא, אתה מעצבן ואף אחד לא סובל אותך", "delay_sec": 3 },
+    { "sender_id": "ron_3",     "sender_name": "רון",   "text": "די נו", "delay_sec": 2 },
+    { "sender_id": "yonatan_1", "sender_name": "יונתן", "text": "עומר אתה אפס תעוף מהקבוצה", "delay_sec": 3 },
+    { "sender_id": "omer_6",    "sender_name": "עומר",  "text": "למה אתה ככה", "delay_sec": 2 },
+    { "sender_id": "yonatan_1", "sender_name": "יונתן", "text": "כי בא לי, אל תדבר איתי יותר", "delay_sec": 2 }
+  ]
+}

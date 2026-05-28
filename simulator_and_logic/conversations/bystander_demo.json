@@ -1,0 +1,14 @@
+{
+  "group_name": "כדורגל שכבה ו'",
+  "child_id": "child_001",
+  "child_sender_id": "yonatan_1",
+  "_scenario": "הילד (יונתן) צופה מהצד בחרם על עומר. צפי: role=bystander",
+  "messages": [
+    { "sender_id": "yonatan_1", "sender_name": "יונתן", "text": "מי בא לאימון מחר?", "delay_sec": 2 },
+    { "sender_id": "dani_2",     "sender_name": "דני",   "text": "כולם חוץ מעומר, הוא גרוע", "delay_sec": 3 },
+    { "sender_id": "ron_3",      "sender_name": "רון",   "text": "נכון אל תזמינו אותו יותר", "delay_sec": 2 },
+    { "sender_id": "dani_2",     "sender_name": "דני",   "text": "עומר אתה סתם נטל אל תבוא", "delay_sec": 3 },
+    { "sender_id": "yonatan_1",  "sender_name": "יונתן", "text": "אוקיי אז נתראה מחר", "delay_sec": 2 },
+    { "sender_id": "dani_2",     "sender_name": "דני",   "text": "עומר אף אחד לא רוצה אותך פה", "delay_sec": 3 }
+  ]
+}
