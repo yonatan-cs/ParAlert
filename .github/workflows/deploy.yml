@@ -1,0 +1,32 @@
+name: Deploy to Vercel (owner-triggered)
+
+# Vercel Hobby blocks deploys whose commit author lacks project access on a
+# PRIVATE repo (only the owner has it). This runs on every push to main and
+# triggers the project's Deploy Hook — which belongs to the Vercel account
+# owner (Yonatan), so a push by ANY teammate deploys as the owner.
+#
+# One-time setup (Yonatan):
+#   1. Vercel -> Project -> Settings -> Git -> Deploy Hooks -> create one for
+#      branch "main". Copy the URL.
+#   2. GitHub -> repo Settings -> Secrets and variables -> Actions ->
+#      add secret VERCEL_DEPLOY_HOOK = that URL.
+# (Optional) turn off Vercel's automatic Git deploys to avoid the blocked author
+# attempts — this hook becomes the single deploy path.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel Deploy Hook
+        run: |
+          if [ -z "${{ secrets.VERCEL_DEPLOY_HOOK }}" ]; then
+            echo "VERCEL_DEPLOY_HOOK secret not set — add it to enable owner-triggered deploys."
+            exit 0
+          fi
+          curl -fsS -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
+          echo "Triggered Vercel deploy for $GITHUB_SHA"
