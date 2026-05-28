@@ -47,52 +47,57 @@
 
 ---
 
-## זוג Fullstack — בראנץ' `fullstack`
+## זוג Fullstack — 2 מפתחים, בראנץ' אישי לכל אחד
 
-קבצים נפרדים: `backend_api/` (FS-1) ↔ `frontend_dashboard/` (FS-2). אפס התנגשות.
+הזוג מתפצל ל-Inbound (שרת+וואטסאפ) ו-Outbound (דשבורד+דמו). כל אחד בראנץ' משלו.
+מיזוג ל-`fullstack` (אינטגרציה) → אז `fullstack` → `main`.
 
-### FS-1 — `backend_api/` (שרת + DB) ← מתחיל ראשון, משחרר את כולם
-- [ ] `uvicorn main:app --port 8000` — לוודא `/docs` עולה
-- [ ] `GET /alerts` מחזיר (כרגע ריק/stub), `POST /ingest` מקבל חוזה A
-- [ ] לחבר `ToxicityAnalyzer` מ-`ml` (כרגע stub — לעבור ל-`use_model=True` כשמוכן)
-- [ ] לכוון `ALERT_THRESHOLD`
-- [ ] (אופ') WebSocket לדחיפת התראות בזמן אמת
+| תפקיד | בראנץ' | קבצים |
+|-------|--------|-------|
+| **FS-A** (Inbound) | `fs-server` | `backend_api/` + `whatsapp_bridge/` |
+| **FS-B** (Outbound) | `fs-dashboard` | `frontend_dashboard/` + `simulator_and_logic/` |
+| אינטגרציה | `fullstack` | יעד מיזוג של שני הבראנצ'ים |
 
-### FS-2 — `frontend_dashboard/` (דשבורד)
-- [ ] לפתוח `demo.html` — עובד מיד מול mock (לוודא)
-- [ ] להקים React+Vite+Tailwind (`npm create vite@latest app`)
-- [ ] קומפוננטת `AlertCard` לפי חוזה C: קבוצה, תפקיד, מד רעילות, בועות, המלצה
-- [ ] משיכה מ-`GET /alerts` + polling/ריענון
-- [ ] אנימציה כשהתראה חדשה קופצת
+**כלל:** כל אחד נוגע רק בקבצים שלו. צריך שינוי בקובץ של השני? מבקשים, לא עורכים.
 
-### גשר וואטסאפ — `whatsapp_bridge/` (זוג Fullstack, אחרי שהשרת חי) ⭐ דרישת השופט
-מי שמסיים את הליבה ראשון לוקח. קובץ נפרד (Node) — לא מתנגש עם backend/frontend.
-- [ ] `cd whatsapp_bridge && npm install`
-- [ ] `node index.js` → לסרוק QR ממספר **burner/דמו** (לא אישי!)
-- [ ] לוודא הודעות קבוצה אמיתיות מגיעות ל-`/ingest` (לוג `🚨 ALERT`)
+### 👤 FS-A — `fs-server` (שרת + וואטסאפ) ← מתחיל ראשון, משחרר את FS-B
+**`backend_api/`:**
+- [ ] `uvicorn main:app --port 8000` — `/docs`, `/health`, `/alerts`, `/ingest` (חוזה A)
+- [ ] לחבר `ToxicityAnalyzer` מ-`ml` (stub → `use_model=True` כשמוכן), לכוון `ALERT_THRESHOLD`
+- [ ] (אופ') WebSocket לדחיפת התראות
+
+**`whatsapp_bridge/` ⭐ דרישת השופט:**
+- [ ] `npm install` + `node index.js` → סריקת QR ממספר **burner** (לא אישי!)
+- [ ] הודעות קבוצה אמיתיות מגיעות ל-`/ingest` (לוג `🚨 ALERT`)
 - [ ] לבדוק מיפוי חוזה A (group_name, sender, child_id, context_before)
-- [ ] (אופ') הורדת מדיה לניתוח תמונות
 
----
+### 👤 FS-B — `fs-dashboard` (דשבורד + לוגיקת דמו)
+**`frontend_dashboard/`:**
+- [ ] `demo.html` מול mock (לוודא), אז React+Vite+Tailwind
+- [ ] `AlertCard` לפי חוזה C: קבוצה, תפקיד, מד רעילות, בועות, המלצה
+- [ ] משיכה מ-`GET /alerts` + polling, אנימציה להתראה חדשה
 
-## fallback + המלצות — `simulator_and_logic/` (זוג Fullstack)
-
-הסימולטור = רשת ביטחון לבמה אם וואטסאפ מקרטע. שני קבצים מנותקים, כבר כתובים:
-- [ ] `recommendation_engine.py` — להכניס `ANTHROPIC_API_KEY`, לכוון `SYSTEM_PROMPT`
+**`simulator_and_logic/` (fallback לבמה + המלצות):**
+- [ ] `recommendation_engine.py` — `ANTHROPIC_API_KEY`, לכוון `SYSTEM_PROMPT`
 - [ ] עוד תסריטים ב-`conversations/` (צופה, תוקף, שיחה רגילה ל-false-positive)
-- [ ] `python simulator.py` מול השרת החי — לכוון קצב, תרחיש הדמו
+- [ ] `python simulator.py` מול השרת — לכוון קצב, תרחיש הדמו
+
+### הממשק בין FS-A ל-FS-B (הצימוד היחיד)
+- frontend (B) ← `GET /alerts` (חוזה C) של A
+- simulator (B) → `POST /ingest` (חוזה A) של A
+- `generate_recommendation()` (B) ← מיובא ע"י הבקאנד (A) כ-black box. **החתימה = החוזה.**
 
 ---
 
 ## סדר תלויות
 
 ```
-FS-1 (שרת) ──► משחרר את כולם
-   ├─► whatsapp_bridge ⭐ (הודעות אמיתיות → /ingest)   ← דרישת השופט
-   ├─► simulator (fallback לבמה, אותו חוזה A)
-   └─► FS-2 דשבורד מול /alerts
-ML-1+ML-2 ──► analyzer אמיתי ──► FS-1 מחבר use_model=True
+FS-A: שרת ──► משחרר את כולם
+        ├─► whatsapp_bridge ⭐ (הודעות אמיתיות → /ingest)   ← דרישת השופט
+        └─► (FS-B מתחבר)
+FS-B: דשבורד מול mock ──► אז מול /alerts ; simulator → /ingest (fallback)
+ML-1+ML-2 ──► analyzer אמיתי ──► FS-A מחבר use_model=True
 ```
 
-**מתחילים מ-FS-1.** הכל מוכן ב-fallback — הדמו לא קורס גם בלי מודל/LLM/וואטסאפ.
+**מתחילים מ-FS-A (שרת).** הכל מוכן ב-fallback — הדמו לא קורס גם בלי מודל/LLM/וואטסאפ.
 **עדיפות לשופט:** שרת → גשר וואטסאפ עובד מקצה לקצה. זה ה"עובד באמת".
