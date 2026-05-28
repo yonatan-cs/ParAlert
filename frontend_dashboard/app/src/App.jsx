@@ -5,6 +5,7 @@ import FilterBar from "./components/FilterBar.jsx";
 import ChatSimulator from "./components/ChatSimulator.jsx";
 import Settings from "./components/Settings.jsx";
 import LanguageToggle from "./components/LanguageToggle.jsx";
+import TryIt from "./components/TryIt.jsx";
 import { useI18n } from "./i18n/I18nContext.jsx";
 
 // Backend base is env-driven for deploy (Vercel sets VITE_API_BASE to the hosted
@@ -14,7 +15,7 @@ const API = `${API_BASE}/alerts`;
 const WS_URL = `${API_BASE.replace(/^http/, "ws")}/ws/alerts`;
 const POLL_MS = 3000;
 
-const TAB_KEYS = ["chat", "dashboard", "settings"];
+const TAB_KEYS = ["chat", "dashboard", "tryit", "settings"];
 
 // Dashboard is grouped into sections; each alert lands in exactly one (severe first).
 // Titles are looked up by key from the active locale (t.sections[key]).
@@ -30,7 +31,15 @@ export default function App() {
   const [source, setSource] = useState(t.status.loading);
   const [live, setLive] = useState(false);
   const [filter, setFilter] = useState("all");
-  const [view, setView] = useState("dashboard");
+  const [view, setView] = useState(() => {
+    try {
+      const q = new URLSearchParams(window.location.search).get("tab");
+      if (TAB_KEYS.includes(q)) return q; // ?tab=tryit deep-link (e.g. for a judge)
+    } catch {
+      /* ignore */
+    }
+    return "dashboard";
+  });
   const seen = useRef(new Set()); // alert_ids already shown — for the "new" highlight
 
   useEffect(() => {
@@ -191,13 +200,13 @@ export default function App() {
         </div>
       </header>
 
-      <nav className="mb-5 grid grid-cols-3 gap-1 rounded-xl bg-surface p-1">
+      <nav className="mb-5 grid grid-cols-4 gap-1 rounded-xl bg-surface p-1">
         {TAB_KEYS.map((key) => (
           <button
             key={key}
             type="button"
             onClick={() => setView(key)}
-            className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 ${
+            className={`truncate rounded-lg px-2 py-2 text-xs font-medium transition-colors duration-150 sm:text-sm ${
               view === key ? "bg-content text-ink" : "text-muted hover:text-content"
             }`}
           >
@@ -208,6 +217,7 @@ export default function App() {
 
       <div key={view} className="animate-fade">
         {view === "chat" && <ChatSimulator />}
+        {view === "tryit" && <TryIt />}
         {view === "settings" && <Settings />}
         {view === "dashboard" && (
           <>
