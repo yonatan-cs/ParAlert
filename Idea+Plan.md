@@ -185,3 +185,25 @@
    - מפתח 4: סימולטור שולח ל-endpoint, מנוע המלצות מחזיר טקסט
 3. **שעות 5–6:** אינטגרציה. מחברים backend↔ml↔llm. frontend↔backend.
 4. **שעות 6+:** ליטוש דמו, fall-backs, חזרות על התרחיש לבמה.
+
+---
+
+## 9. תוספות שופטים (raised after demo feedback)
+
+### 9.1 הסלמה למשטרה — מקרים חמורים
+מקרים חמורים מאוד (הטרדה מינית/סחיטה, הפצת תוכן עירום של קטין, איום פיזי מפורש, אובדנות)
+מקבלים **המלצה חמה לפנייה למשטרה** (100) ו-105, ובאובדנות גם ער"ן 1201.
+- חוזה: `Alert.escalation` ∈ `none|school|police` + `Category` הורחב (`sexual_harassment`, `nudity`, `self_harm`).
+- כלל משותף: `escalation_from(category, severity)` ב-`contracts/schemas.py`.
+- Backend (FS-A): לקבוע `escalation` ב-`_build_alert`. Frontend (FS-B): באנר אדום בולט "פנייה למשטרה — 100".
+- Reco (FS-B): טקסט הסלמה מפורש בהמלצה.
+
+### 9.2 מדד אמינות / דיסאינפורמציה (AI-generated)
+הילד נחשף לתוכן כוזב/מזויף — תמונה/וידאו (deepfake) או טענה שגויה. "הילד שלך מאמין ש-X / נחשף לטענה לא נכונה".
+- חוזה: `Alert.alert_type` ∈ `bullying|disinformation`, `Alert.credibility` = `{score, verdict, claim, source}`, role `exposed`.
+- מקור: `simulator_and_logic/fact_check.py` — Google Fact Check Tools API (`GOOGLE_FACTCHECK_API_KEY`) + fallback היוריסטי. זיהוי תמונה/וידאו AI-generated = משימת ML.
+- Frontend (FS-B): מד "אמינות" + הטענה + verdict + מקור, תג "דיסאינפורמציה".
+
+### 9.3 דמו עשיר
+מספר קבוצות, יותר התראות, **תמונות/וידאו** בבועות (`ChatBubble.media_url/media_type`; תוכן רגיש מוצג חסום 🔞).
+`contracts/mock_alerts.json` = 8 התראות, 7 קבוצות, כל הזוויות + משטרה + דיסאינפורמציה + מדיה.

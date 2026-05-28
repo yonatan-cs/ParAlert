@@ -3,6 +3,7 @@ const FILTERS = [
   { key: "victim", label: "קורבן" },
   { key: "aggressor", label: "תוקף" },
   { key: "bystander", label: "צופה" },
+  { key: "exposed", label: "נחשף" },
 ];
 
 export default function FilterBar({ value, onChange, alerts }) {

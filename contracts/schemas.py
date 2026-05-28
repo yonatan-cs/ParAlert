@@ -2,6 +2,7 @@
 Shared data contracts for SafeNet. SINGLE SOURCE OF TRUTH.
 
 Every module imports these. Do NOT change a field without telling the whole team.
+New fields are optional with defaults, so older data/code stays valid.
 Pydantic models = runtime validation + auto Swagger docs in FastAPI.
 
 Install: pip install pydantic
@@ -14,14 +15,22 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 # ---- Enums (as Literals, keep them in sync with Idea+Plan.md) ----
-Role = Literal["aggressor", "victim", "bystander", "none"]
+Role = Literal["aggressor", "victim", "bystander", "exposed", "none"]
 Category = Literal[
-    "harassment", "threat", "exclusion", "hate_speech", "sexual", "none"
+    "harassment", "threat", "exclusion", "hate_speech",
+    "sexual", "sexual_harassment", "nudity", "self_harm",
+    "disinformation", "none",
 ]
 Severity = Literal["low", "medium", "high"]
+Escalation = Literal["none", "school", "police"]  # severe -> recommend police
+AlertType = Literal["bullying", "disinformation"]
+MediaType = Literal["image", "video"]
+
+# Severe categories that warrant a police recommendation.
+_POLICE_CATEGORIES = {"sexual", "sexual_harassment", "nudity", "self_harm"}
 
 
-# ---- Contract A: incoming message (Simulator -> Backend) ----
+# ---- Contract A: incoming message (Simulator / Bridge -> Backend) ----
 class IncomingMessage(BaseModel):
     message_id: str
     group_name: str
@@ -30,9 +39,18 @@ class IncomingMessage(BaseModel):
     child_id: str
     text: str
     media_url: Optional[str] = None
+    media_type: Optional[MediaType] = None
     timestamp: datetime
     context_before: list[str] = Field(default_factory=list)
     context_after: list[str] = Field(default_factory=list)
+
+
+# ---- Disinformation / AI-generated content assessment ----
+class Credibility(BaseModel):
+    score: float = Field(ge=0.0, le=1.0)  # 0 = fabricated/false, 1 = credible
+    verdict: str                          # e.g. "תוכן מזויף (AI)", "טענה שגויה"
+    claim: str                            # the claim / content assessed
+    source: Optional[str] = None          # fact-check source / url
 
 
 # ---- Contract B: analysis result (ML Service -> Backend) ----
@@ -46,6 +64,9 @@ class AnalysisResult(BaseModel):
     victim: Optional[str] = None
     explanation: str
     model_used: str
+    alert_type: AlertType = "bullying"
+    escalation: Escalation = "none"
+    credibility: Optional[Credibility] = None
 
 
 # ---- Contract C: alert object (Backend -> Frontend) ----
@@ -53,6 +74,8 @@ class ChatBubble(BaseModel):
     sender_name: str
     text: str
     timestamp: Optional[datetime] = None
+    media_url: Optional[str] = None
+    media_type: Optional[MediaType] = None
 
 
 class Alert(BaseModel):
@@ -68,6 +91,9 @@ class Alert(BaseModel):
     context_after: list[ChatBubble] = Field(default_factory=list)
     recommendation: str
     created_at: datetime
+    alert_type: AlertType = "bullying"
+    escalation: Escalation = "none"
+    credibility: Optional[Credibility] = None
 
 
 def severity_from_score(score: float) -> Severity:
@@ -77,3 +103,12 @@ def severity_from_score(score: float) -> Severity:
     if score >= 0.5:
         return "medium"
     return "low"
+
+
+def escalation_from(category: Category, severity: Severity) -> Escalation:
+    """Severe categories (or a high-severity threat) -> recommend contacting police."""
+    if category in _POLICE_CATEGORIES:
+        return "police"
+    if category == "threat" and severity == "high":
+        return "police"
+    return "none"

@@ -6,6 +6,10 @@ export const CATEGORY_HE = {
   exclusion: "נידוי חברתי",
   hate_speech: "שיח שנאה",
   sexual: "תוכן מיני",
+  sexual_harassment: "הטרדה מינית / סחיטה",
+  nudity: "הפצת תוכן עירום",
+  self_harm: "פגיעה עצמית / אובדנות",
+  disinformation: "דיסאינפורמציה",
   none: "—",
 };
 
@@ -13,6 +17,7 @@ export const ROLE_HE = {
   victim: "הילד שלי — קורבן",
   aggressor: "הילד שלי — תוקף",
   bystander: "הילד שלי — צופה",
+  exposed: "הילד שלי — נחשף",
   none: "—",
 };
 
@@ -20,6 +25,13 @@ export const SEVERITY_HE = {
   high: "חמור",
   medium: "בינוני",
   low: "קל",
+};
+
+// Police / school escalation banner copy for severe cases.
+export const ESCALATION_HE = {
+  police: "מומלץ מאוד לפנות למשטרה — חיוג 100",
+  school: "מומלץ לפנות לבית הספר",
+  none: "",
 };
 
 export function relativeTime(iso) {

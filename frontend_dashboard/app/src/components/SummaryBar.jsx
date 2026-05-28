@@ -1,4 +1,4 @@
-// 3-angle breakdown — the product's spine, at a glance. One row, not KPI tiles.
+// At-a-glance: the 3 bullying angles + the two new dimensions (police-severe, disinfo).
 const ANGLES = [
   { role: "victim", label: "קורבן", dot: "bg-victim" },
   { role: "aggressor", label: "תוקף", dot: "bg-aggressor" },
@@ -7,8 +7,12 @@ const ANGLES = [
 
 export default function SummaryBar({ alerts }) {
   const counts = { victim: 0, aggressor: 0, bystander: 0 };
+  let police = 0;
+  let disinfo = 0;
   for (const a of alerts) {
     if (counts[a.role_of_child] !== undefined) counts[a.role_of_child] += 1;
+    if (a.escalation === "police") police += 1;
+    if (a.alert_type === "disinformation") disinfo += 1;
   }
 
   return (
@@ -32,6 +36,21 @@ export default function SummaryBar({ alerts }) {
           );
         })}
       </div>
+
+      {(police > 0 || disinfo > 0) && (
+        <div className="mt-3 flex flex-wrap justify-center gap-2 border-t border-edge pt-3 text-xs">
+          {police > 0 && (
+            <span className="rounded-full bg-sev-high/15 px-3 py-1 font-medium text-sev-high">
+              🚨 {police} דורשות פנייה למשטרה
+            </span>
+          )}
+          {disinfo > 0 && (
+            <span className="rounded-full bg-accent/15 px-3 py-1 font-medium text-accent">
+              📰 {disinfo} דיסאינפורמציה
+            </span>
+          )}
+        </div>
+      )}
     </section>
   );
 }

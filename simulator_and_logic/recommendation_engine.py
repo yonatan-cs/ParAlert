@@ -25,6 +25,10 @@ SYSTEM_PROMPT = """אתה יועץ חינוכי מומחה לבריונות בר
 - קורבן: חזק תחושת ביטחון, אל תייחס אשמה לילד, שקול פנייה לגורם בבית הספר.
 - תוקף: בלי הענשה מיידית — עזור לילד להבין את ההשפעה על הצד השני, עודד תיקון.
 - צופה מהצד: עודד את הילד לא להישאר אדיש ולתמוך בנפגע.
+- נחשף (דיסאינפורמציה): הסבר שהתוכן כוזב/מזויף, למד זיהוי מקורות וחשיבה ביקורתית, בלי לבייש.
+
+מקרים חמורים (הטרדה מינית/סחיטה, הפצת עירום, איום פיזי, אובדנות): המלץ מפורשות
+לתעד ראיות ולפנות למשטרה (100) ול-105; באובדנות הוסף ער"ן 1201 ומצב חירום 101.
 
 בלי ז'רגון מקצועי, בלי רשימות, בלי הקדמות. רק ההמלצה עצמה."""
 
@@ -33,17 +37,33 @@ _FALLBACK = {
     "victim": "הילד שלך היה קורבן. שוחח איתו בנחת, שאל איך הרגיש, והבהר שזו לא אשמתו. שקול פנייה למחנכת.",
     "aggressor": "הילד שלך פגע באחר. שוחח בלי להאשים, עזור לו להבין את ההשפעה על הצד השני, ועודד תיקון.",
     "bystander": "הילד שלך נכח באירוע פגיעה. שאל מה ראה, הסבר שאדישות מזיקה, ועודד אותו לתמוך בנפגע.",
+    "exposed": "הילד שלך נחשף לתוכן כוזב/מזויף והאמין לו. הראה לו איך מזהים מקור לא אמין, ועודד בדיקת עובדות לפני שיתוף, בלי לבייש.",
     "none": "זוהה אירוע בעייתי. מומלץ לעקוב ולשוחח עם הילד על מה שקורה בקבוצה.",
 }
+
+_POLICE_SUFFIX = (
+    " זהו אירוע חמור שעלול להיות פלילי — תעדו ראיות (צילומי מסך), אל תפיצו הלאה, "
+    "ופנו למשטרה (100) ול-105 (המטה הלאומי להגנה על ילדים ברשת)."
+)
+_SELF_HARM_SUFFIX = (
+    " אל תשאירו את הילד לבד. פנו מיידית לעזרה: ער\"ן 1201, או 101/100 במצב חירום, "
+    "ותאמו עם גורם טיפולי בהקדם."
+)
 
 
 def generate_recommendation(analysis: AnalysisResult, message: IncomingMessage) -> str:
     """Always returns a non-empty string. Never raises."""
     try:
-        return _llm_recommendation(analysis, message)
+        base = _llm_recommendation(analysis, message)
     except Exception as exc:  # noqa: BLE001
         print(f"[reco] LLM failed, using template: {exc}")
-        return _FALLBACK.get(analysis.role_of_child, _FALLBACK["none"])
+        base = _FALLBACK.get(analysis.role_of_child, _FALLBACK["none"])
+        # Escalate severe cases even on the fallback path.
+        if analysis.category == "self_harm":
+            base += _SELF_HARM_SUFFIX
+        elif analysis.escalation == "police":
+            base += _POLICE_SUFFIX
+    return base
 
 
 def _llm_recommendation(analysis: AnalysisResult, message: IncomingMessage) -> str:

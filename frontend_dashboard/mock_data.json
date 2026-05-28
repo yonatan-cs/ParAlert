@@ -2,63 +2,131 @@
   {
     "alert_id": "alert_001",
     "child_id": "child_001",
+    "alert_type": "bullying",
     "severity": "high",
     "toxicity_score": 0.91,
     "role_of_child": "victim",
     "category": "harassment",
+    "escalation": "none",
     "group_name": "כיתה ו'2 - בלי המורה",
-    "trigger_message": {
-      "sender_name": "דני",
-      "text": "איזה אפס אתה, אל תבוא מחר",
-      "timestamp": "2026-05-28T14:20:00"
-    },
-    "context_before": [
-      { "sender_name": "יונתן", "text": "מתי קובעים למשחק?", "timestamp": "2026-05-28T14:19:30" }
-    ],
-    "context_after": [
-      { "sender_name": "דני", "text": "כולם נגדך פה", "timestamp": "2026-05-28T14:20:40" }
-    ],
-    "recommendation": "הילד שלך היה קורבן להשפלה ישירה. מומלץ לשוחח איתו בנחת, לשאול איך הרגיש, ולשקול פנייה למחנכת.",
+    "trigger_message": { "sender_name": "דני", "text": "איזה אפס אתה, אל תבוא מחר", "timestamp": "2026-05-28T14:20:00" },
+    "context_before": [ { "sender_name": "יונתן", "text": "מתי קובעים למשחק?", "timestamp": "2026-05-28T14:19:30" } ],
+    "context_after": [ { "sender_name": "דני", "text": "כולם נגדך פה", "timestamp": "2026-05-28T14:20:40" } ],
+    "recommendation": "הילד שלך היה קורבן להשפלה ישירה. שוחח איתו בנחת, שאל איך הרגיש, והבהר שזו לא אשמתו. שקול פנייה למחנכת.",
     "created_at": "2026-05-28T14:20:03"
   },
   {
     "alert_id": "alert_002",
     "child_id": "child_001",
+    "alert_type": "bullying",
     "severity": "medium",
     "toxicity_score": 0.67,
     "role_of_child": "aggressor",
     "category": "exclusion",
+    "escalation": "none",
     "group_name": "חברים מהשכונה",
-    "trigger_message": {
-      "sender_name": "יונתן",
-      "text": "לא מזמינים את עומר, הוא מעצבן",
-      "timestamp": "2026-05-28T16:05:00"
-    },
-    "context_before": [
-      { "sender_name": "רון", "text": "מי בא לשחק היום?", "timestamp": "2026-05-28T16:04:20" }
-    ],
+    "trigger_message": { "sender_name": "יונתן", "text": "לא מזמינים את עומר, הוא מעצבן", "timestamp": "2026-05-28T16:05:00" },
+    "context_before": [ { "sender_name": "רון", "text": "מי בא לשחק היום?", "timestamp": "2026-05-28T16:04:20" } ],
     "context_after": [],
-    "recommendation": "הילד שלך יזם הוצאה חברתית של ילד אחר. מומלץ לשוחח על איך מרגיש מי שמודר, בלי להאשים, ולעודד הכלה.",
+    "recommendation": "הילד שלך יזם הוצאה חברתית של ילד אחר. שוחח על איך מרגיש מי שמודר, בלי להאשים, ועודד הכלה.",
     "created_at": "2026-05-28T16:05:02"
   },
   {
     "alert_id": "alert_003",
     "child_id": "child_001",
+    "alert_type": "bullying",
     "severity": "high",
     "toxicity_score": 0.88,
     "role_of_child": "bystander",
     "category": "threat",
+    "escalation": "police",
     "group_name": "כיתה ו'2 - בלי המורה",
-    "trigger_message": {
-      "sender_name": "איתי",
-      "text": "אם תספר למורה אני מחכה לך אחרי בית ספר",
-      "timestamp": "2026-05-28T17:30:00"
-    },
-    "context_before": [
-      { "sender_name": "נועה", "text": "תפסיקו כבר", "timestamp": "2026-05-28T17:29:10" }
-    ],
+    "trigger_message": { "sender_name": "איתי", "text": "אם תספר למורה אני מחכה לך אחרי בית ספר", "timestamp": "2026-05-28T17:30:00" },
+    "context_before": [ { "sender_name": "נועה", "text": "תפסיקו כבר", "timestamp": "2026-05-28T17:29:10" } ],
     "context_after": [],
-    "recommendation": "הילד שלך נחשף לאיום שהופנה כלפי ילד אחר. מומלץ לשאול מה ראה, להסביר שזה לא תקין, ולעודד אותו לא להישאר אדיש.",
+    "recommendation": "הילד שלך נחשף לאיום חמור כלפי ילד אחר. שאל מה ראה, הסבר שאסור להישאר אדיש. בשל האיום המפורש לפגיעה פיזית - מומלץ מאוד לתעד ולפנות למשטרה (100) ולהנהלת בית הספר.",
     "created_at": "2026-05-28T17:30:04"
+  },
+  {
+    "alert_id": "alert_004",
+    "child_id": "child_001",
+    "alert_type": "bullying",
+    "severity": "high",
+    "toxicity_score": 0.96,
+    "role_of_child": "victim",
+    "category": "sexual_harassment",
+    "escalation": "police",
+    "group_name": "שכבה ז' - צ'אט כללי",
+    "trigger_message": { "sender_name": "מספר לא מוכר", "text": "שלחי לי תמונה שלך בלי בגדים או שאני מפיץ את מה שיש לי", "timestamp": "2026-05-28T20:11:00", "media_type": "image" },
+    "context_before": [],
+    "context_after": [],
+    "recommendation": "זוהתה הטרדה מינית וסחיטה (סקסטורשן) כלפי הילדה שלך. אל תשלמו ואל תשלחו דבר. שמרו צילומי מסך כראיה. זהו אירוע פלילי - פנו מיד למשטרה (100) וליחידת הסייבר, ושקלו פנייה ל-105 (המטה הלאומי להגנה על ילדים ברשת).",
+    "created_at": "2026-05-28T20:11:05"
+  },
+  {
+    "alert_id": "alert_005",
+    "child_id": "child_001",
+    "alert_type": "bullying",
+    "severity": "high",
+    "toxicity_score": 0.94,
+    "role_of_child": "victim",
+    "category": "nudity",
+    "escalation": "police",
+    "group_name": "קבוצה אנונימית 🔞",
+    "trigger_message": { "sender_name": "אנונימי", "text": "הופצה תמונה פוגענית של הילדה שלך", "timestamp": "2026-05-28T21:02:00", "media_type": "image" },
+    "context_before": [],
+    "context_after": [],
+    "recommendation": "זוהתה הפצה של תמונת עירום של קטינה - עבירה פלילית חמורה. אל תפיצו הלאה. תעדו וצלמו את הקבוצה. פנו מיד למשטרה (100) ול-105, ובקשו הסרה מהפלטפורמה. תמכו בילדה והבהירו שזו לא אשמתה.",
+    "created_at": "2026-05-28T21:02:06"
+  },
+  {
+    "alert_id": "alert_006",
+    "child_id": "child_001",
+    "alert_type": "bullying",
+    "severity": "high",
+    "toxicity_score": 0.9,
+    "role_of_child": "victim",
+    "category": "self_harm",
+    "escalation": "police",
+    "group_name": "שיחה פרטית",
+    "trigger_message": { "sender_name": "יונתן", "text": "נמאס לי מהכל, אין לי כוח לחיות ככה יותר", "timestamp": "2026-05-28T23:40:00" },
+    "context_before": [ { "sender_name": "חבר", "text": "אתה בסדר?", "timestamp": "2026-05-28T23:39:00" } ],
+    "context_after": [],
+    "recommendation": "הילד שלך הביע מצוקה ואובדנות. גשו אליו עכשיו בנחת ובלי שיפוט, אל תשאירו אותו לבד. פנו מיידית לעזרה: ער\"ן 1201, סה\"ר (chat), או מד\"א/משטרה 100/101 במצב חירום. תאמו עם גורם טיפולי בהקדם.",
+    "created_at": "2026-05-28T23:40:03"
+  },
+  {
+    "alert_id": "alert_007",
+    "child_id": "child_001",
+    "alert_type": "disinformation",
+    "severity": "medium",
+    "toxicity_score": 0.0,
+    "role_of_child": "exposed",
+    "category": "disinformation",
+    "escalation": "none",
+    "group_name": "חדשות הכיתה 📰",
+    "trigger_message": { "sender_name": "ליאור", "text": "תראו את הסרטון הזה!! חיסון הקורונה גורם ל... חייבים לשתף", "timestamp": "2026-05-28T18:15:00", "media_type": "video" },
+    "context_before": [],
+    "context_after": [],
+    "credibility": { "score": 0.08, "verdict": "תוכן מזויף שנוצר ב-AI", "claim": "סרטון deepfake שמייחס אמירה כוזבת לרופא בכיר על חיסונים", "source": "Google Fact Check / וידאו זוהה כ-AI-generated" },
+    "recommendation": "הילד שלך נחשף לסרטון deepfake עם מידע רפואי כוזב, והאמין לו. שבו יחד, הראו לו איך מזהים תוכן מזויף, והסבירו מדוע המקור לא אמין. עודדו בדיקת מקורות לפני שיתוף.",
+    "created_at": "2026-05-28T18:15:04"
+  },
+  {
+    "alert_id": "alert_008",
+    "child_id": "child_001",
+    "alert_type": "disinformation",
+    "severity": "low",
+    "toxicity_score": 0.0,
+    "role_of_child": "exposed",
+    "category": "disinformation",
+    "escalation": "none",
+    "group_name": "גיימינג 🎮",
+    "trigger_message": { "sender_name": "מקור לא ידוע", "text": "תמונה: 'הוכחה' שאירוע מזויף קרה אתמול", "timestamp": "2026-05-28T19:50:00", "media_type": "image" },
+    "context_before": [],
+    "context_after": [],
+    "credibility": { "score": 0.21, "verdict": "טענה שגויה", "claim": "תמונה ערוכה שמפיצה טענה לא נכונה על אירוע אקטואלי", "source": "Google Fact Check Tools API" },
+    "recommendation": "הילד שלך שיתף תמונה עם טענה שהופרכה. בלי לבייש, הראו לו את הבדיקה העובדתית והסבירו איך תמונות נערכות. זו הזדמנות טובה לחנך לחשיבה ביקורתית.",
+    "created_at": "2026-05-28T19:50:03"
   }
 ]

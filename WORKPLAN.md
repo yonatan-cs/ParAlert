@@ -101,3 +101,26 @@ ML-1+ML-2 ──► analyzer אמיתי ──► FS-A מחבר use_model=True
 
 **מתחילים מ-FS-A (שרת).** הכל מוכן ב-fallback — הדמו לא קורס גם בלי מודל/LLM/וואטסאפ.
 **עדיפות לשופט:** שרת → גשר וואטסאפ עובד מקצה לקצה. זה ה"עובד באמת".
+
+---
+
+## תוספות שופטים (פיצ'רים חדשים) — ראה [Idea+Plan §9](./Idea+Plan.md)
+
+חוזה הורחב ב-`contracts/schemas.py` (הכל אופציונלי, backward-compatible): `escalation`,
+`alert_type`, `credibility`, קטגוריות חדשות, `ChatBubble.media_*`, `escalation_from()`.
+
+### ✅ FS-B (בוצע)
+- AlertCard: באנר "פנייה למשטרה" (escalation), מדיה בבועות (חסום לרגיש 🔞), סקשן דיסאינפורמציה (מד אמינות + טענה + verdict + מקור).
+- SummaryBar: ספירת "דורשות משטרה" + "דיסאינפורמציה". FilterBar: סינון "נחשף".
+- `recommendation_engine`: טקסט הסלמה למשטרה/אובדנות. `fact_check.py`: credibility (Google Fact Check + fallback).
+- `mock_alerts.json` עשיר (8 התראות, 7 קבוצות, מדיה).
+
+### 👤 FS-A (backend)
+- [ ] ב-`_build_alert`: `escalation = escalation_from(category, severity)` (ייבא מ-schemas) → התראות חיות מקבלות הסלמה.
+- [ ] נתיב דיסאינפורמציה: כשהניתוח מחזיר `alert_type="disinformation"` — לצרף `credibility` (לקרוא ל-`fact_check.check_claim`).
+- [ ] (אופ') מ-bridge: להעביר `media_type` ל-ingest כשיש מדיה.
+
+### 👤 זוג ML
+- [ ] סיווג קטגוריות חמורות (`sexual_harassment`, `nudity`, `self_harm`) + הסלמה מהמודל.
+- [ ] זיהוי **תמונה/וידאו AI-generated** (deepfake) → מזין `credibility`.
+- [ ] לוגיקת `exposed`/דיסאינפורמציה במנתח.
