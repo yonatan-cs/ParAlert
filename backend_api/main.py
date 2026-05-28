@@ -25,7 +25,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from contracts.schemas import (  # noqa: E402
-    Alert, AnalysisResult, ChatBubble, IncomingMessage, severity_from_score,
+    Alert, AnalysisResult, ChatBubble, IncomingMessage, escalation_from, severity_from_score,
 )
 from backend_api import database  # noqa: E402
 
@@ -51,6 +51,12 @@ try:
 except Exception as exc:  # noqa: BLE001
     print(f"[backend] recommendation engine unavailable, using stub: {exc}")
     generate_recommendation = None
+
+try:
+    from simulator_and_logic.fact_check import check_claim
+except Exception as exc:  # noqa: BLE001
+    print(f"[backend] fact_check unavailable, disinformation alerts skip credibility: {exc}")
+    check_claim = None
 
 app = FastAPI(title="SafeNet API", version="0.1.0")
 app.add_middleware(
@@ -160,22 +166,40 @@ def _analyze(message: IncomingMessage) -> AnalysisResult:
 
 def _build_alert(message: IncomingMessage, analysis: AnalysisResult) -> Alert:
     recommendation = _recommend(message, analysis)
+    severity = severity_from_score(analysis.toxicity_score)
     return Alert(
         alert_id=f"alert_{uuid.uuid4().hex[:8]}",
         child_id=message.child_id,
-        severity=severity_from_score(analysis.toxicity_score),
+        severity=severity,
         toxicity_score=analysis.toxicity_score,
         role_of_child=analysis.role_of_child,
         category=analysis.category,
         group_name=message.group_name,
         trigger_message=ChatBubble(
-            sender_name=message.sender_name, text=message.text, timestamp=message.timestamp
+            sender_name=message.sender_name, text=message.text, timestamp=message.timestamp,
+            media_url=message.media_url, media_type=message.media_type,
         ),
         context_before=[ChatBubble(sender_name="?", text=t) for t in message.context_before],
         context_after=[ChatBubble(sender_name="?", text=t) for t in message.context_after],
         recommendation=recommendation,
         created_at=datetime.now(),
+        # New (contract v2): severe categories -> police banner; disinfo -> credibility.
+        alert_type=analysis.alert_type,
+        escalation=escalation_from(analysis.category, severity),
+        credibility=_credibility(message, analysis),
     )
+
+
+def _credibility(message: IncomingMessage, analysis: AnalysisResult):
+    """Prefer the analysis's own credibility; else fact-check disinformation as a fallback."""
+    if analysis.credibility is not None:
+        return analysis.credibility
+    if analysis.alert_type == "disinformation" and check_claim is not None:
+        try:
+            return check_claim(message.text, has_media=bool(message.media_url))
+        except Exception as exc:  # noqa: BLE001
+            print(f"[backend] fact_check failed: {exc}")
+    return None
 
 
 def _recommend(message: IncomingMessage, analysis: AnalysisResult) -> str:
