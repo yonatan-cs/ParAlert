@@ -40,9 +40,15 @@ cd whatsapp_bridge && npm install && node index.js     # סרוק QR ממספר 
 # או:
 cd simulator_and_logic && pip install -r requirements.txt && python simulator.py
 
-# דשבורד — פתח frontend_dashboard/demo.html בדפדפן
+# טרמינל 3 — דשבורד (React + Vite)
+cd frontend_dashboard/app && npm install && npm run dev
 ```
 ה-pipeline עובד מקצה לקצה גם בלי מודל HF ובלי מפתח LLM (fallbacks מובנים) — הדמו לא קורס.
 
-## בראנצ'ים
-`dev1-ml` · `dev2-backend` · `dev3-frontend` · `dev4-sim` — מיזוג ל-`main` רק כשעובד מקצה לקצה.
+## חי (פרוס)
+- 🖥️ דשבורד: <https://hackathon-project-tau-seven.vercel.app> — Vercel, ענף `main`
+- ⚙️ בקאנד: <https://safenet-backend-cnmy.onrender.com> — Render, ענף `fs-server`
+
+הכל ממוזג ל-`main`: ML + בקאנד + פרונט + סימולטור + חוזי v2 (התראת בריונות **ו**דיסאינפורמציה,
+הסלמה למשטרה, מדד אמינות, מדיה). הענפים הישנים (`fs-server`/`fs-dashboard`/`fullstack`/`ml`)
+נשמרים ב-origin בלבד. הרצת מודלים אמיתיים למצגת: ראה [`DEPLOY.md`](./DEPLOY.md) (ngrok).
