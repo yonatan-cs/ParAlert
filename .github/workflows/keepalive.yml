@@ -1,0 +1,18 @@
+name: Keep backend warm
+
+# Render free tier sleeps after ~15 min idle (first request then takes ~50s).
+# Ping /health every 10 min so the demo backend stays warm.
+# Note: on a PRIVATE repo this uses Actions minutes (~free if the repo is public).
+# Disable by deleting this file or via the Actions tab if quota matters.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend /health
+        run: curl -fsS https://safenet-backend-cnmy.onrender.com/health || true
