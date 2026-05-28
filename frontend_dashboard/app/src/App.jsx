@@ -5,8 +5,11 @@ import FilterBar from "./components/FilterBar.jsx";
 import ChatSimulator from "./components/ChatSimulator.jsx";
 import Settings from "./components/Settings.jsx";
 
-const API = "http://localhost:8000/alerts";
-const WS_URL = "ws://localhost:8000/ws/alerts"; // FS-A real-time push; polling stays as fallback
+// Backend base is env-driven for deploy (Vercel sets VITE_API_BASE to the hosted
+// backend). Defaults to local FS-A server. WS scheme derived: http->ws, https->wss.
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
+const API = `${API_BASE}/alerts`;
+const WS_URL = `${API_BASE.replace(/^http/, "ws")}/ws/alerts`;
 const POLL_MS = 3000;
 
 const TABS = [
