@@ -26,6 +26,39 @@ function clockTime(iso, locale) {
 
 const pct = (x) => Math.round((x || 0) * 100);
 
+// Downscale an image file to a small JPEG data URL so it previews inline and
+// survives reload without blowing up localStorage.
+function imageToThumb(file, maxW = 480) {
+  return new Promise((resolve) => {
+    try {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxW / (img.width || maxW));
+        const w = Math.round((img.width || maxW) * scale);
+        const h = Math.round((img.height || maxW) * scale);
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        try {
+          resolve(canvas.toDataURL("image/jpeg", 0.7));
+        } catch {
+          resolve(null);
+        }
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        resolve(null);
+      };
+      img.src = url;
+    } catch {
+      resolve(null);
+    }
+  });
+}
+
 export default function GroupChat() {
   const { t, locale } = useI18n();
   const g = t.tryit;
@@ -36,7 +69,11 @@ export default function GroupChat() {
   const bottomRef = useRef(null);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs));
+    } catch {
+      /* localStorage full (e.g. a large image) — keep the in-memory chat */
+    }
   }, [msgs]);
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -47,7 +84,20 @@ export default function GroupChat() {
     if (busy || (!body && !file)) return;
     const id = Date.now();
     const sendFile = file;
-    setMsgs((m) => [...m, { id, fromMe: true, text: body, fileName: sendFile?.name || null, ts: new Date().toISOString() }]);
+    const isImage = !!sendFile && (sendFile.type?.startsWith("image") ?? false);
+    const preview = isImage ? await imageToThumb(sendFile) : null;
+    setMsgs((m) => [
+      ...m,
+      {
+        id,
+        fromMe: true,
+        text: body,
+        fileName: sendFile?.name || null,
+        preview,
+        mediaType: sendFile ? (isImage ? "image" : "video") : null,
+        ts: new Date().toISOString(),
+      },
+    ]);
     setText("");
     setFile(null);
     setBusy(true);
@@ -191,8 +241,18 @@ function MyBubble({ m, g, locale }) {
     <div className="flex justify-end">
       <div className="max-w-[85%] rounded-lg rounded-tr-none bg-[#DCF8C6] px-3 py-2 text-sm text-slate-800 shadow-sm">
         <div className="mb-0.5 text-[11px] font-semibold text-emerald-700">{g.you}</div>
-        {m.fileName && (
-          <div className="mb-1 rounded bg-black/5 px-2 py-1 text-xs text-slate-600">📎 {m.fileName}</div>
+        {m.preview ? (
+          <img
+            src={m.preview}
+            alt={m.fileName || ""}
+            className="mb-1 max-h-52 w-full rounded-md object-cover"
+          />
+        ) : (
+          m.fileName && (
+            <div className="mb-1 rounded bg-black/5 px-2 py-1 text-xs text-slate-600">
+              {m.mediaType === "video" ? "🎬" : "📎"} {m.fileName}
+            </div>
+          )
         )}
         {m.text && <span className="whitespace-pre-wrap break-words">{m.text}</span>}
         <div className="mt-0.5 text-end text-[10px] text-slate-500">{clockTime(m.ts, locale)}</div>
