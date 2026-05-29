@@ -127,6 +127,9 @@ export default function GroupChat() {
 
   function clearChat() {
     setMsgs([]);
+    // Also wipe what this chat popped onto the dashboard — reset to the clean demo set.
+    // (The dashboard's poll picks up the change within a few seconds.)
+    fetch(`${API_BASE}/demo/seed`, { method: "POST" }).catch(() => {});
   }
 
   return (
