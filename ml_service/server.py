@@ -29,7 +29,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from contracts.schemas import AnalyzeResponse, IncomingMessage, MediaReport  # noqa: E402
+from contracts.schemas import AnalyzeResponse, Credibility, IncomingMessage, MediaReport  # noqa: E402
 from ml_service.analyzer import ToxicityAnalyzer  # noqa: E402
 
 app = FastAPI(title="SafeNet ML Service", version="1.0.0")
@@ -40,6 +40,8 @@ _analyzer = ToxicityAnalyzer(use_model=True, use_vision=True)
 
 _VIDEO_EXT = {".mp4", ".mov", ".avi", ".mkv", ".webm"}
 _IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".gif"}
+# Above this AI-generated/deepfake score, flag media as disinformation (not "clean").
+AI_FLAG_THRESHOLD = float(os.getenv("AI_FLAG_THRESHOLD", "0.6"))
 
 
 class AnalyzeRequest(BaseModel):
@@ -88,6 +90,7 @@ def _report(message: IncomingMessage, upload_path: str | None = None,
 
     ar = _analyzer.analyze(message)  # AnalysisResult (text, or text+url combined)
     is_toxic, score, category = ar.is_toxic, ar.toxicity_score, ar.category
+    alert_type, role, credibility = ar.alert_type, ar.role_of_child, None
 
     media = None
     if media_analysis is not None:
@@ -101,12 +104,22 @@ def _report(message: IncomingMessage, upload_path: str | None = None,
             score = max(score, media_analysis.safety_score)
             if media_analysis.safety_score >= ar.toxicity_score:
                 category = "sexual"
+        elif media_analysis.ai_score >= AI_FLAG_THRESHOLD:
+            # AI-generated / deepfake media is NOT "clean" -> flag as disinformation.
+            category, alert_type, role = "disinformation", "disinformation", "exposed"
+            score = max(score, media_analysis.ai_score)
+            credibility = Credibility(
+                score=round(1.0 - media_analysis.ai_score, 3),
+                verdict="תוכן שנוצר/עובד ב-AI (חשד לדיפפייק)",
+                claim="מדיה שזוהתה כנוצרת ב-AI / דיפפייק",
+                source=f"AI detector ({media_analysis.model_used})",
+            )
 
     return AnalyzeResponse(
         is_toxic=is_toxic, toxicity_score=round(score, 3),
-        category=category if is_toxic else "none", role_of_child=ar.role_of_child,
-        alert_type=ar.alert_type, explanation=ar.explanation,
-        model_used=ar.model_used, media=media,
+        category=category if (is_toxic or alert_type == "disinformation") else "none",
+        role_of_child=role, alert_type=alert_type, explanation=ar.explanation,
+        model_used=ar.model_used, media=media, credibility=credibility,
     )
 
 

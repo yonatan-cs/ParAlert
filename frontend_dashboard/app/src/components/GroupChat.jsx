@@ -268,15 +268,19 @@ function SystemBubble({ m, g, t }) {
   const r = m.analysis;
   const SEVERE = ["self_harm", "sexual", "sexual_harassment", "nudity", "threat"];
   const severe = !m.error && r.is_toxic && SEVERE.includes(r.category);
+  // AI-generated / deepfake media is NOT "clean", even when it's NSFW-safe.
+  const deepfake = !m.error && r.media && (r.media.ai_score ?? 0) >= 0.6;
   const tone = m.error
     ? { text: "text-slate-600", icon: "⚠️", label: g.error }
     : severe
       ? { text: "text-red-600", icon: "🚨", label: g.verdictSevere }
       : r.is_toxic
         ? { text: "text-red-600", icon: "🛡️", label: g.verdictBullying }
-        : r.alert_type === "disinformation" && r.credibility
-          ? { text: "text-amber-600", icon: "📰", label: g.verdictDisinfo }
-          : { text: "text-green-600", icon: "✓", label: g.verdictClean };
+        : deepfake
+          ? { text: "text-amber-600", icon: "🎭", label: g.verdictDeepfake }
+          : r.alert_type === "disinformation" && r.credibility
+            ? { text: "text-amber-600", icon: "📰", label: g.verdictDisinfo }
+            : { text: "text-green-600", icon: "✓", label: g.verdictClean };
   const isDisinfo = !m.error && r.alert_type === "disinformation" && r.credibility;
   const realModel = !m.error && r.model_used && !r.model_used.includes("keyword") && r.model_used !== "stub";
 
