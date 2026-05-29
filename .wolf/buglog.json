@@ -1299,6 +1299,62 @@
       "related_bugs": [],
       "occurrences": 3,
       "last_seen": "2026-05-29T02:09:41.228Z"
+    },
+    {
+      "id": "bug-081",
+      "timestamp": "2026-05-29T02:26:07.699Z",
+      "error_message": "Significant refactor of ",
+      "file": "simulator_and_logic/recommendation_engine.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 6→12 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T02:26:07.699Z"
+    },
+    {
+      "id": "bug-082",
+      "timestamp": "2026-05-29T02:27:40.712Z",
+      "error_message": "Incorrect value in code",
+      "file": "ml_service/text_analyzer.py",
+      "root_cause": "Had \"אמא שלך\"",
+      "fix": "Changed to \"סקס\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T02:27:40.712Z"
+    },
+    {
+      "id": "bug-083",
+      "timestamp": "2026-05-29T00:00:00.000Z",
+      "error_message": "Police-escalation instruction missing from parent recommendation for sexual/nudity/high-threat alerts on the template (non-LLM) path",
+      "file": "simulator_and_logic/recommendation_engine.py",
+      "root_cause": "generate_recommendation fallback checked analysis.escalation == 'police', but ToxicityAnalyzer.analyze never sets escalation (stays default 'none'); escalation is computed separately in backend _build_alert on the Alert, not on AnalysisResult. With no ANTHROPIC_API_KEY (no live LLM in prod), the template path is the ONLY path -> severe alerts shipped with no police guidance.",
+      "fix": "Import severity_from_score + escalation_from from contracts.schemas; in fallback derive escalation = analysis.escalation if != 'none' else escalation_from(category, severity_from_score(toxicity_score)); branch on that. Verified env -u ANTHROPIC_API_KEY: sexual/nudity/threat-high -> _POLICE_SUFFIX; threat-med/harassment -> none; self_harm -> _SELF_HARM_SUFFIX.",
+      "tags": ["recommendation", "escalation", "police", "fallback", "no-llm", "py"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T00:00:00.000Z"
+    },
+    {
+      "id": "bug-084",
+      "timestamp": "2026-05-29T00:00:00.000Z",
+      "error_message": "Benign text flagged as bullying: 'שמן זית'(oil), 'מצב חמור'(severe), 'בדיחה'(joke), and English 'blame'/'ration'/'babysitter' via substring keyword match",
+      "file": "ml_service/text_analyzer.py",
+      "root_cause": "_heuristic_score matched keywords with substring 'phrase in low'. English keywords fired as substrings of benign words (lame in blame, ratio in ration, baby in babysitter); Hebrew homographs (שמן=oil/fat, חמור=severe/donkey, מסכן, תינוק, מוזר, שום דבר) are indistinguishable by substring. One hit -> 0.75 >= 0.49 threshold -> false bullying alert. Extends the earlier substring-bomb bug.",
+      "fix": "Added _phrase_in()/_count_hits(): ASCII phrases match on word boundaries (re \\b..\\b) so they cannot fire as substrings; Hebrew keeps substring match to preserve prefix morphology (המטומטם/ולוזר). Removed Hebrew homograph traps + benign-common English words (baby/joke/ratio/lame/bare 'nobody', kept multiword 'nobody likes you'). 13/13 FP+TP test cases pass.",
+      "tags": ["ml", "keyword", "heuristic", "false-positive", "substring", "hebrew", "word-boundary", "py"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T00:00:00.000Z"
     }
   ]
 }

@@ -16,6 +16,86 @@
       "count": 1,
       "tokens": 3052,
       "first_read": "2026-05-29T02:09:28.109Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/main.py": {
+      "count": 1,
+      "tokens": 5802,
+      "first_read": "2026-05-29T02:14:32.417Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/contracts/schemas.py": {
+      "count": 1,
+      "tokens": 1333,
+      "first_read": "2026-05-29T02:14:32.939Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/analyzer.py": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-05-29T02:14:46.254Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/database.py": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-05-29T02:14:47.225Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/fact_check.py": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-05-29T02:14:47.749Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/recommendation_engine.py": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-05-29T02:14:48.342Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py": {
+      "count": 1,
+      "tokens": 3348,
+      "first_read": "2026-05-29T02:15:00.245Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/role_classifier.py": {
+      "count": 1,
+      "tokens": 650,
+      "first_read": "2026-05-29T02:15:00.493Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/vision.py": {
+      "count": 1,
+      "tokens": 4025,
+      "first_read": "2026-05-29T02:15:15.575Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/server.py": {
+      "count": 1,
+      "tokens": 1793,
+      "first_read": "2026-05-29T02:15:16.071Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/App.jsx": {
+      "count": 1,
+      "tokens": 3192,
+      "first_read": "2026-05-29T02:15:26.457Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/whatsapp_bridge/index.js": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-05-29T02:15:26.672Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/render.yaml": {
+      "count": 1,
+      "tokens": 449,
+      "first_read": "2026-05-29T02:15:36.416Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/vercel.json": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-05-29T02:15:37.566Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/.gitignore": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-05-29T02:15:38.099Z"
+    },
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/requirements.txt": {
+      "count": 1,
+      "tokens": 23,
+      "first_read": "2026-05-29T02:25:42.158Z"
     }
   },
   "files_written": [
@@ -54,16 +134,92 @@
       "action": "edit",
       "tokens": 14,
       "at": "2026-05-29T02:09:41.227Z"
+    },
+    {
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/requirements.txt",
+      "action": "edit",
+      "tokens": 39,
+      "at": "2026-05-29T02:25:46.015Z"
+    },
+    {
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/render.yaml",
+      "action": "edit",
+      "tokens": 98,
+      "at": "2026-05-29T02:25:51.482Z"
+    },
+    {
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/recommendation_engine.py",
+      "action": "edit",
+      "tokens": 35,
+      "at": "2026-05-29T02:26:01.240Z"
+    },
+    {
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/recommendation_engine.py",
+      "action": "edit",
+      "tokens": 219,
+      "at": "2026-05-29T02:26:07.699Z"
+    },
+    {
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+      "action": "edit",
+      "tokens": 26,
+      "at": "2026-05-29T02:27:06.306Z"
+    },
+    {
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+      "action": "edit",
+      "tokens": 415,
+      "at": "2026-05-29T02:27:34.629Z"
+    },
+    {
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+      "action": "edit",
+      "tokens": 11,
+      "at": "2026-05-29T02:27:40.711Z"
+    },
+    {
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+      "action": "edit",
+      "tokens": 277,
+      "at": "2026-05-29T02:27:49.373Z"
+    },
+    {
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+      "action": "edit",
+      "tokens": 111,
+      "at": "2026-05-29T02:27:56.220Z"
+    },
+    {
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+      "action": "edit",
+      "tokens": 19,
+      "at": "2026-05-29T02:28:01.715Z"
+    },
+    {
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/requirements.txt",
+      "action": "edit",
+      "tokens": 11,
+      "at": "2026-05-29T02:28:06.554Z"
+    },
+    {
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/render.yaml",
+      "action": "edit",
+      "tokens": 35,
+      "at": "2026-05-29T02:28:11.840Z"
     }
   ],
   "edit_counts": {
     "frontend_dashboard/app/src/components/AlertCard.jsx": 2,
     "frontend_dashboard/app/src/lib/evidence.js": 1,
-    "frontend_dashboard/app/src/i18n/translations.js": 3
+    "frontend_dashboard/app/src/i18n/translations.js": 3,
+    "backend_api/requirements.txt": 2,
+    "render.yaml": 2,
+    "simulator_and_logic/recommendation_engine.py": 2,
+    "ml_service/text_analyzer.py": 6
   },
-  "anatomy_hits": 2,
-  "anatomy_misses": 1,
+  "anatomy_hits": 11,
+  "anatomy_misses": 8,
   "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 2
+  "stop_count": 6
 }

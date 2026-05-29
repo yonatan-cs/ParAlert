@@ -11,6 +11,7 @@ role classification. Those responsibilities live in other modules.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 from contracts.schemas import IncomingMessage
@@ -21,29 +22,31 @@ TOXIC_THRESHOLD = 0.49
 
 _TOXIC_KEYWORDS = [
     # Hebrew insults / put-downs
-    "אפס", "מטומטם", "מטומטמת", "טמבל", "טמבלית", "שמן", "שמנה", "מכוער",
+    "אפס", "מטומטם", "מטומטמת", "טמבל", "טמבלית", "מכוער",
     "מכוערת", "דביל", "דבילית", "תמות", "מעצבן", "מעצבנת", "לך מפה", "סתום",
-    "סתמי את הפה", "חנון", "חנונית", "לוזר", "לוזרית", "נכה", "מוזר", "מוזרה",
+    "סתמי את הפה", "חנון", "חנונית", "לוזר", "לוזרית", "נכה",
     "דוחה", "דוחה אותך", "מגעיל", "מגעילה", "פתטי", "פתטית", "כושל", "כישלון",
-    "בכיין", "בכיינית", "תינוק", "תינוקת", "פחדן", "פחדנית", "אידיוט", "אידיוטית",
-    "בהמה", "חמור", "חרא של בנאדם", "שום דבר", "אתה כלום", "את כלום", "מסכן",
-    "מסכנה", "עלוב", "עלובה", "בוגד", "בוגדת", "מטונף", "מטונפת", "טיפש", "טיפשה",
+    "בכיין", "בכיינית", "פחדן", "פחדנית", "אידיוט", "אידיוטית",
+    "בהמה", "חרא של בנאדם", "אתה כלום", "את כלום",
+    "עלוב", "עלובה", "בוגד", "בוגדת", "מטונף", "מטונפת", "טיפש", "טיפשה",
     "אין לך חברים", "מי בכלל מדבר איתך", "כולם צוחקים עליך", "בושה",
-    # English (matched case-insensitively) so the fallback isn't blind to English.
+    # NOTE: removed Hebrew homograph traps a substring test can't disambiguate —
+    # שמן(=oil)/חמור(=severe)/מסכן/תינוק/מוזר/שום דבר/אמא שלך/די כבר.
+    # English (word-boundary matched, see _phrase_in) so the fallback isn't blind to English.
     "idiot", "stupid", "loser", "ugly", "dumb", "moron", "retard", "retarded",
     "freak", "weirdo", "creep", "nerd", "geek", "fatty", "fatso",
-    "disgusting", "gross", "lame", "useless", "pathetic", "worthless", "trash",
-    "garbage", "clown", "joke", "embarrassing", "loser", "failure", "nobody",
+    "disgusting", "gross", "useless", "pathetic", "worthless", "trash",
+    "garbage", "clown", "embarrassing", "failure",
     "shut up", "shut your mouth", "kill yourself", "kys", "go kill yourself",
     "nobody likes you", "nobody cares", "no one cares about you", "no friends",
     "you have no friends", "hate you", "i hate you", "everyone hates you",
     "you suck", "you're nothing", "youre nothing", "go die", "drop dead",
-    "waste of space", "waste of air", "cringe", "ratio", "skill issue",
-    "coward", "crybaby", "baby", "snitch",
+    "waste of space", "waste of air", "cringe", "skill issue",
+    "coward", "crybaby", "snitch",
     # Profanity (he + en)
     "חרא", "זבל", "מפגר", "מפגרת", "מניאק", "מניאקית", "שרמוטה", "בן זונה",
     "בת זונה", "לך תזדיין", "תזדיין", "תזדייני", "מזדיין",
-    "חתיכת חרא", "חתיכת זבל", "אמא שלך", "די כבר", "סקס",
+    "חתיכת חרא", "חתיכת זבל", "סקס",
     "shit", "shitty", "fuck", "fucking", "fuck you", "fuck off", "asshole",
     "bitch", "bastard", "dick", "dickhead", "douche", "douchebag", "slut",
     "whore", "cunt", "prick", "piss off", "stfu", "gtfo", "wtf", "screw you",
@@ -126,6 +129,27 @@ _AMBIGUOUS_LOGISTICS_PHRASES = [
 ]
 
 
+def _phrase_in(phrase: str, low: str) -> bool:
+    """Match a keyword/phrase inside already-lowercased text.
+
+    ASCII (English) phrases match on WORD BOUNDARIES so a keyword can't fire as a
+    substring of a benign word — "lame" must not match "blame", "ratio" must not
+    match "ration", "baby" must not match "babysitter".
+
+    Hebrew phrases keep a plain substring test on purpose: Hebrew glues prefixes
+    (ו/ה/ב/ל/מ/ש/כ) straight onto a word, so "המטומטם"/"ולוזר" must still match —
+    a word-boundary test would miss them. Hebrew homographs that a substring test
+    can't disambiguate (שמן=oil, חמור=severe, ...) are removed from the lists above.
+    """
+    if phrase.isascii():
+        return re.search(r"\b" + re.escape(phrase) + r"\b", low) is not None
+    return phrase in low
+
+
+def _count_hits(phrases: list[str], low: str) -> int:
+    return sum(1 for phrase in phrases if _phrase_in(phrase, low))
+
+
 @dataclass
 class TextAnalysis:
     """Text analysis result used by the orchestrator."""
@@ -202,18 +226,18 @@ class TextToxicityAnalyzer:
     def _heuristic_score(self, text: str) -> float:
         """Score bullying patterns that profanity-only models often miss."""
         low = text.lower()  # case-insensitive matching for English; Hebrew is unaffected
-        hits = sum(1 for phrase in _TOXIC_KEYWORDS if phrase in low)
-        exclusion_hits = sum(1 for phrase in _EXCLUSION_PHRASES if phrase in low)
-        threat_hits = sum(1 for phrase in _THREAT_PHRASES if phrase in low)
-        self_harm_hits = sum(1 for phrase in _SELF_HARM_PHRASES if phrase in low)
-        safe_context_hits = sum(1 for phrase in _SAFE_CONTEXT_PHRASES if phrase in low)
+        hits = _count_hits(_TOXIC_KEYWORDS, low)
+        exclusion_hits = _count_hits(_EXCLUSION_PHRASES, low)
+        threat_hits = _count_hits(_THREAT_PHRASES, low)
+        self_harm_hits = _count_hits(_SELF_HARM_PHRASES, low)
+        safe_context_hits = _count_hits(_SAFE_CONTEXT_PHRASES, low)
 
         # Example: "don't come to the library, we meet in class" is logistical,
         # not bullying. These guards reduce that false positive.
         if exclusion_hits == 1 and safe_context_hits >= 2 and not hits and not threat_hits:
             exclusion_hits = 0
         if safe_context_hits >= 2 and not threat_hits:
-            hits -= sum(1 for phrase in _AMBIGUOUS_LOGISTICS_PHRASES if phrase in low)
+            hits -= _count_hits(_AMBIGUOUS_LOGISTICS_PHRASES, low)
             hits = max(hits, 0)
             if exclusion_hits == 1:
                 exclusion_hits = 0

@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-28T11:26:26.426Z",
   "lifetime": {
-    "total_tokens_estimated": 1394914,
-    "total_reads": 1261,
-    "total_writes": 3048,
+    "total_tokens_estimated": 1480072,
+    "total_reads": 1320,
+    "total_writes": 3096,
     "total_sessions": 12,
-    "anatomy_hits": 124,
-    "anatomy_misses": 1110,
+    "anatomy_hits": 158,
+    "anatomy_misses": 1135,
     "repeated_reads_blocked": 366,
-    "estimated_savings_vs_bare_cli": 172950
+    "estimated_savings_vs_bare_cli": 179750
   },
   "sessions": [
     {
@@ -23661,6 +23661,668 @@
         "writes_count": 6,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-05-29-0505",
+      "started": "2026-05-29T02:05:37.652Z",
+      "ended": "2026-05-29T02:14:17.097Z",
+      "reads": [
+        {
+          "file": "/tmp/L.jpg",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/lib/evidence.js",
+          "tokens_estimated": 1784,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 3052,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/components/AlertCard.jsx",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/components/AlertCard.jsx",
+          "tokens_estimated": 170,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/lib/evidence.js",
+          "tokens_estimated": 45,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 43,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 14,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 4836,
+        "output_tokens_estimated": 350,
+        "reads_count": 3,
+        "writes_count": 6,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-05-29-0505",
+      "started": "2026-05-29T02:05:37.652Z",
+      "ended": "2026-05-29T02:17:14.574Z",
+      "reads": [
+        {
+          "file": "/tmp/L.jpg",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/lib/evidence.js",
+          "tokens_estimated": 1784,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 3052,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/main.py",
+          "tokens_estimated": 5802,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/contracts/schemas.py",
+          "tokens_estimated": 1333,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/analyzer.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/database.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/fact_check.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/recommendation_engine.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 3348,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/role_classifier.py",
+          "tokens_estimated": 650,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/vision.py",
+          "tokens_estimated": 4025,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/server.py",
+          "tokens_estimated": 1793,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/App.jsx",
+          "tokens_estimated": 3192,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/whatsapp_bridge/index.js",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/render.yaml",
+          "tokens_estimated": 449,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/vercel.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/.gitignore",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/components/AlertCard.jsx",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/components/AlertCard.jsx",
+          "tokens_estimated": 170,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/lib/evidence.js",
+          "tokens_estimated": 45,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 43,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 14,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 25428,
+        "output_tokens_estimated": 350,
+        "reads_count": 18,
+        "writes_count": 6,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 10
+      }
+    },
+    {
+      "id": "session-2026-05-29-0505",
+      "started": "2026-05-29T02:05:37.652Z",
+      "ended": "2026-05-29T02:30:30.877Z",
+      "reads": [
+        {
+          "file": "/tmp/L.jpg",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/lib/evidence.js",
+          "tokens_estimated": 1784,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 3052,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/main.py",
+          "tokens_estimated": 5802,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/contracts/schemas.py",
+          "tokens_estimated": 1333,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/analyzer.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/database.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/fact_check.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/recommendation_engine.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 3348,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/role_classifier.py",
+          "tokens_estimated": 650,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/vision.py",
+          "tokens_estimated": 4025,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/server.py",
+          "tokens_estimated": 1793,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/App.jsx",
+          "tokens_estimated": 3192,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/whatsapp_bridge/index.js",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/render.yaml",
+          "tokens_estimated": 449,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/vercel.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/.gitignore",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/requirements.txt",
+          "tokens_estimated": 23,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/components/AlertCard.jsx",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/components/AlertCard.jsx",
+          "tokens_estimated": 170,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/lib/evidence.js",
+          "tokens_estimated": 45,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 43,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/requirements.txt",
+          "tokens_estimated": 39,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/render.yaml",
+          "tokens_estimated": 98,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/recommendation_engine.py",
+          "tokens_estimated": 35,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/recommendation_engine.py",
+          "tokens_estimated": 219,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 26,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 415,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 277,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 111,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 19,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/requirements.txt",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/render.yaml",
+          "tokens_estimated": 35,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 25451,
+        "output_tokens_estimated": 1646,
+        "reads_count": 19,
+        "writes_count": 18,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 11
+      }
+    },
+    {
+      "id": "session-2026-05-29-0505",
+      "started": "2026-05-29T02:05:37.652Z",
+      "ended": "2026-05-29T02:32:09.580Z",
+      "reads": [
+        {
+          "file": "/tmp/L.jpg",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/lib/evidence.js",
+          "tokens_estimated": 1784,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 3052,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/main.py",
+          "tokens_estimated": 5802,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/contracts/schemas.py",
+          "tokens_estimated": 1333,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/analyzer.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/database.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/fact_check.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/recommendation_engine.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 3348,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/role_classifier.py",
+          "tokens_estimated": 650,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/vision.py",
+          "tokens_estimated": 4025,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/server.py",
+          "tokens_estimated": 1793,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/App.jsx",
+          "tokens_estimated": 3192,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/whatsapp_bridge/index.js",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/render.yaml",
+          "tokens_estimated": 449,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/vercel.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/.gitignore",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/requirements.txt",
+          "tokens_estimated": 23,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/components/AlertCard.jsx",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/components/AlertCard.jsx",
+          "tokens_estimated": 170,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/lib/evidence.js",
+          "tokens_estimated": 45,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 43,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/requirements.txt",
+          "tokens_estimated": 39,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/render.yaml",
+          "tokens_estimated": 98,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/recommendation_engine.py",
+          "tokens_estimated": 35,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/simulator_and_logic/recommendation_engine.py",
+          "tokens_estimated": 219,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 26,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 415,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 277,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 111,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/ml_service/text_analyzer.py",
+          "tokens_estimated": 19,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/backend_api/requirements.txt",
+          "tokens_estimated": 11,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/render.yaml",
+          "tokens_estimated": 35,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 25451,
+        "output_tokens_estimated": 1646,
+        "reads_count": 19,
+        "writes_count": 18,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 11
       }
     }
   ],

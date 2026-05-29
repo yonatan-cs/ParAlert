@@ -102,3 +102,14 @@ Judge playground: POST /analyze (JSON text+media_url) and /analyze/upload (multi
 - Does NOT want a "demo mode" / source-status indicator — removed the header status pill. Says it's not useful.
 - designqc (`openwolf designqc --url`) DROPS query strings — `?theme=light` does not reach the SPA, so it always captures the default (dark) theme. md5 diffs between runs are just live-animation noise. To verify a non-default theme, can't rely on designqc query passthrough; theme-independent changes (radii/shadow/layout) are still verifiable from a default-theme capture.
 - AlertCard.jsx has CONCURRENT edits from the user/teammate (added EvidenceSection + lib/evidence.js). Re-read before editing; preserve their changes.
+
+## Key Learnings (appended 2026-05-29, no-LLM prod)
+- **NO live LLM in production / on stage.** No ANTHROPIC_API_KEY is set. recommendation_engine.generate_recommendation ALWAYS takes the template fallback path in prod. Do NOT add `anthropic` to backend_api/requirements.txt or assume Haiku runs on the demo — the parent "recommendation" is the role-keyed template + escalation suffix. (Pitch says "LLM" but prod is templated.)
+- **Escalation is NOT on AnalysisResult.** The analyzer never sets `escalation` (stays "none"); it's computed in backend _build_alert via escalation_from(category, severity). Any code needing escalation from an AnalysisResult must derive it itself (fixed bug-083 in recommendation_engine this way).
+- **Keyword heuristic matching rule (text_analyzer._phrase_in):** English keywords = WORD BOUNDARY (re \b) so substrings of benign words don't fire; Hebrew = substring (preserves prefix morphology המטומטם/ולוזר). NEVER add Hebrew homographs (שמן=oil, חמור=severe, מסכן, תינוק, מוזר, שום דבר) or benign-common English single words (baby/joke/ratio/lame/bare nobody) — substring/standalone match = false bullying alert at one hit (0.75 > 0.49). See bug-084.
+
+## Decision Log (appended 2026-05-29)
+### [2026-05-29] CODE FREEZE before presentation
+System stable, demo works. User froze code pre-presentation to avoid side-effect risk. DO NOT fix the known-but-deferred items: #4 double media analysis (server.py/main.py analyze URL twice), #5 bridge sends media_url "[media]", #6 stale anatomy.md, #7 safenet naming drift. Only break freeze on explicit user request.
+### [2026-05-29] Pitch wording: "role-based recommendation engine" (not "live LLM")
+Prod has no live LLM (no ANTHROPIC_API_KEY). Narrative: LLM was used BEFOREHAND to generate the decision tree -> zero-latency, offline-stable role-based engine. Verbal/slide change, no code.

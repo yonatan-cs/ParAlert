@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-29T02:09:41.220Z
-> Files: 39 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-29T02:28:11.834Z
+> Files: 40 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../../tmp/
 
@@ -96,11 +96,12 @@
 - `role_classifier.py` — classify_category, classify_role (~650 tok)
 - `RUN_LOCAL.md` — 🤖 הרצת המודלים האמיתיים מקומית (ML service + Cloudflare Tunnel) (~1311 tok)
 - `server.py` — API: 3 endpoints (~1793 tok)
-- `text_analyzer.py` — from: analyze, score_text (~3348 tok)
+- `text_analyzer.py` — from: analyze, score_text (~3580 tok)
 - `vision.py` — from: load, download, score_path, score_path + 4 more (~4025 tok)
 
 ## simulator_and_logic/
 
+- `recommendation_engine.py` — generate_recommendation (~1378 tok)
 
 ## simulator_and_logic/conversations/
 

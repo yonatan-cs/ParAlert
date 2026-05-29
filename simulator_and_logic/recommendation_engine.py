@@ -13,7 +13,9 @@ import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from contracts.schemas import AnalysisResult, IncomingMessage  # noqa: E402
+from contracts.schemas import (  # noqa: E402
+    AnalysisResult, IncomingMessage, escalation_from, severity_from_score,
+)
 
 SYSTEM_PROMPT = """אתה יועץ חינוכי מומחה לבריונות ברשת, פונה להורה בעברית.
 ההורה קיבל התראה על הילד שלו. כתוב המלצה של 2-3 משפטים בלבד:
@@ -58,10 +60,16 @@ def generate_recommendation(analysis: AnalysisResult, message: IncomingMessage) 
     except Exception as exc:  # noqa: BLE001
         print(f"[reco] LLM failed, using template: {exc}")
         base = _FALLBACK.get(analysis.role_of_child, _FALLBACK["none"])
-        # Escalate severe cases even on the fallback path.
+        # Escalate severe cases even on the fallback path. The analyzer does not set
+        # analysis.escalation (it stays "none"), so derive it from category + severity
+        # using the same rule the backend applies when building the alert — otherwise
+        # sexual/nudity/high-threat events lose their police instruction here.
+        severity = severity_from_score(analysis.toxicity_score)
+        escalation = analysis.escalation if analysis.escalation != "none" \
+            else escalation_from(analysis.category, severity)
         if analysis.category == "self_harm":
             base += _SELF_HARM_SUFFIX
-        elif analysis.escalation == "police":
+        elif escalation == "police":
             base += _POLICE_SUFFIX
     return base
 
