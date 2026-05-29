@@ -28,3 +28,6 @@ whatsapp_bridge/.wwebjs_cache/
 # OpenWolf runtime
 .wolf/daemon.log
 .wolf/designqc-captures/
+
+# Nested OpenWolf runtime (designqc captures, memory)
+frontend_dashboard/app/.wolf/
