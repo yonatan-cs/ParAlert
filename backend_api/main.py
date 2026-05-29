@@ -1,5 +1,5 @@
 """
-SafeNet Backend — the connecting brain. OWNER: Dev 2.
+ParAlert Backend — the connecting brain. OWNER: Dev 2.
 
 Flow:
   Simulator --POST /ingest--> [analyze] --if toxic--> [recommend] --> save Alert
@@ -76,7 +76,7 @@ except Exception as exc:  # noqa: BLE001
     print(f"[backend] fact_check unavailable, disinformation alerts skip credibility: {exc}")
     check_claim = None
 
-app = FastAPI(title="SafeNet API", version="0.1.0")
+app = FastAPI(title="ParAlert API", version="0.1.0")
 app.add_middleware(
     CORSMiddleware, allow_origins=CORS_ORIGINS, allow_methods=["*"], allow_headers=["*"]
 )

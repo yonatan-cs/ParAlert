@@ -1,5 +1,5 @@
 """
-Shared data contracts for SafeNet. SINGLE SOURCE OF TRUTH.
+Shared data contracts for ParAlert. SINGLE SOURCE OF TRUTH.
 
 Every module imports these. Do NOT change a field without telling the whole team.
 New fields are optional with defaults, so older data/code stays valid.

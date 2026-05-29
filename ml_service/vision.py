@@ -31,7 +31,7 @@ MAX_DOWNLOAD_BYTES = 50 * 1024 * 1024
 VIDEO_SAMPLE_SECONDS = 2
 MAX_VIDEO_FRAMES = 12
 DOWNLOAD_HEADERS = {
-    "User-Agent": "SafeNetHackathon/0.1 (educational demo; contact: local)",
+    "User-Agent": "ParAlertHackathon/0.1 (educational demo; contact: local)",
 }
 _CONTENT_TYPE_SUFFIXES = {
     "image/jpeg": ".jpg",

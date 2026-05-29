@@ -287,7 +287,7 @@ function SystemBubble({ m, g, t }) {
   return (
     <div className="flex justify-start">
       <div className="max-w-[88%] space-y-1 rounded-lg rounded-tl-none bg-white px-3 py-2 text-sm text-slate-800 shadow-sm">
-        <div className="text-[11px] font-semibold text-emerald-700">🛡️ SafeNet</div>
+        <div className="text-[11px] font-semibold text-emerald-700">🛡️ ParAlert</div>
         <div className={`flex items-center gap-1.5 font-medium ${tone.text}`}>
           <span>{tone.icon}</span>
           {tone.label}

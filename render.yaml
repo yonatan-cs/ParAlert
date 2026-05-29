@@ -1,4 +1,4 @@
-# Render Blueprint for the SafeNet backend (FS-A).
+# Render Blueprint for the ParAlert backend (FS-A).
 # Deploy: Render dashboard -> New + -> Blueprint -> pick this repo -> Apply.
 # Gives a public https URL + wss for /ws/alerts. Hand the URL to FS-B (VITE_API_BASE).
 #

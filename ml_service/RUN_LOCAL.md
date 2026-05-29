@@ -30,8 +30,8 @@ Judge → אתר (Vercel) → POST /analyze → Render → Cloudflare Tunnel →
 
 ## שלב 1 — קוד
 ```bash
-git clone https://github.com/yonatan-cs/Hackathon-Project.git
-cd Hackathon-Project
+git clone https://github.com/yonatan-cs/ParAlert.git
+cd ParAlert
 ```
 
 ## שלב 2 — סביבה וירטואלית (3.12)

@@ -1,4 +1,4 @@
-# DESIGN.md — SafeNet
+# DESIGN.md — ParAlert
 
 ## Theme
 Dark. The scene: a worried parent on their phone in the evening. Dark reduces glare and feels

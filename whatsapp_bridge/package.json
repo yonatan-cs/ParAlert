@@ -1,7 +1,7 @@
 {
   "name": "safenet-whatsapp-bridge",
   "version": "0.1.0",
-  "description": "Links WhatsApp as a device and streams group messages to the SafeNet backend (contract A).",
+  "description": "Links WhatsApp as a device and streams group messages to the ParAlert backend (contract A).",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {

@@ -32,7 +32,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from contracts.schemas import AnalyzeResponse, Credibility, IncomingMessage, MediaReport  # noqa: E402
 from ml_service.analyzer import ToxicityAnalyzer  # noqa: E402
 
-app = FastAPI(title="SafeNet ML Service", version="1.0.0")
+app = FastAPI(title="ParAlert ML Service", version="1.0.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 # Load the real models. Text model loads now; media models load lazily on first media.

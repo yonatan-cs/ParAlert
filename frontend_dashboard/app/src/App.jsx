@@ -159,7 +159,7 @@ export default function App() {
             "Notification" in window &&
             Notification.permission === "granted"
           ) {
-            new Notification("🛡️ SafeNet", {
+            new Notification("🛡️ ParAlert", {
               body: `${msg.group_name} · ${t.category[msg.category] || msg.category || ""}`,
             });
           }

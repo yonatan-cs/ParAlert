@@ -1,10 +1,10 @@
-# PRODUCT.md — SafeNet
+# PRODUCT.md — ParAlert
 
 ## Register
 product
 
 ## Product purpose
-SafeNet alerts a parent when their child is involved in cyberbullying (WhatsApp-first).
+ParAlert alerts a parent when their child is involved in cyberbullying (WhatsApp-first).
 Each alert carries the offending message + surrounding context, a toxicity score, who-did-what,
 and — the core value — an empathetic, concrete recommendation for what the parent should do.
 The system covers three angles: my child as victim, as aggressor, or as bystander.

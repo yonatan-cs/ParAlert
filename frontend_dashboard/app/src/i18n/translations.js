@@ -1,11 +1,11 @@
-// All UI strings for SafeNet, per locale. `useI18n().t` returns one of these objects.
+// All UI strings for ParAlert, per locale. `useI18n().t` returns one of these objects.
 // Parameterized strings are functions. Label maps (category/role/severity/escalation)
 // are keyed by the contract C enum values so components can look them up directly.
 
 export const STRINGS = {
   he: {
-    appName: "SafeNet",
-    title: "SafeNet — לוח הורה",
+    appName: "ParAlert",
+    title: "ParAlert — לוח הורה",
     tabs: { chat: "📱 צ'אט הילד", dashboard: "🛡️ דשבורד", settings: "⚙️ הגדרות" },
     status: {
       live: "מחובר · זמן אמת",
@@ -90,12 +90,12 @@ export const STRINGS = {
       reveal: "הצג",
       flash: {
         severe: "🚨 מקרה חמור — מומלץ לפנות למשטרה (100)",
-        disinfo: "📰 SafeNet זיהה דיסאינפורמציה — התראה נשלחה",
-        toxic: "🛡️ SafeNet זיהה בריונות — התראה נשלחה להורה",
+        disinfo: "📰 ParAlert זיהה דיסאינפורמציה — התראה נשלחה",
+        toxic: "🛡️ ParAlert זיהה בריונות — התראה נשלחה להורה",
       },
     },
     tryit: {
-      title: "נסו את SafeNet בעצמכם",
+      title: "נסו את ParAlert בעצמכם",
       subtitle: "כתבו הודעה, הדביקו קישור מדיה או העלו תמונה/וידאו — וקבלו ניתוח חי מהמודלים שלנו.",
       placeholder: "הקלידו הודעה לבדיקה…",
       mediaUrlPlaceholder: "https://… קישור לתמונה/וידאו",
@@ -122,22 +122,22 @@ export const STRINGS = {
       modelLabel: "מודל",
       popped: "🔔 ההתראה קפצה בדשבורד",
       error: "הניתוח נכשל. ודאו שהשרת פעיל ונסו שוב.",
-      groupName: "קבוצת SafeNet",
-      members: "אתם + SafeNet",
-      welcome: "כתבו הודעה — SafeNet ינתח כל אחת בזמן אמת. ההודעות נשמרות כאן.",
+      groupName: "קבוצת ParAlert",
+      members: "אתם + ParAlert",
+      welcome: "כתבו הודעה — ParAlert ינתח כל אחת בזמן אמת. ההודעות נשמרות כאן.",
       clear: "נקה",
       you: "אתם",
       attach: "צרף תמונה/וידאו",
       send: "שלח",
-      disclaimer: "ℹ️ זו אינה האפליקציה — רק התנסות בליבת הזיהוי של SafeNet",
+      disclaimer: "ℹ️ זו אינה האפליקציה — רק התנסות בליבת הזיהוי של ParAlert",
     },
     time: { now: "עכשיו" },
     langName: "English",
   },
 
   en: {
-    appName: "SafeNet",
-    title: "SafeNet — Parent Dashboard",
+    appName: "ParAlert",
+    title: "ParAlert — Parent Dashboard",
     tabs: { chat: "📱 Child's Chat", dashboard: "🛡️ Dashboard", settings: "⚙️ Settings" },
     status: {
       live: "Connected · real-time",
@@ -222,12 +222,12 @@ export const STRINGS = {
       reveal: "Show",
       flash: {
         severe: "🚨 Severe case — contacting police advised (100)",
-        disinfo: "📰 SafeNet detected disinformation — alert sent",
-        toxic: "🛡️ SafeNet detected bullying — alert sent to parent",
+        disinfo: "📰 ParAlert detected disinformation — alert sent",
+        toxic: "🛡️ ParAlert detected bullying — alert sent to parent",
       },
     },
     tryit: {
-      title: "Try SafeNet yourself",
+      title: "Try ParAlert yourself",
       subtitle: "Type a message, paste a media link, or upload an image/video — get a live analysis from our models.",
       placeholder: "Type a message to analyze…",
       mediaUrlPlaceholder: "https://… image/video URL",
@@ -254,14 +254,14 @@ export const STRINGS = {
       modelLabel: "model",
       popped: "🔔 Popped on the dashboard",
       error: "Analysis failed. Make sure the server is up and try again.",
-      groupName: "SafeNet Group",
-      members: "You + SafeNet",
-      welcome: "Type a message — SafeNet analyzes each one in real time. Messages are saved here.",
+      groupName: "ParAlert Group",
+      members: "You + ParAlert",
+      welcome: "Type a message — ParAlert analyzes each one in real time. Messages are saved here.",
       clear: "Clear",
       you: "You",
       attach: "Attach image/video",
       send: "Send",
-      disclaimer: "ℹ️ Not the product — a hands-on demo of SafeNet's detection core",
+      disclaimer: "ℹ️ Not the product — a hands-on demo of ParAlert's detection core",
     },
     time: { now: "now" },
     langName: "עברית",

@@ -4,7 +4,7 @@ import { useI18n } from "../i18n/I18nContext.jsx";
 
 // WhatsApp-Web-style scripted demo: a vertical group list (sidebar) + the selected
 // group's conversation. Plays a scripted conversation; flagged messages flash a typed
-// SafeNet banner and media renders censored for sensitive content. Pure frontend.
+// ParAlert banner and media renders censored for sensitive content. Pure frontend.
 const FLASH_CLS = { severe: "bg-sev-high", disinfo: "bg-amber-600", toxic: "bg-sev-high" };
 
 function flagType(m) {
