@@ -418,3 +418,12 @@ Recap was stale: ML was ALREADY merged (89c4bbe) + v2-wired; system ran end-to-e
 | 05:30 | Session end: 18 writes across 7 files (AlertCard.jsx, evidence.js, translations.js, requirements.txt, render.yaml) | 19 reads | ~27097 tok |
 | 03:18 | Code freeze declared; pitch reworded to role-based engine (no code) | .wolf/cerebrum.md | logged decision | ~0.5k |
 | 05:32 | Session end: 18 writes across 7 files (AlertCard.jsx, evidence.js, translations.js, requirements.txt, render.yaml) | 19 reads | ~27097 tok |
+| 06:39 | Session end: 18 writes across 7 files (AlertCard.jsx, evidence.js, translations.js, requirements.txt, render.yaml) | 19 reads | ~27097 tok |
+
+## Session: 2026-05-29 06:49
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 06:51 | Created README.md | — | ~2708 |
+| 06:51 | Polished README: badges, TOC, verified endpoints/env/models vs code, added WS_HEARTBEAT_SECONDS + defaults col | README.md | done | ~3500 |
+| 06:51 | Session end: 1 writes across 1 files (README.md) | 2 reads | ~3457 tok |
