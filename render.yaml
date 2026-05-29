@@ -7,7 +7,10 @@
 # to the cloud. See whatsapp_bridge/README.md.
 services:
   - type: web
-    name: safenet-backend
+    name: paralert-backend
+    # ^ NOTE: the LIVE Render service is still "safenet-backend"
+    #   (safenet-backend-cnmy.onrender.com). Renaming/recreating it changes the URL —
+    #   if you do, update Vercel VITE_API_BASE to the new URL and redeploy the frontend.
     runtime: python
     plan: free                       # free tier sleeps after ~15 min idle (cold start ~50s)
     rootDir: backend_api             # build + start run from backend_api/
