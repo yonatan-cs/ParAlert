@@ -16,7 +16,7 @@ export default function FilterBar({ value, onChange, alerts }) {
             key={key}
             type="button"
             onClick={() => onChange(key)}
-            className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-sm transition-colors duration-150 ${
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1 text-sm transition-colors duration-150 ${
               active
                 ? "bg-content text-ink"
                 : "bg-surface-2 text-muted hover:bg-edge hover:text-content"
@@ -24,8 +24,8 @@ export default function FilterBar({ value, onChange, alerts }) {
           >
             {t.filters[key]}
             <span
-              className={`min-w-4 rounded-full px-1 text-center text-[11px] ${
-                active ? "bg-ink/10 text-ink" : "bg-ink/40 text-faint"
+              className={`min-w-4 rounded px-1 text-center text-[11px] ${
+                active ? "bg-ink/10 text-ink" : "bg-edge text-faint"
               }`}
             >
               {countFor(key)}

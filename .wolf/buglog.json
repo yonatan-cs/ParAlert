@@ -105,8 +105,17 @@
       "file": "whatsapp_bridge/index.js, whatsapp_bridge/package.json",
       "root_cause": "whatsapp-web.js depends on puppeteer, whose postinstall downloads a ~150MB Chromium. The download was killed by a flaky network (ECONNRESET) and the whole install failed.",
       "fix": "Install with PUPPETEER_SKIP_DOWNLOAD=true (bash) / $env:PUPPETEER_SKIP_DOWNLOAD='true' (PowerShell), then drive the system browser: index.js auto-detects Chrome/Edge (or CHROME_PATH) and passes it as puppeteer.executablePath. Verified: bridge launches Chrome and renders the linked-device QR.",
-      "tags": ["whatsapp", "puppeteer", "chromium", "npm-install", "windows", "econnreset"],
-      "related_bugs": ["bug-005"],
+      "tags": [
+        "whatsapp",
+        "puppeteer",
+        "chromium",
+        "npm-install",
+        "windows",
+        "econnreset"
+      ],
+      "related_bugs": [
+        "bug-005"
+      ],
       "occurrences": 1,
       "last_seen": "2026-05-28T13:11:00Z"
     },
@@ -117,7 +126,15 @@
       "file": "backend_api/main.py",
       "root_cause": "uvicorn --reload (WatchFiles) on Windows stalled: it logged 'Reloading...' but the new worker never started, so the old worker (without the new /ws route) kept serving. Starlette returns 403 for a WebSocket path that matches no registered route, which looked like a code bug but was stale code.",
       "fix": "Stopped the server and restarted WITHOUT --reload (run fresh on each code change). WS push then verified end-to-end: connect -> POST /ingest toxic -> alert pushed over the socket. Lesson: on Windows, prefer a manual restart over --reload for this project.",
-      "tags": ["fastapi", "uvicorn", "reload", "watchfiles", "websocket", "windows", "403"],
+      "tags": [
+        "fastapi",
+        "uvicorn",
+        "reload",
+        "watchfiles",
+        "websocket",
+        "windows",
+        "403"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-28T13:10:30Z"
@@ -129,7 +146,13 @@
       "file": "n/a (verification)",
       "root_cause": "RTK (rtk hook) rewrites curl and compresses the HTTP response body into a type-schema to save tokens, hiding actual values.",
       "fix": "Verify HTTP/WS endpoints from Python (.venv/bin/python with requests/websockets), not curl, so real values are visible. Used a standalone e2e script to confirm /health, /ingest, /alerts, and the /ws/alerts push.",
-      "tags": ["rtk", "curl", "verification", "http", "tooling"],
+      "tags": [
+        "rtk",
+        "curl",
+        "verification",
+        "http",
+        "tooling"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-28T16:50:00Z"
@@ -141,10 +164,1141 @@
       "file": "n/a (git)",
       "root_cause": "Chained 'checkout && reset --hard'; the checkout aborted (dirty .wolf working tree) but the chained reset still executed on the current branch (fullstack). No remote damage because the integration was pushed first.",
       "fix": "Re-synced local fullstack with 'git reset --hard origin/fullstack'. Lesson: never chain 'reset --hard' after a 'checkout' that can abort; run them separately and confirm the branch first.",
-      "tags": ["git", "reset", "checkout", "branch-safety"],
+      "tags": [
+        "git",
+        "reset",
+        "checkout",
+        "branch-safety"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-28T16:55:00Z"
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-05-28T19:25:30.805Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend_api/main.py",
+      "root_cause": "Had \"[backend] DB empty on startup, auto-seeded {_seed",
+      "fix": "Changed to \"[backend] DB empty on startup, auto-seeded {seede",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T19:25:30.805Z"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-05-28T19:42:15.744Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend_api/main.py",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 12→22 lines (4 removed) | Also: \"\"\"Dashboard subscribes here to get new alerts pus; await ws.receive_text()  # keep the socket open; i",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T19:42:22.359Z"
+    },
+    {
+      "id": "bug-013",
+      "timestamp": "2026-05-28T19:53:12.423Z",
+      "error_message": "Wrong operator: || should be &&",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "Used \"||\" instead of \"&&\"",
+      "fix": "Changed operator || → &&",
+      "tags": [
+        "auto-detected",
+        "operator-fix",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T19:53:12.423Z"
+    },
+    {
+      "id": "bug-014",
+      "timestamp": "2026-05-28T19:55:36.747Z",
+      "error_message": "CSS fix: --color-faint",
+      "file": "frontend_dashboard/app/src/index.css",
+      "root_cause": "--color-faint: oklch(0.56 0.012 270) → oklch(0.62 0.012 270)",
+      "fix": "Changed --color-faint: oklch(0.56 0.012 270) → oklch(0.62 0.012 270)",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T19:55:42.394Z"
+    },
+    {
+      "id": "bug-015",
+      "timestamp": "2026-05-28T19:59:16.202Z",
+      "error_message": "Significant refactor of ",
+      "file": "README.md",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 6→12 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T19:59:16.202Z"
+    },
+    {
+      "id": "bug-016",
+      "timestamp": "2026-05-28T20:32:19.933Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "frontend_dashboard/app/index.html",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T20:32:19.933Z"
+    },
+    {
+      "id": "bug-017",
+      "timestamp": "2026-05-28T20:34:04.837Z",
+      "error_message": "CSS fix: key",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "key: \"disinfo\", title: \"📰 דיסאינפורמציה\", match: (a) => a.alert_type === \"disinformation\" → \"disinfo\", match: (a) => a.alert_type === \"disinformation\"",
+      "fix": "Changed key: \"disinfo\", title: \"📰 דיסאינפורמציה\", match: (a) => a.alert_type === \"disinformation\" → \"disinfo\", match: (a) => a.alert_type === \"disinformation\"",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T20:34:04.837Z"
+    },
+    {
+      "id": "bug-018",
+      "timestamp": "2026-05-28T20:34:21.131Z",
+      "error_message": "Significant refactor of ",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 47→64 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T20:34:21.131Z"
+    },
+    {
+      "id": "bug-019",
+      "timestamp": "2026-05-28T20:34:49.640Z",
+      "error_message": "Missing guard clause",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "No early return/throw for edge case: lang === \"en\"",
+      "fix": "Added guard clause: if (lang === \"en\")",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T20:34:49.640Z"
+    },
+    {
+      "id": "bug-020",
+      "timestamp": "2026-05-28T20:35:04.084Z",
+      "error_message": "Wrong reference: div should be t",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "Used \"div\" instead of \"t\"",
+      "fix": "Changed div → t",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T20:35:04.084Z"
+    },
+    {
+      "id": "bug-021",
+      "timestamp": "2026-05-28T20:40:56.470Z",
+      "error_message": "Significant refactor of ",
+      "file": "frontend_dashboard/app/src/i18n/I18nContext.jsx",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 9→13 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T20:40:56.470Z"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-05-28T20:41:00.045Z",
+      "error_message": "Significant refactor of ",
+      "file": "frontend_dashboard/app/index.html",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 10→12 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T20:41:00.045Z"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-05-28T20:59:07.058Z",
+      "error_message": "Wrong reference: text should be low",
+      "file": "ml_service/text_analyzer.py",
+      "root_cause": "Used \"text\" instead of \"low\"",
+      "fix": "Changed text → low",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T20:59:07.058Z"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-05-28T21:02:38.158Z",
+      "error_message": "Missing await",
+      "file": "backend_api/main.py",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T21:02:38.158Z"
+    },
+    {
+      "id": "bug-025",
+      "timestamp": "2026-05-28T21:08:54.273Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/i18n/translations.js",
+      "root_cause": "Had \", settings: \"",
+      "fix": "Changed to \", tryit: \"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T21:09:02.715Z"
+    },
+    {
+      "id": "bug-026",
+      "timestamp": "2026-05-28T21:09:10.242Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "Had \"./i18n/I18nContext.jsx\"",
+      "fix": "Changed to \"./components/TryIt.jsx\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-28T21:09:17.537Z"
+    },
+    {
+      "id": "bug-027",
+      "timestamp": "2026-05-28T21:09:39.617Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T21:09:39.617Z"
+    },
+    {
+      "id": "bug-028",
+      "timestamp": "2026-05-28T21:11:30.687Z",
+      "error_message": "Significant refactor of ",
+      "file": "DEPLOY.md",
+      "root_cause": "14 lines replaced/restructured",
+      "fix": "Rewrote 17→24 lines (14 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T21:11:30.687Z"
+    },
+    {
+      "id": "bug-029",
+      "timestamp": "2026-05-28T21:27:49.069Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/i18n/translations.js",
+      "root_cause": "Had \", tryit: \"",
+      "fix": "Changed to \", settings: \"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T21:27:54.305Z"
+    },
+    {
+      "id": "bug-030",
+      "timestamp": "2026-05-28T21:29:02.611Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "Had \"./components/TryIt.jsx\"",
+      "fix": "Changed to \"./components/GroupChat.jsx\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T21:29:04.560Z"
+    },
+    {
+      "id": "bug-031",
+      "timestamp": "2026-05-28T21:29:21.423Z",
+      "error_message": "CSS fix: md",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "md: px-6\"> → px-6 ${",
+      "fix": "Changed md: px-6\"> → px-6 ${",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T21:29:21.423Z"
+    },
+    {
+      "id": "bug-032",
+      "timestamp": "2026-05-28T21:50:37.945Z",
+      "error_message": "Significant refactor of ",
+      "file": "ml_service/role_classifier.py",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 10→22 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T21:50:37.945Z"
+    },
+    {
+      "id": "bug-033",
+      "timestamp": "2026-05-28T21:54:35.381Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/components/GroupChat.jsx",
+      "root_cause": "Had \"flex h-[72vh] flex-col overflow-hidden rounded-2x",
+      "fix": "Changed to \"flex h-[70vh] flex-col overflow-hidden rounded-2x",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T21:54:35.381Z"
+    },
+    {
+      "id": "bug-034",
+      "timestamp": "2026-05-28T21:54:51.889Z",
+      "error_message": "CSS fix: md",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "md: px-6 ${ → px-6\">",
+      "fix": "Changed md: px-6 ${ → px-6\">",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T21:54:51.889Z"
+    },
+    {
+      "id": "bug-035",
+      "timestamp": "2026-05-28T21:59:59.454Z",
+      "error_message": "CSS fix: md",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "md: px-6\"> → px-6 ${",
+      "fix": "Changed md: px-6\"> → px-6 ${",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T21:59:59.454Z"
+    },
+    {
+      "id": "bug-036",
+      "timestamp": "2026-05-28T22:07:09.203Z",
+      "error_message": "Wrong reference: 5xl should be 6xl",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "Used \"5xl\" instead of \"6xl\"",
+      "fix": "Changed 5xl → 6xl",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T22:07:09.203Z"
+    },
+    {
+      "id": "bug-037",
+      "timestamp": "2026-05-28T22:07:12.568Z",
+      "error_message": "CSS fix: lg",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "lg: grid-cols-2\"> → sticky lg:top-6 lg:self-start\">",
+      "fix": "Changed lg: grid-cols-2\"> → sticky lg:top-6 lg:self-start\">",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T22:07:12.568Z"
+    },
+    {
+      "id": "bug-038",
+      "timestamp": "2026-05-28T22:07:14.227Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/components/GroupChat.jsx",
+      "root_cause": "Had \"flex h-[70vh] flex-col overflow-hidden rounded-2x",
+      "fix": "Changed to \"flex h-[72vh] flex-col overflow-hidden rounded-2x",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T22:07:14.227Z"
+    },
+    {
+      "id": "bug-039",
+      "timestamp": "2026-05-28T22:11:58.853Z",
+      "error_message": "Incorrect value in code",
+      "file": "DEPLOY.md",
+      "root_cause": "Had \"נסו בעצמכם\"",
+      "fix": "Changed to 'אט \"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-28T22:12:05.846Z"
+    },
+    {
+      "id": "bug-040",
+      "timestamp": "2026-05-28T22:12:08.126Z",
+      "error_message": "Wrong reference: ngrok should be cloudflared",
+      "file": "DEPLOY.md",
+      "root_cause": "Used \"ngrok\" instead of \"cloudflared\"",
+      "fix": "Changed ngrok → cloudflared",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T22:12:08.126Z"
+    },
+    {
+      "id": "bug-041",
+      "timestamp": "2026-05-28T22:12:16.276Z",
+      "error_message": "Wrong reference: ngrok should be a",
+      "file": "ml_service/requirements.txt",
+      "root_cause": "Used \"ngrok\" instead of \"a\"",
+      "fix": "Changed ngrok → a",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "txt"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T22:12:16.276Z"
+    },
+    {
+      "id": "bug-042",
+      "timestamp": "2026-05-28T22:12:17.928Z",
+      "error_message": "Wrong reference: ngrok should be Cloudflare",
+      "file": "README.md",
+      "root_cause": "Used \"ngrok\" instead of \"Cloudflare\"",
+      "fix": "Changed ngrok → Cloudflare",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T22:12:17.928Z"
+    },
+    {
+      "id": "bug-043",
+      "timestamp": "2026-05-28T22:43:28.484Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T22:43:28.484Z"
+    },
+    {
+      "id": "bug-044",
+      "timestamp": "2026-05-28T22:43:33.183Z",
+      "error_message": "Null/undefined access in ",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T22:43:33.183Z"
+    },
+    {
+      "id": "bug-045",
+      "timestamp": "2026-05-28T22:43:37.455Z",
+      "error_message": "Significant refactor of ",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 9→15 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T22:43:37.455Z"
+    },
+    {
+      "id": "bug-046",
+      "timestamp": "2026-05-28T22:44:44.983Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/components/GroupChat.jsx",
+      "root_cause": "Had \"flex h-[72vh] flex-col overflow-hidden rounded-2x",
+      "fix": "Changed to \"flex h-[68vh] flex-col overflow-hidden rounded-2x",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-05-28T22:54:41.736Z"
+    },
+    {
+      "id": "bug-047",
+      "timestamp": "2026-05-28T22:44:46.850Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/components/ChatSimulator.jsx",
+      "root_cause": "Had \"flex h-[72vh] flex-col overflow-hidden rounded-2x",
+      "fix": "Changed to \"flex h-[68vh] flex-col overflow-hidden rounded-2x",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T22:44:46.850Z"
+    },
+    {
+      "id": "bug-048",
+      "timestamp": "2026-05-28T22:50:54.057Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/components/ChatSimulator.jsx",
+      "root_cause": "Had \"flex h-[68vh] flex-col overflow-hidden rounded-2x",
+      "fix": "Changed to \"flex h-[60vh] flex-col overflow-hidden rounded-2x",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T22:51:50.936Z"
+    },
+    {
+      "id": "bug-049",
+      "timestamp": "2026-05-28T23:59:55.028Z",
+      "error_message": "Missing error handling in imageToThumb",
+      "file": "frontend_dashboard/app/src/components/GroupChat.jsx",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block | Also: try {; } catch {",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T23:59:57.357Z"
+    },
+    {
+      "id": "bug-050",
+      "timestamp": "2026-05-29T00:00:01.147Z",
+      "error_message": "Null/undefined access in ",
+      "file": "frontend_dashboard/app/src/components/GroupChat.jsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T00:00:01.147Z"
+    },
+    {
+      "id": "bug-051",
+      "timestamp": "2026-05-29T00:00:04.086Z",
+      "error_message": "Significant refactor of ",
+      "file": "frontend_dashboard/app/src/components/GroupChat.jsx",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 3→13 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T00:00:04.086Z"
+    },
+    {
+      "id": "bug-052",
+      "timestamp": "2026-05-29T00:05:08.161Z",
+      "error_message": "Missing error handling in clearChat",
+      "file": "frontend_dashboard/app/src/components/GroupChat.jsx",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T00:05:08.161Z"
+    },
+    {
+      "id": "bug-053",
+      "timestamp": "2026-05-29T00:15:32.156Z",
+      "error_message": "Null/undefined access in ",
+      "file": "frontend_dashboard/app/src/components/GroupChat.jsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T00:15:32.156Z"
+    },
+    {
+      "id": "bug-054",
+      "timestamp": "2026-05-29T00:16:07.240Z",
+      "error_message": "Significant refactor of ",
+      "file": "ml_service/server.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 22→33 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T00:16:07.240Z"
+    },
+    {
+      "id": "bug-055",
+      "timestamp": "2026-05-29T01:15:48.463Z",
+      "error_message": "Significant refactor of ",
+      "file": "ml_service/text_analyzer.py",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 12→30 lines (8 removed) | Also: \"אל תבוא\", \"אל תזמינו\", \"לא צריך שתבוא\", \"תישאר בב; \"אף אחד לא רוצה אותך\", \"כולם מעדיפים\", \"כולם חוץ\", | Also: \"אני מחכה לך\", \"אחרי בית ספר\", \"תיזהר\", \"אם תספר\",; \"i'll be waiting\", \"after school\", \"you're dead\",  | Also: \"בא לי למות\", \"רוצה למות\", \"לא רוצה לחיות\", \"אין ל; \"נמאס לי לחיות\", \"אין טעם לחיות\", \"לשים סוף\", \"לפג",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-05-29T01:16:49.419Z"
+    },
+    {
+      "id": "bug-056",
+      "timestamp": "2026-05-29T01:15:53.351Z",
+      "error_message": "Incorrect value in code",
+      "file": "ml_service/text_analyzer.py",
+      "root_cause": "Had \" disgusting\"",
+      "fix": "Changed to \"disgusting\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-05-29T01:20:20.942Z"
+    },
+    {
+      "id": "bug-057",
+      "timestamp": "2026-05-29T04:25:00+03:00",
+      "error_message": "New fallback keywords would flag nearly every message as toxic",
+      "file": "ml_service/text_analyzer.py",
+      "root_cause": "_heuristic_score matches with substring test 'phrase in low', so short keywords (L, ass, rat, fat, Hebrew zona/zin/kos) match common benign words (class, father, glass, tzona->nutrition, magazin). One hit scores 0.75 > TOXIC_THRESHOLD 0.49.",
+      "fix": "Removed substring-bomb keywords: en L/ass/rat/fat (kept fatty/fatso); he standalone zona/zin/kos (kept multi-word ben-zona/bat-zona). Verified benign strings now score 0 hits.",
+      "tags": [
+        "ml",
+        "keywords",
+        "false-positive",
+        "substring-match",
+        "hebrew",
+        "fallback"
+      ],
+      "related_bugs": [
+        "bug-056"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T04:25:00+03:00"
+    },
+    {
+      "id": "bug-058",
+      "timestamp": "2026-05-29T01:38:50.624Z",
+      "error_message": "CSS fix: color-scheme, font-family",
+      "file": "frontend_dashboard/app/src/index.css",
+      "root_cause": "color-scheme: dark → light; font-family: -apple-system, \"Segoe UI\", system-ui, \"Helvetica Neue\", Arial, sans-serif → \"Assistant\", -apple-system, \"Segoe UI\", system-ui, \"Helvetica Neue\", Arial, sans-serif",
+      "fix": "Changed color-scheme: dark → light; font-family: -apple-system, \"Segoe UI\", system-ui, \"Helvetica Neue\", Arial, sans-serif → \"Assistant\", -apple-system, \"Segoe UI\", system-ui, \"Helvetica Neue\", Arial, sans-serif",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T01:38:50.624Z"
+    },
+    {
+      "id": "bug-059",
+      "timestamp": "2026-05-29T01:38:59.798Z",
+      "error_message": "Significant refactor of ",
+      "file": "frontend_dashboard/app/index.html",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 14→23 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T01:38:59.798Z"
+    },
+    {
+      "id": "bug-060",
+      "timestamp": "2026-05-29T01:39:25.380Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "Had \"./components/GroupChat.jsx\"",
+      "fix": "Changed to \"./components/ThemeToggle.jsx\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T01:39:25.380Z"
+    },
+    {
+      "id": "bug-061",
+      "timestamp": "2026-05-29T01:39:38.541Z",
+      "error_message": "CSS fix: md",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "md: px-6 ${ → px-6 lg:px-8 ${widthClass",
+      "fix": "Changed md: px-6 ${ → px-6 lg:px-8 ${widthClass",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T01:39:38.541Z"
+    },
+    {
+      "id": "bug-062",
+      "timestamp": "2026-05-29T01:39:56.103Z",
+      "error_message": "Significant refactor of ",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 17→21 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T01:39:56.103Z"
+    },
+    {
+      "id": "bug-063",
+      "timestamp": "2026-05-29T01:40:15.580Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/components/Settings.jsx",
+      "root_cause": "Had \"grid grid-cols-3 gap-1 rounded-xl bg-ink p-1\"",
+      "fix": "Changed to \"grid grid-cols-3 gap-1 rounded-xl bg-surface-2 p-",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T01:40:15.580Z"
+    },
+    {
+      "id": "bug-064",
+      "timestamp": "2026-05-29T01:40:20.491Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/components/FilterBar.jsx",
+      "root_cause": "Had \"bg-ink/40 text-faint\"",
+      "fix": "Changed to \"bg-edge text-faint\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T01:40:20.491Z"
+    },
+    {
+      "id": "bug-065",
+      "timestamp": "2026-05-29T01:40:43.683Z",
+      "error_message": "Wrong condition in logic",
+      "file": "frontend_dashboard/app/src/theme/ThemeContext.jsx",
+      "root_cause": "Condition was: if (saved === \"light\" || saved === \"dark\")",
+      "fix": "Changed to: if (q === \"light\" || q === \"dark\")",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T01:40:43.683Z"
+    },
+    {
+      "id": "bug-066",
+      "timestamp": "2026-05-29T01:40:48.734Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/index.html",
+      "root_cause": "Had \"paralert.theme\"",
+      "fix": "Changed to \"theme\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T01:40:48.734Z"
+    },
+    {
+      "id": "bug-067",
+      "timestamp": "2026-05-29T02:00:30.811Z",
+      "error_message": "CSS fix: --shadow-card",
+      "file": "frontend_dashboard/app/src/index.css",
+      "root_cause": "--shadow-card: 0 1px 2px oklch(0 0 0 / 0.3), 0 8px 24px oklch(0 0 0 / 0.18) → 0 2px 0 oklch(0 0 0 / 0.35), 0 4px 12px oklch(0 0 0 / 0.16)",
+      "fix": "Changed --shadow-card: 0 1px 2px oklch(0 0 0 / 0.3), 0 8px 24px oklch(0 0 0 / 0.18) → 0 2px 0 oklch(0 0 0 / 0.35), 0 4px 12px oklch(0 0 0 / 0.16)",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-29T02:00:36.978Z"
+    },
+    {
+      "id": "bug-068",
+      "timestamp": "2026-05-29T02:00:43.474Z",
+      "error_message": "Wrong reference: 2xl should be lg",
+      "file": "frontend_dashboard/app/src/components/AlertCard.jsx",
+      "root_cause": "Used \"2xl\" instead of \"lg\"",
+      "fix": "Changed 2xl → lg",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T02:00:43.474Z"
+    },
+    {
+      "id": "bug-069",
+      "timestamp": "2026-05-29T02:00:47.332Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/components/AlertCard.jsx",
+      "root_cause": "Had \"relative mt-2 overflow-hidden rounded-lg bg-black",
+      "fix": "Changed to \"relative mt-2 overflow-hidden rounded-md bg-black",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-05-29T02:01:19.805Z"
+    },
+    {
+      "id": "bug-070",
+      "timestamp": "2026-05-29T02:01:24.355Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/components/SummaryBar.jsx",
+      "root_cause": "Had \"mb-5 rounded-2xl border border-edge bg-surface px",
+      "fix": "Changed to \"mb-5 rounded-lg border border-edge bg-surface px-",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-29T02:01:33.656Z"
+    },
+    {
+      "id": "bug-071",
+      "timestamp": "2026-05-29T02:01:38.303Z",
+      "error_message": "Wrong reference: full should be md",
+      "file": "frontend_dashboard/app/src/components/FilterBar.jsx",
+      "root_cause": "Used \"full\" instead of \"md\"",
+      "fix": "Changed full → md",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T02:01:38.303Z"
+    },
+    {
+      "id": "bug-072",
+      "timestamp": "2026-05-29T02:02:02.306Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/App.jsx",
+      "root_cause": "Had \"rounded-full bg-surface-2 px-2 py-0.5 text-[11px]",
+      "fix": "Changed to \"rounded-md bg-surface-2 px-2 py-0.5 text-[11px] t",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T02:02:02.306Z"
+    },
+    {
+      "id": "bug-073",
+      "timestamp": "2026-05-29T02:02:11.885Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/components/Settings.jsx",
+      "root_cause": "Had \"divide-y divide-edge overflow-hidden rounded-2xl ",
+      "fix": "Changed to \"divide-y divide-edge overflow-hidden rounded-lg b",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T02:02:11.885Z"
+    },
+    {
+      "id": "bug-074",
+      "timestamp": "2026-05-29T02:02:45.961Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/components/LanguageToggle.jsx",
+      "root_cause": "Had \"flex items-center gap-0.5 rounded-full bg-surface",
+      "fix": "Changed to \"flex items-center gap-0.5 rounded-md bg-surface p",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T02:02:45.961Z"
+    },
+    {
+      "id": "bug-075",
+      "timestamp": "2026-05-29T02:02:54.416Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/components/ThemeToggle.jsx",
+      "root_cause": "Had \"flex items-center gap-0.5 rounded-full bg-surface",
+      "fix": "Changed to \"flex items-center gap-0.5 rounded-md bg-surface p",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T02:02:54.416Z"
+    },
+    {
+      "id": "bug-076",
+      "timestamp": "2026-05-29T02:04:24.171Z",
+      "error_message": "Missing error handling in EvidenceSection",
+      "file": "frontend_dashboard/app/src/components/AlertCard.jsx",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T02:04:24.171Z"
+    },
+    {
+      "id": "bug-fe-01",
+      "timestamp": "2026-05-29",
+      "error_message": "Settings sensitivity selector active state invisible — track and active button both bg-surface-2",
+      "file": "frontend_dashboard/app/src/components/Settings.jsx",
+      "root_cause": "earlier light-mode fix changed track bg-ink->bg-surface-2, but active button was already bg-surface-2, so selected option had zero contrast against the track",
+      "fix": "active button -> bg-content text-ink (the app-wide active pattern, like nav/filter); track stays bg-surface-2",
+      "tags": [
+        "frontend",
+        "light-mode",
+        "contrast",
+        "settings"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29"
+    },
+    {
+      "id": "bug-078",
+      "timestamp": "2026-05-29T02:09:02.983Z",
+      "error_message": "CSS fix: hover",
+      "file": "frontend_dashboard/app/src/components/AlertCard.jsx",
+      "root_cause": "hover: opacity-90\" → bg-sev-high/15\"",
+      "fix": "Changed hover: opacity-90\" → bg-sev-high/15\"",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "jsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T02:09:02.983Z"
+    },
+    {
+      "id": "bug-079",
+      "timestamp": "2026-05-29T02:09:09.273Z",
+      "error_message": "Significant refactor of ",
+      "file": "frontend_dashboard/app/src/lib/evidence.js",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 8→4 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T02:09:09.273Z"
+    },
+    {
+      "id": "bug-080",
+      "timestamp": "2026-05-29T02:09:33.211Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend_dashboard/app/src/i18n/translations.js",
+      "root_cause": "Had \"צילום מסך של השיחה לצירוף לתלונה במשטרה (הדגמה).\"",
+      "fix": "Changed to \"צילום מסך של השיחה לצירוף לתלונה במשטרה.\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-29T02:09:41.228Z"
     }
   ]
 }

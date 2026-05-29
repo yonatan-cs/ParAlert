@@ -1,284 +1,69 @@
 {
-  "session_id": "session-2026-05-28-1553",
-  "started": "2026-05-28T12:53:45.685Z",
+  "session_id": "session-2026-05-29-0505",
+  "started": "2026-05-29T02:05:37.652Z",
   "files_read": {
-    "c:/Hackathon-Project/Hackathon-Project/.wolf/anatomy.md": {
-      "count": 4,
-      "tokens": 0,
-      "first_read": "2026-05-28T12:55:54.641Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/.wolf/cerebrum.md": {
+    "/tmp/L.jpg": {
       "count": 1,
       "tokens": 0,
-      "first_read": "2026-05-28T12:55:58.108Z"
+      "first_read": "2026-05-29T02:05:41.184Z"
     },
-    "c:/Hackathon-Project/Hackathon-Project/Idea+Plan.md": {
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/lib/evidence.js": {
       "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T12:56:03.187Z"
+      "tokens": 1784,
+      "first_read": "2026-05-29T02:08:20.969Z"
     },
-    "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py": {
-      "count": 2,
-      "tokens": 1788,
-      "first_read": "2026-05-28T12:56:09.092Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/backend_api/database.py": {
+    "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js": {
       "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T12:56:11.881Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/contracts/schemas.py": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T12:56:14.696Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/ml_service/analyzer.py": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T12:56:17.208Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/index.js": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T12:56:21.653Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/WORKPLAN.md": {
-      "count": 2,
-      "tokens": 0,
-      "first_read": "2026-05-28T12:56:27.486Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/backend_api/requirements.txt": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T12:56:31.753Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/package.json": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T13:06:37.844Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/.env.example": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T13:06:40.749Z"
-    },
-    "C:/Users/netan/AppData/Local/Temp/claude/c--Hackathon-Project-Hackathon-Project/3d1e2b0d-76fd-467c-b0d3-16ce1c94a3e5/tasks/bnjvmrec5.output": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T13:08:38.802Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/.wolf/memory.md": {
-      "count": 2,
-      "tokens": 0,
-      "first_read": "2026-05-28T13:10:44.222Z"
-    },
-    "C:/Users/netan/AppData/Local/Temp/claude/c--Hackathon-Project-Hackathon-Project/3d1e2b0d-76fd-467c-b0d3-16ce1c94a3e5/tasks/b7v93sr2g.output": {
-      "count": 3,
-      "tokens": 0,
-      "first_read": "2026-05-28T13:12:51.412Z"
-    },
-    "C:/Users/netan/AppData/Local/Temp/claude/c--Hackathon-Project-Hackathon-Project/3d1e2b0d-76fd-467c-b0d3-16ce1c94a3e5/tasks/b58kmqmtn.output": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T13:18:17.051Z"
-    },
-    "C:/Users/netan/AppData/Local/Temp/claude/c--Hackathon-Project-Hackathon-Project/3d1e2b0d-76fd-467c-b0d3-16ce1c94a3e5/tasks/bytyrns0b.output": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T13:20:17.286Z"
-    },
-    "C:/Users/netan/AppData/Local/Temp/claude/c--Hackathon-Project-Hackathon-Project/3d1e2b0d-76fd-467c-b0d3-16ce1c94a3e5/tasks/b1wcwvre6.output": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T13:22:10.026Z"
-    },
-    "C:/Users/netan/AppData/Local/Temp/claude/c--Hackathon-Project-Hackathon-Project/3d1e2b0d-76fd-467c-b0d3-16ce1c94a3e5/tasks/bx40e1hcg.output": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T13:22:40.093Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/.gitignore": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T13:22:59.814Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/README.md": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T13:23:04.366Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/.wolf/buglog.json": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T13:23:58.031Z"
-    },
-    "c:/Hackathon-Project/Hackathon-Project/contracts/mock_alerts.json": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-28T13:54:46.696Z"
-    },
-    "C:/Users/netan/AppData/Local/Temp/claude/c--Hackathon-Project-Hackathon-Project/3d1e2b0d-76fd-467c-b0d3-16ce1c94a3e5/tasks/b27jbvu2x.output": {
-      "count": 2,
-      "tokens": 0,
-      "first_read": "2026-05-28T14:03:13.705Z"
+      "tokens": 3052,
+      "first_read": "2026-05-29T02:09:28.109Z"
     }
   },
   "files_written": [
     {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/_test_toxic.json",
-      "action": "create",
-      "tokens": 84,
-      "at": "2026-05-28T13:09:11.641Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/components/AlertCard.jsx",
       "action": "edit",
-      "tokens": 288,
-      "at": "2026-05-28T13:09:57.369Z"
+      "tokens": 54,
+      "at": "2026-05-29T02:08:51.940Z"
     },
     {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/components/AlertCard.jsx",
       "action": "edit",
-      "tokens": 68,
-      "at": "2026-05-28T13:10:06.253Z"
+      "tokens": 170,
+      "at": "2026-05-29T02:09:02.982Z"
     },
     {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/lib/evidence.js",
       "action": "edit",
-      "tokens": 65,
-      "at": "2026-05-28T13:12:19.200Z"
+      "tokens": 45,
+      "at": "2026-05-29T02:09:09.272Z"
     },
     {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
       "action": "edit",
-      "tokens": 104,
-      "at": "2026-05-28T13:12:26.656Z"
+      "tokens": 43,
+      "at": "2026-05-29T02:09:33.211Z"
     },
     {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
       "action": "edit",
-      "tokens": 230,
-      "at": "2026-05-28T13:12:37.059Z"
+      "tokens": 24,
+      "at": "2026-05-29T02:09:37.322Z"
     },
     {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
+      "file": "/Users/yonatanrotem/Desktop/תואר/שנה ב/סמסטר ב/ParAlert/frontend_dashboard/app/src/i18n/translations.js",
       "action": "edit",
-      "tokens": 190,
-      "at": "2026-05-28T13:12:43.906Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/_ws_test.py",
-      "action": "create",
-      "tokens": 345,
-      "at": "2026-05-28T13:18:11.282Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/index.js",
-      "action": "edit",
-      "tokens": 286,
-      "at": "2026-05-28T13:21:56.612Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/index.js",
-      "action": "edit",
-      "tokens": 156,
-      "at": "2026-05-28T13:22:05.993Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/README.md",
-      "action": "edit",
-      "tokens": 140,
-      "at": "2026-05-28T13:23:26.415Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/whatsapp_bridge/README.md",
-      "action": "edit",
-      "tokens": 59,
-      "at": "2026-05-28T13:23:34.045Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
-      "action": "edit",
-      "tokens": 41,
-      "at": "2026-05-28T13:25:45.466Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/_verify.py",
-      "action": "create",
-      "tokens": 742,
-      "at": "2026-05-28T13:50:59.910Z"
-    },
-    {
-      "file": "C:/Users/netan/.claude/projects/c--Hackathon-Project-Hackathon-Project/memory/feedback_file_ownership.md",
-      "action": "create",
-      "tokens": 389,
-      "at": "2026-05-28T13:52:39.261Z"
-    },
-    {
-      "file": "C:/Users/netan/.claude/projects/c--Hackathon-Project-Hackathon-Project/memory/feedback_git_workflow.md",
-      "action": "create",
-      "tokens": 481,
-      "at": "2026-05-28T13:52:56.148Z"
-    },
-    {
-      "file": "C:/Users/netan/.claude/projects/c--Hackathon-Project-Hackathon-Project/memory/MEMORY.md",
-      "action": "create",
-      "tokens": 86,
-      "at": "2026-05-28T13:53:01.999Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
-      "action": "edit",
-      "tokens": 36,
-      "at": "2026-05-28T13:55:06.193Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
-      "action": "edit",
-      "tokens": 114,
-      "at": "2026-05-28T13:55:13.994Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
-      "action": "edit",
-      "tokens": 32,
-      "at": "2026-05-28T13:55:19.819Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/main.py",
-      "action": "edit",
-      "tokens": 200,
-      "at": "2026-05-28T13:55:28.396Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/backend_api/_review.py",
-      "action": "create",
-      "tokens": 1331,
-      "at": "2026-05-28T14:02:36.880Z"
-    },
-    {
-      "file": "c:/Hackathon-Project/Hackathon-Project/render.yaml",
-      "action": "create",
-      "tokens": 345,
-      "at": "2026-05-28T14:26:20.429Z"
+      "tokens": 14,
+      "at": "2026-05-29T02:09:41.227Z"
     }
   ],
   "edit_counts": {
-    "backend_api/_test_toxic.json": 1,
-    "backend_api/main.py": 11,
-    "backend_api/_ws_test.py": 1,
-    "whatsapp_bridge/index.js": 2,
-    "whatsapp_bridge/README.md": 2,
-    "backend_api/_verify.py": 1,
-    "../../Users/netan/.claude/projects/c--Hackathon-Project-Hackathon-Project/memory/feedback_file_ownership.md": 1,
-    "../../Users/netan/.claude/projects/c--Hackathon-Project-Hackathon-Project/memory/feedback_git_workflow.md": 1,
-    "../../Users/netan/.claude/projects/c--Hackathon-Project-Hackathon-Project/memory/MEMORY.md": 1,
-    "backend_api/_review.py": 1,
-    "render.yaml": 1
+    "frontend_dashboard/app/src/components/AlertCard.jsx": 2,
+    "frontend_dashboard/app/src/lib/evidence.js": 1,
+    "frontend_dashboard/app/src/i18n/translations.js": 3
   },
-  "anatomy_hits": 0,
-  "anatomy_misses": 24,
-  "repeated_reads_warned": 9,
+  "anatomy_hits": 2,
+  "anatomy_misses": 1,
+  "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 9
+  "stop_count": 2
 }

@@ -19,7 +19,7 @@ export default function SummaryBar({ alerts }) {
   }
 
   return (
-    <section className="mb-5 rounded-2xl border border-edge bg-surface px-2 py-3">
+    <section className="mb-5 rounded-lg border border-edge bg-surface px-2 py-3">
       <div className="grid grid-cols-3 divide-x divide-edge [&>*]:px-2">
         {ANGLES.map((a) => {
           const n = counts[a.role];
@@ -43,12 +43,12 @@ export default function SummaryBar({ alerts }) {
       {(police > 0 || disinfo > 0) && (
         <div className="mt-3 flex flex-wrap justify-center gap-2 border-t border-edge pt-3 text-xs">
           {police > 0 && (
-            <span className="rounded-full bg-sev-high/15 px-3 py-1 font-medium text-sev-high">
+            <span className="rounded-md bg-sev-high/15 px-3 py-1 font-medium text-sev-high">
               {t.summary.police(police)}
             </span>
           )}
           {disinfo > 0 && (
-            <span className="rounded-full bg-accent/15 px-3 py-1 font-medium text-accent">
+            <span className="rounded-md bg-accent/15 px-3 py-1 font-medium text-accent">
               {t.summary.disinfo(disinfo)}
             </span>
           )}

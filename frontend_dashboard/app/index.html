@@ -4,9 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ParAlert</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script>
-      // Apply language + direction before paint to avoid an RTL/LTR flash.
-      // Priority: ?lang= query (shareable English link) > saved choice.
+      // Apply language/direction + theme before paint to avoid an RTL/LTR or
+      // light/dark flash. Priority: ?lang= query (shareable English link) > saved.
       try {
         var q = new URLSearchParams(location.search).get("lang");
         var l = q === "en" || q === "he" ? q : localStorage.getItem("safenet.lang");
@@ -14,6 +20,10 @@
           document.documentElement.lang = l;
           document.documentElement.dir = l === "he" ? "rtl" : "ltr";
         }
+        var qt = new URLSearchParams(location.search).get("theme");
+        var th = qt === "light" || qt === "dark" ? qt : localStorage.getItem("paralert.theme");
+        if (th !== "light" && th !== "dark") th = "dark"; // dark stays the default identity
+        document.documentElement.dataset.theme = th;
       } catch (e) {}
     </script>
   </head>

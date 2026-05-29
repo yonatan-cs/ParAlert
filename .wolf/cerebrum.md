@@ -64,3 +64,41 @@
 **Decision:** Lock the 3 JSON contracts in `contracts/schemas.py` (A: incoming msg, B: analysis, C: alert) before writing feature code; everything communicates only through them. Team works as 2 pairs on separate branches: `ml` (`ml_service/`: analyzer.py + role_classifier.py) and `fullstack` (`backend_api/` + `frontend_dashboard/` + `whatsapp_bridge/`).
 **Why:** Hackathon-grade zero-friction parallelism — no two people touch the same file. Refactors are expensive under time pressure, so contracts are nailed down first. Pydantic models double as runtime validation + FastAPI Swagger docs.
 **Reliability stance:** every external call (ML model, LLM, WhatsApp) is wrapped with a try/except + fallback (keyword heuristic / template recommendation / stub) so the demo never crashes on stage.
+
+### [2026-05-28] CRITICAL: Render deploys the `fs-server` branch, not `main`
+**Discovery:** Live backend (safenet-backend-cnmy.onrender.com) served 3 alerts with NO alert_type = pre-v2 code. origin/fs-server (3c1f3ca) matched exactly and is an ancestor of main (main 38 ahead, fs-server 0 ahead) → Render auto-deploys fs-server.
+**Action:** Fast-forwarded origin/fs-server → main (non-destructive, 3c1f3ca..5ffc7a9) so the live backend gets the integrated v2 code regardless of which branch Render watches.
+**Follow-up (Phase 3):** Retarget the Render service to `main` and retire fs-server → single deploy branch.
+
+### [2026-05-28] ML strategy: HYBRID (keyword in cloud, real models local via ngrok)
+**Decision:** Render stays USE_MODEL=false (keyword fallback) for stability / no OOM on 512MB free tier. Real HF models run only on a laptop for the judge pitch, on a Python 3.11/3.12 venv (NOT 3.14 — torch wheels missing), exposed via ngrok; flip USE_MODEL=true + point the frontend at the ngrok URL during the pitch. Do NOT split ML into a MODEL_URL microservice — models are in-process; ngrok-the-whole-backend is equivalent with zero new parts.
+
+### [2026-05-28] Key learning: fact_check has_media trap
+fact_check._heuristic treats has_media=True as suspicious on its own. NEVER call check_claim with has_media=True on the live disinfo path, or every photo becomes a fake-news alert. Live disinfo wiring uses has_media=False (text-only); media authenticity is the vision model's separate job.
+
+### [2026-05-28] i18n architecture (he/en)
+Dependency-free: src/i18n/translations.js (STRINGS[lang] nested object, parameterized via functions) + I18nContext.jsx (provider sets documentElement.lang/dir, persists localStorage "safenet.lang", honors ?lang= query first) + LanguageToggle.jsx. Components do `const {t,lang,dir,locale}=useI18n()`. Label maps (category/role/severity/escalation) keyed by contract-C enum values. relativeTime uses Intl.RelativeTimeFormat(locale) and clamps future demo timestamps to "now". English mode loads public/mock_data.en.json + DEMO_SCENARIOS.en and skips the live (Hebrew) backend so an English judge sees a wholly English board. Default Hebrew; he=RTL, en=LTR.
+
+### [2026-05-29] Interactive "Try it" analysis + remote ML service architecture
+Judge playground: POST /analyze (JSON text+media_url) and /analyze/upload (multipart file) on backend_api/main.py return contracts.AnalyzeResponse (toxicity, category, media NSFW/deepfake, credibility, model_used); toxic/disinfo also saves+broadcasts an alert (pops on dashboard). Heavy ML offloaded via ML_SERVICE_URL: when USE_MODEL=true AND ML_SERVICE_URL set, backend forwards to standalone ml_service/server.py (real models, run on a powerful local box behind ngrok); ANY failure -> in-process keyword fallback (never hard-fails). Render stays light (no torch in-process; _LOCAL_USE_MODEL = USE_MODEL and not ML_SERVICE_URL). Keyword heuristic now bilingual (English+Hebrew, text.lower() match) so English judges aren't met with 0%. vision.analyze_path added for uploads. Frontend TryIt.jsx tab (4th tab, ?tab= deep-link). At pitch: run ml_service/server.py on py3.12 + ngrok, set Render USE_MODEL=true + ML_SERVICE_URL, /health shows ml_routing:true. Verified: keyword e2e + HTTP routing + graceful fallback all green.
+
+## Key Learnings (appended 2026-05-29)
+- ML fallback `_heuristic_score` uses SUBSTRING match (`phrase in low`), not word-boundary. Never add short keywords (<=3 chars) or words that are substrings of common benign words. Bombs found: en L/ass/rat/fat, he זונה(→תזונה)/זין(→מגזין)/כוס(→כוסות). Single hit = 0.75 > threshold 0.49.
+- Deploy (CORRECTED 2026-05-29): Vercel builds frontend_dashboard/app; Render service "safenet-backend" builds the Python backend from branch `main`. Render AUTO-DEPLOY IS OFF — pushing main does NOT deploy; must Manual Deploy in Render dashboard. fs-server is now force-aligned to main (identical); main is the single authoritative branch.
+
+## Key Learnings (appended 2026-05-29, frontend redesign)
+- **Frontend IS now in scope.** Earlier "FS-A, never touch frontend_dashboard" was the hackathon team split. Project is now solo-rebranded ParAlert on `main`; user directly requested frontend redesign. The old off-limits rule no longer applies.
+- **Theming is token-driven (Tailwind v4 `@theme`).** Every component uses semantic tokens (ink/surface/surface-2/edge/content/muted/faint/accent/sev-*/victim/aggressor/bystander). Light mode = override these CSS vars under `:root[data-theme="light"]` in index.css — whole UI flips, ~zero component churn. `ink` = page bg.
+- **`bg-ink` reused as a recessed surface inverts wrong in light** (ink=page bg). Fixed AlertCard bubbles + Settings inputs/track to `bg-surface-2`. FilterBar inactive count chip -> `bg-edge`.
+- **Chat components (ChatSimulator, GroupChat) are self-contained light** — hardcoded bg-white/text-slate-*/emerald (WhatsApp look), NOT token-driven for their panes. Light theme does not break them. User said they're great — DO NOT TOUCH.
+- **Theme system:** theme/ThemeContext.jsx (localStorage `paralert.theme`, default dark) + components/ThemeToggle.jsx (segmented, mirrors LanguageToggle). Pre-paint script in index.html avoids flash. `?theme=light|dark` query override.
+- **Wide layout without stretching:** dashboard container max-w-5xl, nav is w-fit segmented, alert sections use CSS `lg:columns-2` masonry + `break-inside-avoid` per card. Cards stay readable-width, fill desktop.
+- **Font:** added Google "Assistant" (full Hebrew+Latin, RTL-safe) via index.html. Don't use Latin-only fonts (Geist/Inter) — RTL Hebrew-first app.
+- **designqc gotcha:** drops multi-param query strings (params after the first `&` lost). Single `?theme=light` survived; `&tab=`/`&lang=` did not apply.
+- **vite:** use `npm run build`/`npm run dev`, not `npx vite` (hook rewrites to npm -> "Missing script: vite").
+
+## User Preferences (appended 2026-05-29, design)
+- Fully-rounded (rounded-full/2xl) UI reads "AI" to the user. Prefers a **subtle neo-brutalist** lean: sharper radii (cards rounded-lg, inner boxes/badges/buttons rounded-md, tiny pills rounded), crisp hard-edge shadows (`0 2px 0` + small ambient) over big soft floats. Key phrase: "ממש בקטנה" — keep it restrained, NOT zero-radius/thick-black-border full brutalism. Keep dots, meter bars, avatars, switches round.
+- Does NOT want a "demo mode" / source-status indicator — removed the header status pill. Says it's not useful.
+- designqc (`openwolf designqc --url`) DROPS query strings — `?theme=light` does not reach the SPA, so it always captures the default (dark) theme. md5 diffs between runs are just live-animation noise. To verify a non-default theme, can't rely on designqc query passthrough; theme-independent changes (radii/shadow/layout) are still verifiable from a default-theme capture.
+- AlertCard.jsx has CONCURRENT edits from the user/teammate (added EvidenceSection + lib/evidence.js). Re-read before editing; preserve their changes.

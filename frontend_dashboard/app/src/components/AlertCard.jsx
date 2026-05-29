@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useI18n } from "../i18n/I18nContext.jsx";
 import { relativeTime } from "../lib/format.js";
+import { downloadEvidence } from "../lib/evidence.js";
 
 const SEV = {
   high: { dot: "bg-sev-high", badge: "bg-sev-high/15 text-sev-high", fill: "bg-sev-high" },
@@ -21,7 +22,7 @@ function MediaPreview({ bubble, sensitive }) {
   const blurred = sensitive && !revealed;
 
   return (
-    <div className="relative mt-2 overflow-hidden rounded-lg bg-black/20">
+    <div className="relative mt-2 overflow-hidden rounded-md bg-black/20">
       <img
         src={url}
         alt=""
@@ -55,8 +56,8 @@ function MediaPreview({ bubble, sensitive }) {
 function Bubble({ bubble, trigger = false, sensitive = false }) {
   return (
     <div
-      className={`my-1 rounded-xl px-3 py-2 text-sm ${
-        trigger ? "bg-sev-high/12 text-content ring-1 ring-sev-high/30" : "bg-ink text-muted"
+      className={`my-1 rounded-md px-3 py-2 text-sm ${
+        trigger ? "bg-sev-high/12 text-content ring-1 ring-sev-high/30" : "bg-surface-2 text-muted"
       }`}
     >
       <span className="mb-0.5 block text-[11px] text-faint">{bubble.sender_name}</span>
@@ -70,7 +71,7 @@ function EscalationBanner({ escalation }) {
   const { t } = useI18n();
   if (!escalation || escalation === "none") return null;
   const cls =
-    "mb-3 flex items-center gap-2 rounded-xl bg-sev-high px-3 py-2.5 text-sm font-semibold text-white shadow";
+    "mb-3 flex items-center gap-2 rounded-md bg-sev-high px-3 py-2.5 text-sm font-semibold text-white shadow";
   const body = <span>🚨 {t.escalation[escalation] || ""}</span>;
   return escalation === "police" ? (
     <a href="tel:100" className={cls}>
@@ -78,6 +79,21 @@ function EscalationBanner({ escalation }) {
     </a>
   ) : (
     <div className={cls}>{body}</div>
+  );
+}
+
+// Police-severe alerts only. The conversation we already render IS the evidence —
+// this offers it as a downloadable screenshot to attach to a police report.
+function EvidenceSection({ alert }) {
+  const { t, locale, dir } = useI18n();
+  return (
+    <button
+      type="button"
+      onClick={() => downloadEvidence(alert, { t, locale, dir })}
+      className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-sev-high/30 bg-sev-high/10 px-3 py-1.5 text-xs font-medium text-sev-high transition hover:bg-sev-high/15"
+    >
+      ⬇ {t.card.evidenceDownload}
+    </button>
   );
 }
 
@@ -93,7 +109,7 @@ function CredibilitySection({ c }) {
       <div className="mb-2 mt-1.5 text-xs text-faint">
         {t.card.credibility} {pct}% · {c.verdict}
       </div>
-      <div className="rounded-xl bg-surface-2 p-3 text-sm">
+      <div className="rounded-md bg-surface-2 p-3 text-sm">
         <span className="mb-0.5 block text-[11px] text-faint">{t.card.claimChecked}</span>
         {c.claim}
         {c.source && <span className="mt-1 block text-[11px] text-faint">{t.card.source}: {c.source}</span>}
@@ -111,7 +127,7 @@ export default function AlertCard({ alert, isNew = false }) {
 
   return (
     <article
-      className={`mb-3 rounded-2xl border bg-surface p-5 shadow-[0_1px_2px_oklch(0_0_0/0.3),0_8px_24px_oklch(0_0_0/0.18)] ${
+      className={`card-elev mb-4 break-inside-avoid rounded-lg border bg-surface p-5 ${
         alert.escalation === "police" ? "border-sev-high/50" : "border-edge"
       } ${isNew ? "animate-enter" : ""}`}
     >
@@ -127,12 +143,12 @@ export default function AlertCard({ alert, isNew = false }) {
         </div>
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
           {isDisinfo && (
-            <span className="rounded-full bg-accent/15 px-2.5 py-1 text-xs text-accent">{t.card.disinfoBadge}</span>
+            <span className="rounded-md bg-accent/15 px-2.5 py-1 text-xs text-accent">{t.card.disinfoBadge}</span>
           )}
-          <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${sev.badge}`}>
+          <span className={`rounded-md px-2.5 py-1 text-xs font-medium ${sev.badge}`}>
             {t.severity[alert.severity] || alert.severity}
           </span>
-          <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs text-muted">
+          <span className="rounded-md bg-surface-2 px-2.5 py-1 text-xs text-muted">
             {t.role[alert.role_of_child] || alert.role_of_child}
           </span>
         </div>
@@ -159,7 +175,9 @@ export default function AlertCard({ alert, isNew = false }) {
         <Bubble key={`a${i}`} bubble={b} sensitive={sensitive} />
       ))}
 
-      <div className="mt-3 rounded-xl bg-accent/10 p-3 text-sm ring-1 ring-accent/20">
+      {alert.escalation === "police" && <EvidenceSection alert={alert} />}
+
+      <div className="mt-3 rounded-md bg-accent/10 p-3 text-sm ring-1 ring-accent/20">
         <strong className="mb-1 block text-accent">{t.card.recommendation}</strong>
         <span className="text-content">{alert.recommendation}</span>
       </div>

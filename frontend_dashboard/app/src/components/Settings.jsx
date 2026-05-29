@@ -33,7 +33,7 @@ export default function Settings() {
               <input
                 value={s.childName}
                 onChange={(e) => update({ childName: e.target.value })}
-                className="w-full rounded-lg border border-edge bg-ink px-3 py-1.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
+                className="w-full rounded-md border border-edge bg-surface-2 px-3 py-1.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
               />
             </Field>
             <Field label={t.settings.age}>
@@ -43,7 +43,7 @@ export default function Settings() {
                 max="18"
                 value={s.childAge}
                 onChange={(e) => update({ childAge: Number(e.target.value) })}
-                className="w-20 rounded-lg border border-edge bg-ink px-3 py-1.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
+                className="w-20 rounded-md border border-edge bg-surface-2 px-3 py-1.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
               />
             </Field>
           </div>
@@ -52,7 +52,7 @@ export default function Settings() {
 
       <Section title={t.settings.sensitivity} desc={t.settings.sensitivityDesc}>
         <div className="p-3">
-          <div className="grid grid-cols-3 gap-1 rounded-xl bg-ink p-1">
+          <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-2 p-1">
             {SENS.map((opt) => {
               const active = s.sensitivity === opt.key;
               return (
@@ -60,8 +60,8 @@ export default function Settings() {
                   key={opt.key}
                   type="button"
                   onClick={() => update({ sensitivity: opt.key })}
-                  className={`rounded-lg px-2 py-2 text-center transition-colors duration-150 ${
-                    active ? "bg-surface-2 text-content" : "text-muted hover:text-content"
+                  className={`rounded-md px-2 py-2 text-center transition-colors duration-150 ${
+                    active ? "bg-content text-ink" : "text-muted hover:text-content"
                   }`}
                 >
                   <div className="text-sm font-medium">{t.settings[opt.label]}</div>
@@ -113,7 +113,7 @@ function Section({ title, desc, children }) {
     <section className="mb-6">
       <h2 className="mb-1 text-sm font-semibold">{title}</h2>
       {desc && <p className="mb-2 text-xs text-faint">{desc}</p>}
-      <div className="divide-y divide-edge overflow-hidden rounded-2xl border border-edge bg-surface">
+      <div className="divide-y divide-edge overflow-hidden rounded-lg border border-edge bg-surface">
         {children}
       </div>
     </section>

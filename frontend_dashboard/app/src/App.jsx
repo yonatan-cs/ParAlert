@@ -5,6 +5,7 @@ import FilterBar from "./components/FilterBar.jsx";
 import ChatSimulator from "./components/ChatSimulator.jsx";
 import Settings from "./components/Settings.jsx";
 import LanguageToggle from "./components/LanguageToggle.jsx";
+import ThemeToggle from "./components/ThemeToggle.jsx";
 import GroupChat from "./components/GroupChat.jsx";
 import { useI18n } from "./i18n/I18nContext.jsx";
 import { useSettings, SEVERITY_RANK, SENSITIVITY_MIN, isQuietNow } from "./settings/SettingsContext.jsx";
@@ -218,43 +219,36 @@ export default function App() {
     return true;
   };
 
-  return (
-    <div
-      className={`mx-auto min-h-screen px-4 py-6 md:px-6 ${
-        view === "chat" ? "max-w-2xl lg:max-w-6xl" : "max-w-2xl"
-      }`}
-    >
-      <div className="mx-auto max-w-2xl">
-        <header className="mb-5 flex items-center gap-3">
-          <h1 className="text-xl font-bold tracking-tight">🛡️ {t.appName}</h1>
-          {view === "dashboard" && (
-            <span className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs text-muted">
-              <span
-                className={`inline-block h-1.5 w-1.5 rounded-full ${live ? "bg-sev-low animate-pulse-live" : "bg-sev-medium"}`}
-              />
-              {source}
-            </span>
-          )}
-          <div className="ms-auto">
-            <LanguageToggle />
-          </div>
-        </header>
+  // Width adapts to the view: settings reads best as a single narrow column;
+  // the dashboard uses a wide canvas (alerts flow into a 2-up masonry, not
+  // stretched single cards); chat keeps its conversation + side panel layout.
+  const widthClass =
+    view === "settings" ? "max-w-2xl" : view === "chat" ? "max-w-6xl" : "max-w-5xl";
 
-        <nav className="mb-5 grid grid-cols-3 gap-1 rounded-xl bg-surface p-1">
-          {TAB_KEYS.map((key) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setView(key)}
-              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 ${
-                view === key ? "bg-content text-ink" : "text-muted hover:text-content"
-              }`}
-            >
-              {t.tabs[key]}
-            </button>
-          ))}
-        </nav>
-      </div>
+  return (
+    <div className={`mx-auto min-h-screen px-4 py-6 md:px-6 lg:px-8 ${widthClass}`}>
+      <header className="mb-6 flex flex-wrap items-center gap-3">
+        <h1 className="text-xl font-bold tracking-tight">🛡️ {t.appName}</h1>
+        <div className="ms-auto flex items-center gap-2">
+          <ThemeToggle />
+          <LanguageToggle />
+        </div>
+      </header>
+
+      <nav className="mb-6 flex w-fit gap-1 rounded-lg bg-surface p-1">
+        {TAB_KEYS.map((key) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setView(key)}
+            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors duration-150 ${
+              view === key ? "bg-content text-ink" : "text-muted hover:text-content"
+            }`}
+          >
+            {t.tabs[key]}
+          </button>
+        ))}
+      </nav>
 
       <div key={view} className="animate-fade">
         {view === "chat" && (
@@ -291,16 +285,20 @@ export default function App() {
                 const items = visible.filter(s.match);
                 if (!items.length) return null;
                 return (
-                  <section key={s.key} className="mb-6">
-                    <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold text-muted">
+                  <section key={s.key} className="mb-8">
+                    <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted">
                       {t.sections[s.key]}
-                      <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] text-faint">
+                      <span className="rounded-md bg-surface-2 px-2 py-0.5 text-[11px] text-faint">
                         {items.length}
                       </span>
                     </h2>
-                    {items.map((a) => (
-                      <AlertCard key={a.alert_id} alert={a} isNew={isNew(a.alert_id)} />
-                    ))}
+                    {/* Masonry: cards keep a readable width and flow into 2 columns on
+                        wide screens instead of one stretched column. */}
+                    <div className="gap-4 [column-fill:balance] lg:columns-2">
+                      {items.map((a) => (
+                        <AlertCard key={a.alert_id} alert={a} isNew={isNew(a.alert_id)} />
+                      ))}
+                    </div>
                   </section>
                 );
               })

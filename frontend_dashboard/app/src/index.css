@@ -27,14 +27,57 @@
   --dur-fast: 140ms;
   --dur: 220ms;
   --dur-slow: 360ms;
+  /* Card elevation — a crisp hard bottom edge (subtle neo-brutalist tell) over a
+     small soft ambient, instead of a big blurry float. Dark theme. */
+  --shadow-card: 0 2px 0 oklch(0 0 0 / 0.35), 0 4px 12px oklch(0 0 0 / 0.16);
+}
+
+/* Light theme: override only the semantic tokens — every component is token-driven,
+   so the whole UI flips with no per-component changes. Warm-neutral whites, a single
+   deeper teal accent, and severities darkened for contrast on light surfaces. */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-ink: oklch(0.985 0.003 270);
+  --color-surface: oklch(1 0 0);
+  --color-surface-2: oklch(0.965 0.004 270);
+  --color-edge: oklch(0.9 0.006 270);
+  --color-content: oklch(0.24 0.02 270);
+  --color-muted: oklch(0.47 0.018 270);
+  --color-faint: oklch(0.6 0.015 270);
+
+  --color-accent: oklch(0.55 0.11 215);
+
+  --color-sev-high: oklch(0.55 0.2 25);
+  --color-sev-medium: oklch(0.58 0.13 70);
+  --color-sev-low: oklch(0.54 0.14 150);
+
+  --color-victim: oklch(0.57 0.16 15);
+  --color-aggressor: oklch(0.6 0.13 70);
+  --color-bystander: oklch(0.55 0.12 235);
+
+  /* Light theme: faint hard edge + a whisper of ambient — defined, not floaty. */
+  --shadow-card: 0 2px 0 oklch(0.4 0.02 270 / 0.07), 0 3px 10px oklch(0.4 0.02 270 / 0.06);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, "Segoe UI", system-ui, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Assistant", -apple-system, "Segoe UI", system-ui, "Helvetica Neue", Arial, sans-serif;
   background: var(--color-ink);
   color: var(--color-content);
   font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Smooth the light/dark switch without animating every child. */
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+/* Reusable, theme-aware card elevation (replaces hardcoded per-card shadows). */
+.card-elev {
+  box-shadow: var(--shadow-card);
 }
 
 @keyframes enter {
