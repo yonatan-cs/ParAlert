@@ -1,6 +1,9 @@
+
+<img src="media/logo.png" alt="ParAlert Logo" width="160" />
+
 <div align="center">
 
-# 🛡️ ParAlert
+# ParAlert
 
 ### מערכת התראות בזמן-אמת על פגיעה בילדים ברשת
 
