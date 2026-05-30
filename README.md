@@ -1,7 +1,7 @@
-
-<img src="media/logo.png" alt="ParAlert Logo" width="160" />
-
 <div align="center">
+
+<img src="media/ParAlertLogo-noBG.png" alt="ParAlert Logo" width="160" />
+
 
 # ParAlert
 
